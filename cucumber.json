@@ -1,0 +1,7 @@
+{
+  "default": {
+    "require": ["tests/steps/testSteps.js", "features/support/hooks.js"],
+    "format": ["progress", "allure-cucumberjs/reporter"],
+    "publishQuiet": true
+  }
+}

@@ -15,7 +15,7 @@
   },
   "scripts": {
     "clean": "rm -rf allure-results && rm -rf allure-report",
-    "test": "npm run clean && wdio run wdio.conf.js",
+    "test_bk": "npm run clean && wdio run wdio.conf.js",
     "test:browserstack": "npm run clean && wdio run wdio.browserstack.conf.js",
     "test:local": "npm run clean && wdio run wdio.local.conf.js",
     "test:local:debug": "npm run clean && DEBUG=true wdio run wdio.local.conf.js",
@@ -29,7 +29,10 @@
     "postinstall": "npm run setup:husky",
     "setup:husky": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module",
     "report": "allure generate allure-results --single-file --clean",
-    "report:publish": "npm run report; ./bin/publish-tests.sh"
+    "report:publish": "npm run report; ./bin/publish-tests.sh",
+      "test:smoke": "cucumber-js --tags '@smoke'",
+    "test": "cucumber-js --format progress",
+    "test:allure": "cucumber-js --format progress --format allure-cucumberjs/reporter && npx allure generate allure-results --clean -o allure-report && npx allure open allure-report"
   },
   "dependencies": {
     "@wdio/browserstack-service": "9.9.1",
@@ -44,7 +47,7 @@
     "esm-module-alias": "2.2.1",
     "global-agent": "3.0.0",
     "undici": "7.3.0"
-  },
+      },
   "devDependencies": {
     "eslint": "^8.57.0",
     "eslint-config-prettier": "9.1.0",
@@ -52,6 +55,14 @@
     "eslint-plugin-prettier": "5.1.3",
     "eslint-plugin-wdio": "8.24.12",
     "husky": "9.1.7",
-    "prettier": "3.4.2"
+    "prettier": "3.4.2",
+    "@cucumber/cucumber": "^12.1.0",
+    "@faker-js/faker": "^10.0.0",
+    "@playwright/test": "^1.54.1",
+    "@types/node": "^24.1.0",
+    "allure-commandline": "^2.34.1",
+    "allure-cucumberjs": "^3.3.3",
+    "allure-playwright": "^3.3.3",
+    "playwright": "^1.54.2"
   }
 }
