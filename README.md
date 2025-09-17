@@ -1,4 +1,4 @@
-fcp-sfd-auto-test-suite_Test
+fcp-sfd-auto-test-suite
 
 The template to create a service that runs WDIO tests against an environment.
 
