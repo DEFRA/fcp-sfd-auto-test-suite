@@ -1,4 +1,5 @@
 fcp-sfd-auto-test-suite
+test for new creating branch
 
 The template to create a service that runs WDIO tests against an environment.
 
