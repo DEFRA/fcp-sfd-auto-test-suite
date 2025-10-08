@@ -99,11 +99,8 @@ When('I update Business Address', async function () {
 
   // this.postcode = generateRandomUKPostcode();
 
-  await this.page
-    .locator('//a[normalize-space()="Enter address manually"]')
-    .click()
   await this.page.locator('//input[@id="address-1"]').clear()
-  //  await this.page.fill('//input[@id="address-1"]', this.addressLine1);
+  // await this.page.fill('//input[@id="address-1"]', this.addressLine1);
   this.addressline1 = faker.location.streetAddress()
   await this.page.fill('//input[@id="address-1"]', this.addressline1)
 
@@ -116,7 +113,7 @@ When('I update Business Address', async function () {
   await this.page.locator('//input[@id="address-3"]').clear()
 
   await this.page.locator("//input[@id='city']").clear()
-  //  await this.page.fill("//input[@id='city']", this.town);
+  // await this.page.fill("//input[@id='city']", this.town);
   this.city = faker.location.city()
   await this.page.fill("//input[@id='city']", this.city)
 
@@ -125,10 +122,10 @@ When('I update Business Address', async function () {
   this.postcode = generateRandomUKPostcode()
   await this.page.fill("//input[@id='postcode']", this.postcode)
 
-  //  const cf=new Faker({locale:[en_GB,en]})
-  //  const f= faker.location.
-  //  const f= faker.location.postcode();
-  //  await this.page.fill("//input[@id='postcode']", faker.location.postcode());
+  // const cf=new Faker({locale:[en_GB,en]})
+  // const f= faker.location.
+  // const f= faker.location.postcode();
+  // await this.page.fill("//input[@id='postcode']", faker.location.postcode());
 
   await this.page.locator("//input[@id='country']").clear()
   await this.page.fill("//input[@id='country']", 'United Kingdom')
@@ -145,7 +142,7 @@ Then('I need to check phone number', async function () {
 })
 
 Given('I am on SignIn page and enter the credentials', async function () {
-  //  await this.page.goto("https://fcp-sfd-frontend.test.cdp-int.defra.cloud/business-details");
+  // await this.page.goto("https://fcp-sfd-frontend.test.cdp-int.defra.cloud/business-details");
   await this.page.goto('https://fcp-sfd-frontend.test.cdp-int.defra.cloud/')
   await this.page.waitForTimeout(3000)
   await this.page.locator("//a[normalize-space()='Sign in']").click()
@@ -202,7 +199,7 @@ When(
   }
 )
 
-//  Then('Verfiy all relevant details on the ChangeYourBusinessType page are been displayed correctly', async function (linkType) {
+// Then('Verfiy all relevant details on the ChangeYourBusinessType page are been displayed correctly', async function (linkType) {
 Then(
   'Verfiy all relevant details on the {string} page are been displayed correctly',
   async function (linkType) {
@@ -296,7 +293,6 @@ Then(
 Then(
   'Verfiy Updated Business Address details on the ChangeYourBusinessType page are been displayed correctly',
   async function () {
-    // const txt =  await this.page.locator("//dt[normalize-space()='Business email address']/following-sibling::dd[1]").textContent();
     const actAddrLine1 = await this.page
       .locator(
         "//dt[normalize-space()='Business address']/following-sibling::dd[1]/div[1]"
@@ -317,8 +313,6 @@ Then(
         "//dt[normalize-space()='Business address']/following-sibling::dd[1]/div[4]"
       )
       .innerText()
-    //  const actTxt =  await this.page.locator("#//p[@class='govuk-notification-banner__heading']").textContent();
-    //  const email = actEmail.split(':')[1].trim();
     await this.page.waitForTimeout(5000)
     expect(actAddrLine1).toBe(this.addressline1)
     expect(actAddrLine2).toContain(this.addressline2)
@@ -352,12 +346,13 @@ Then(
           'You have updated your business email address'
         )
         expect(actEmailUpdatedMsg).toContain(
-          'You have updated your business email address1'
+          'You have updated your business email address'
         )
         break
       }
+
       case 'businessaddress': {
-        //  const actTxt = await this.page.locator("//p[@class='govuk-notification-banner__heading']").textContent();
+        // const actTxt = await this.page.locator("//p[@class='govuk-notification-banner__heading']").textContent();
         const actAddressUpdatedMsg = await this.page
           .locator("//p[@class='govuk-notification-banner__heading']")
           .innerText()
@@ -370,16 +365,39 @@ Then(
         )
         break
       }
+
       case 'businessname': {
         const actBusinessNameMsg = await this.page
           .locator("//p[@class='govuk-notification-banner__heading']")
           .innerText()
-        expect(actBusinessNameMsg).toBe('You have updated your business name')
+        expect(actBusinessNameMsg).toBe('You have updated your business name1')
         expect(actBusinessNameMsg).toContain(
-          'You have updated your business name'
+          'You have updated your business name1'
         )
         break
       }
+      case 'yes': {
+        const actvatnumberRemovedMsg = await this.page
+          .locator("//p[@class='govuk-notification-banner__heading']")
+          .innerText()
+        expect(actvatnumberRemovedMsg).toBe(
+          'You have removed your VAT registration number'
+        )
+        expect(actvatnumberRemovedMsg).toContain(
+          'You have removed your VAT registration number'
+        )
+        break
+      }
+
+      case 'no': {
+        const actNoUpdatedMsgForvatnumber = await this.page.locator(
+          "//p[@class='govuk-notification-banner__heading']"
+        )
+        expect(actNoUpdatedMsgForvatnumber).not.toBeVisible()
+        expect(await actNoUpdatedMsgForvatnumber.isVisible()).toBe(false)
+        break
+      }
+
       default:
         throw new Error('unknow link type:$(linkType)')
     }
@@ -491,6 +509,383 @@ Then(
   }
 )
 
+Given(
+  'I update Business Name and click the Change link in CheckYourBusinessNameIsCorrectBeforeSubmitting Page',
+  async function () {
+    await this.page.locator('//input[@id="business-name"]').clear()
+    // Generate random email
+    this.businessName = faker.company.name()
+    await this.page.fill('//input[@id="business-name"]', this.businessName)
+    await this.page.waitForTimeout(3000)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.getByRole('link', { name: 'Business name' }).click()
+  }
+)
+
+Given(
+  'Change the Business Name again in WhatIsYourBusinessName? Page',
+  async function () {
+    await this.page.locator('//input[@id="business-name"]').clear()
+    // Generate random email
+    this.businessName = faker.company.name()
+    await this.page.fill('//input[@id="business-name"]', this.businessName)
+    await this.page.waitForTimeout(3000)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.locator("//button[normalize-space()='Submit']").click()
+  }
+)
+
+Given(
+  'I update Business Address and click the Change link in CheckYourBusinessAddressIsCorrectBeforeSubmitting Page',
+  async function () {
+    await this.page.locator('//input[@id="address-1"]').clear()
+    // await this.page.fill('//input[@id="address-1"]', this.addressLine1);
+    this.addressline1 = faker.location.streetAddress()
+    await this.page.fill('//input[@id="address-1"]', this.addressline1)
+
+    await this.page.locator('//input[@id="address-2"]').clear()
+    // await this.page.fill('//input[@id="address-2"]', this.addressLine2);
+    this.addressline2 = faker.location.secondaryAddress()
+    await this.page.fill('//input[@id="address-2"]', this.addressline2)
+
+    //  await this.page.waitForTimeout(3000);
+    await this.page.locator('//input[@id="address-3"]').clear()
+
+    await this.page.locator("//input[@id='city']").clear()
+    // await this.page.fill("//input[@id='city']", this.town);
+    this.city = faker.location.city()
+    await this.page.fill("//input[@id='city']", this.city)
+
+    await this.page.locator("//input[@id='county']").clear()
+    await this.page.locator("//input[@id='postcode']").clear()
+    this.postcode = generateRandomUKPostcode()
+    await this.page.fill("//input[@id='postcode']", this.postcode)
+
+    await this.page.locator("//input[@id='country']").clear()
+    await this.page.fill("//input[@id='country']", 'United Kingdom')
+
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.getByRole('link', { name: 'Business address' }).click()
+  }
+)
+
+Given(
+  'Change the Business Address again in EnterYourBusinessAddress Page',
+  async function () {
+    await this.page.locator('//input[@id="address-1"]').clear()
+    // await this.page.fill('//input[@id="address-1"]', this.addressLine1);
+    this.addressline1 = faker.location.streetAddress()
+    await this.page.fill('//input[@id="address-1"]', this.addressline1)
+
+    await this.page.locator('//input[@id="address-2"]').clear()
+    // await this.page.fill('//input[@id="address-2"]', this.addressLine2);
+    this.addressline2 = faker.location.secondaryAddress()
+    await this.page.fill('//input[@id="address-2"]', this.addressline2)
+
+    //  await this.page.waitForTimeout(3000);
+    await this.page.locator('//input[@id="address-3"]').clear()
+
+    await this.page.locator("//input[@id='city']").clear()
+    // await this.page.fill("//input[@id='city']", this.town);
+    this.city = faker.location.city()
+    await this.page.fill("//input[@id='city']", this.city)
+
+    await this.page.locator("//input[@id='county']").clear()
+    await this.page.locator("//input[@id='postcode']").clear()
+    this.postcode = generateRandomUKPostcode()
+    await this.page.fill("//input[@id='postcode']", this.postcode)
+
+    await this.page.locator("//input[@id='country']").clear()
+    await this.page.fill("//input[@id='country']", 'United Kingdom')
+
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+
+    await this.page.locator("//button[normalize-space()='Submit']").click()
+  }
+)
+
+Given(
+  'I update Business PhoneNumber and click the Change link in CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting Page',
+  async function () {
+    await this.page.locator('[id="businessTelephone"]').clear()
+    // Generate random phone number
+    this.phonenumber = generateRandomPhoneNumber()
+    await this.page.fill('#businessTelephone', this.phonenumber)
+    await this.page.waitForTimeout(3000)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    //  await this.page.locator("//button[normalize-space()='Submit']").click();
+    await this.page
+      .getByRole('link', { name: 'Business phone numbers' })
+      .click()
+  }
+)
+
+Given(
+  'Change the Business PhoneNumber again in WhatAreYourBusinessPhoneNumbers? Page',
+  async function () {
+    await this.page.locator('[id="businessTelephone"]').clear()
+    // Generate random phone number
+    this.phonenumber = generateRandomPhoneNumber()
+    await this.page.fill('#businessTelephone', this.phonenumber)
+    await this.page.waitForTimeout(3000)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.locator("//button[normalize-space()='Submit']").click()
+    // await this.page.getByRole('link', { name: 'Business phone numbers' }).click();
+  }
+)
+
+Then(
+  'Verfiy Updated Business PhoneNumber details on the ViewAndUpdateYourBusinessType page are been displayed correctly',
+  async function () {
+    const actPhNum = await this.page.getByText('Telephone').textContent()
+    const actual = actPhNum.split(':')[1].trim()
+    await this.page.waitForTimeout(5000)
+    expect(actual).toBe(this.phonenumber)
+    expect(actual).toContain(this.phonenumber)
+  }
+)
+
+Given(
+  'I update Business EmailAddress and click the Change link in CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting Page',
+  async function () {
+    await this.page.locator('//input[@id="business-email"]').clear()
+    // Generate random email
+    this.email = generateRandomEmail()
+    await this.page.fill('//input[@id="business-email"]', this.email)
+    await this.page.waitForTimeout(3000)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    // await this.page.locator("//button[normalize-space()='Submit']").click();
+    // await this.page.getByRole('link', { name: 'Business email address' }).click();
+    await this.page.getByRole('link', { name: 'Business email' }).click()
+  }
+)
+
+Given(
+  'Change the Business EmailAddress again in CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting Page',
+  async function () {
+    await this.page.locator('//input[@id="business-email"]').clear()
+    // Generate random email
+    this.email = generateRandomEmail()
+    await this.page.fill('//input[@id="business-email"]', this.email)
+    await this.page.waitForTimeout(3000)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.locator("//button[normalize-space()='Submit']").click()
+    // await this.page.getByRole('link', { name: '  Business email address' }).click();
+  }
+)
+
+Then(
+  'Verfiy Updated Business EmailAddress details on the ViewAndUpdateYourBusinessType page are been displayed correctly',
+  async function () {
+    const actEmail = await this.page
+      .locator(
+        "//dt[normalize-space()='Business email address']/following-sibling::dd[1]"
+      )
+      .innerText()
+    expect(actEmail).toBe(this.email)
+    expect(actEmail).toContain(this.email)
+  }
+)
+
+Given(
+  'I enter the test data on the field {string} with value as {string} on the BusinessAddress page',
+  async function (field, length) {
+    await this.page.locator('//input[@id="address-1"]').clear()
+
+    this.addressline1 = faker.location.streetAddress()
+    await this.page.fill('//input[@id="address-1"]', this.addressline1)
+
+    await this.page.locator('//input[@id="address-2"]').clear()
+
+    this.addressline2 = faker.location.secondaryAddress()
+    await this.page.fill('//input[@id="address-2"]', this.addressline2)
+
+    await this.page.locator('//input[@id="address-3"]').clear()
+
+    await this.page.locator("//input[@id='city']").clear()
+    this.city = faker.location.city()
+    await this.page.fill("//input[@id='city']", this.city)
+
+    await this.page.locator("//input[@id='county']").clear()
+    await this.page.locator("//input[@id='postcode']").clear()
+    this.postcode = generateRandomUKPostcode()
+    await this.page.fill("//input[@id='postcode']", this.postcode)
+
+    await this.page.locator("//input[@id='country']").clear()
+    await this.page.fill("//input[@id='country']", 'United Kingdom')
+
+    this.generateValue = generateValidationTestData(field, length)
+
+    switch (field.toLowerCase()) {
+      case 'addressline1':
+        // console.log(this.generateValue);
+        await this.page.locator('//input[@id="address-1"]').clear()
+        await this.page.fill('//input[@id="address-1"]', this.generateValue)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+
+        break
+
+      case 'addressline2':
+        await this.page.locator('//input[@id="address-2"]').clear()
+        await this.page.fill('//input[@id="address-2"]', this.generateValue)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+
+        break
+      case 'businesstown':
+        await this.page.locator("//input[@id='city']").clear()
+        await this.page.fill("//input[@id='city']", this.generateValue)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+
+      case 'businesscountry':
+        await this.page.locator("//input[@id='country']").clear()
+        await this.page.fill("//input[@id='country']", this.generateValue)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+
+      case 'businesscounty':
+        await this.page.locator("//input[@id='county']").clear()
+        await this.page.fill("//input[@id='county']", this.generateValue)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+    }
+  }
+)
+
+Then(
+  'Verfiy relevant ErrorMessage {string} is displayed',
+  async function (errMsg) {
+    const actErrMsg = await this.page
+      .locator("//ul[@class='govuk-list govuk-error-summary__list']//li")
+      .innerText()
+    await this.page.waitForTimeout(3000)
+    expect(actErrMsg).toBe(errMsg)
+    //  expect(actEmail).toContain(this.email);
+  }
+)
+
+Given(
+  'I enter the test data on the field {string} with value as {string} on the {string} page',
+  async function (field, length, page) {
+    this.generateValue = generateValidationTestData(field, length)
+    // console.log(this.generateValue)
+    // console.log(this.generateValue)
+
+    switch (field.toLowerCase()) {
+      case 'businessname':
+        await this.page.locator('//input[@id="business-name"]').clear()
+
+        await this.page.fill('//input[@id="business-name"]', this.generateValue)
+
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+
+        break
+      case 'businessphone':
+        await this.page.locator('[id="businessTelephone"]').clear()
+
+        await this.page.fill('#businessTelephone', this.generateValue)
+
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+
+        break
+
+      case 'businessandmobilephone':
+        await this.page.locator('[id="businessTelephone"]').clear()
+
+        await this.page.fill('#businessTelephone', this.generateValue)
+        await this.page.locator("//input[@id='businessMobile']").clear()
+
+        await this.page.fill(
+          "//input[@id='businessMobile']",
+          this.generateValue
+        )
+
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+
+        break
+
+      case 'businessemailaddress':
+        await this.page.locator('//input[@id="business-email"]').clear()
+        // Generate random email
+        this.email = generateDiffLengthRandomEmail(length)
+        await this.page.fill('//input[@id="business-email"]', this.email)
+        await this.page.waitForTimeout(3000)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+    }
+  }
+)
+
+Given(
+  'I click a link signIn link in LandAndFarmService page',
+  async function () {
+    //  await this.page.locator("//button[normalize-space()='Continue']").click();
+    await this.page.locator('a[href="/auth/sign-in"]').click()
+  }
+)
+
+Then(
+  'Application should Navigate to SignInToFarmingFrontDoor page.',
+  async function () {
+    const expTxt = await this.page.locator("//h1[@id='header']").innerText()
+
+    expect(expTxt).toBe('Sign in to farming front door')
+  }
+)
+
+When('I add the VAT Number', async function () {
+  await this.page
+    .locator('//a[@href="/business-vat-registration-number-change"]')
+    .click()
+  await this.page.locator('//input[@id="business-vat"]').clear()
+
+  await this.page.fill('//input[@id="business-vat"]', '123456789')
+  await this.page.locator('//button[normalize-space()="Continue"]').click()
+  await this.page.locator(' //button[normalize-space()="Submit"]').click()
+})
+
+When('I click Remove link', async function () {
+  await this.page
+    .locator('  //a[@href="/business-vat-registration-remove"]')
+    .click()
+})
+
+When(
+  'I click {string} button in the AreYouSureYouWantToRemoveYourVATRegistrationNumber page',
+  async function (btnType) {
+    switch (btnType.toLowerCase()) {
+      case 'yes':
+        await this.page.locator('//input[@id="confirmRemove"]').click()
+        await this.page.locator('//button[normalize-space()="Submit"]').click()
+
+        break
+      case 'no':
+        await this.page.locator('//input[@id="confirmRemove-2"]').click()
+        await this.page.locator('//button[normalize-space()="Submit"]').click()
+
+        break
+    }
+  }
+)
+
 // Helper function
 function generateRandomPhoneNumber() {
   let phone = '0'
@@ -504,6 +899,15 @@ function generateRandomEmail() {
   const randomString = Math.random().toString(36).substring(2, 8)
   return `test_${randomString}_${timestamp}@test.com`
 }
+function generateDiffLengthRandomEmail(lenght) {
+  const domain = '@example.com'
+  if (!lenght || lenght <= domain.length) {
+    return ''
+  }
+  const localPartLength = lenght - domain.length
+  // if (localPartLength <=0) throw new Error ("length too short")
+  return faker.string.alphanumeric(localPartLength).toLowerCase() + domain
+}
 
 /* function generateRandomAddressLine1() {
   const number = Math.floor(Math.random() * 999 + 1)
@@ -515,86 +919,63 @@ function generateRandomEmail() {
     'Station Road'
   ]
   const prefixes = ['oak', 'Hill', 'green', 'park']
-  //  const street = streetNames[Math.floor (Math.random() * streetNames.lenght)];
-  //  const ss=number + '' + street;
+  // const street = streetNames[Math.floor (Math.random() * streetNames.lenght)];
+  // const ss=number + '' + street;
   const ss1 = `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
   return `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
-  // return number + '' + street
+  // return number + '' + street;
 } */
 
 /* function generateRandomAddressLine1b() {
-  faker.location.streetAddress()
+  faker.location.streetAddress();
+
+
 } */
 
 /* function generateRandomAddressLine1a() {
-  const number = Math.floor(Math.random() * 999 + 1)
-  const streetNames = [
-    'High Street',
-    'Main Road',
-    'Park Avenue',
-    'Church Lane',
-    'Station Road'
-  ]
-  const prefixes = ['oak', 'Hill', 'green', 'park']
+  const number = Math.floor(Math.random() * 999 + 1);
+  const streetNames = ['High Street', 'Main Road', 'Park Avenue', 'Church Lane', 'Station Road'];
+  const prefixes = ['oak', 'Hill', 'green', 'park'];
 
-  const street = streetNames[Math.floor(Math.random() * streetNames.lenght)]
-  const prefix = prefixes[Math.floor(Math.random() * prefixes.lenght)]
+  const street = streetNames[Math.floor(Math.random() * streetNames.lenght)];
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.lenght)];
   const aa = `${number}${prefix}${street}`
   return `${number}${prefix}${street}`
 
   const ss1 = `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
   return `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
-}  */
+
+
+} */
 
 /* function generateRandomTown() {
-  const towns = [
-    'London',
-    'Manchester',
-    'Birmingham',
-    'Leeds',
-    'Bristol',
-    'Liverpool',
-    'Glasgow'
-  ]
-  const ss1 = towns[Math.floor(Math.random() * towns.lenght)]
-  return towns[Math.floor(Math.random() * towns.lenght)]
+
+  const towns = ['London', 'Manchester', 'Birmingham', 'Leeds', 'Bristol', 'Liverpool', 'Glasgow'];
+  const ss1 = towns[Math.floor(Math.random() * towns.lenght)];
+  return towns[Math.floor(Math.random() * towns.lenght)];
+
+
 } */
 
 /* function generateRandomAddressLine2() {
-  const areas = [
-    'North',
-    'South',
-    'East',
-    'West',
-    'Central',
-    'Heights',
-    'Gardens'
-  ]
-  const ss2 =
-    areas[Math.floor(Math.random() * areas.lenght)] +
-    '' +
-    (Math.floor(Math.random() * 50) + 1)
-  return (
-    areas[Math.floor(Math.random() * areas.lenght)] +
-    '' +
-    (Math.floor(Math.random() * 50) + 1)
-  )
-} */
+  const areas = ['North', 'South', 'East', 'West', 'Central', 'Heights', 'Gardens'];
+  const ss2 = areas[Math.floor(Math.random() * areas.lenght)] + '' + (Math.floor(Math.random() * 50) + 1);
+  return areas[Math.floor(Math.random() * areas.lenght)] + '' + (Math.floor(Math.random() * 50) + 1);
 
-/* function generateRandomPostcode() {
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  const randomLetter = () =>
-    letters.charAt(Math.floor(Math.random() * letters.length))
-  const randomDigit = () => Math.floor(Math.random() * 10)
-  const ff =
-    randomLetter() +
+} */
+/* 
+function generateRandomPostcode() {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const randomLetter = () => letters.charAt(Math.floor(Math.random() * letters.length))
+  const randomDigit = () => Math.floor(Math.random() * 10);
+  const ff = randomLetter() +
     (Math.random() > 0.5 ? randomLetter() : '') +
     randomDigit() +
     (Math.random() > 0.5 ? randomDigit() : '') +
     '' +
     randomDigit() +
     randomLetter() +
-    randomLetter()
+    randomLetter();
   return (
     randomLetter() +
     (Math.random() > 0.5 ? randomLetter() : '') +
@@ -603,8 +984,8 @@ function generateRandomEmail() {
     '' +
     randomDigit() +
     randomLetter() +
-    randomLetter()
-  )
+    randomLetter());
+
 } */
 
 function generateRandomUKPostcode() {
@@ -643,17 +1024,55 @@ function generateRandomUKPostcode() {
   const outward = patterns[Math.floor(Math.random() * patterns.length)]()
   const inward =
     randomDigit() + randomChar(inwardLetters) + randomChar(inwardLetters)
-  // const tt = outward + ' ' + inward
+  // const tt = outward + ' ' + inward;
   return outward + ' ' + inward
 }
 
 /* function randomItem(arr, name = 'array') {
   if (!Array.isArray(arr)) {
     throw new Error(`${name}is not an array`)
-  }
+  } 
 
   if (arr.length === 0) {
     throw new Error(`${name}is empty`)
   }
   return arr[Math.floor(Math.random() * arr.length)]
 } */
+
+function generateValidationTestData(field, length) {
+  let value = ''
+  while (value.length < length) {
+    switch (field.toLowerCase()) {
+      case 'addressline1':
+      case 'addressline2':
+        value += faker.location.streetAddress() + ''
+        break
+
+      case 'businesstown':
+        value += faker.location.city() + ''
+        break
+
+      case 'businesscountry':
+        value += faker.location.country() + ''
+        break
+
+      case 'businesscounty':
+        value += faker.location.county() + ''
+        break
+      case 'businessname':
+        value += faker.company.name() + ''
+        break
+
+      case 'businessphone':
+        // value += faker.company.generateRandomPhoneNumber() + '';
+        value += generateRandomPhoneNumber() + ''
+
+        break
+
+      case 'businessemailaddress':
+        value += generateRandomEmail() + ''
+        break
+    }
+  }
+  return value.substring(0, length)
+}
