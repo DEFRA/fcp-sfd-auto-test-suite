@@ -1,6 +1,6 @@
 Feature: View And Update Your BusinessType Page Test scenarios
 
-  @test1
+  @test1a
   Scenario: Verify  PhoneNumber gets updated post changes on ViewAndUpdateYourBusinessType page
     Given I am on SignIn page and enter the credentials
     When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
