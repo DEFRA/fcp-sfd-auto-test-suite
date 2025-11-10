@@ -1,13 +1,8 @@
 // features/steps/testSteps.js
-//  const { Given, When, Then, setDefaultTimeout } = require('@cucumber/cucumber');
-//  const { expect } = require('@playwright/test');
-//  const { fakerEN_GB: faker } = require('@faker-js/faker');
-
-import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber'
-import { expect } from '@playwright/test'
-//  import { fakerEN_GB, faker } from '@faker-js/faker'
-import { faker } from '@faker-js/faker'
-//  const {Faker,en_GB,en} = require('@faker-js/faker');
+const { Given, When, Then, setDefaultTimeout } = require('@cucumber/cucumber')
+const { expect } = require('@playwright/test')
+const { fakerEN_GB: faker } = require('@faker-js/faker')
+// const {Faker,en_GB,en} = require('@faker-js/faker');
 
 setDefaultTimeout(120 * 1000) // 2 minutes
 
@@ -141,19 +136,49 @@ Then('I need to check phone number', async function () {
   expect(actual).toContain(this.phonenumber)
 })
 
-Given('I am on SignIn page and enter the credentials', async function () {
-  // await this.page.goto("https://fcp-sfd-frontend.test.cdp-int.defra.cloud/business-details");
-  await this.page.goto('https://fcp-sfd-frontend.test.cdp-int.defra.cloud/')
-  await this.page.waitForTimeout(3000)
-  await this.page.locator("//a[normalize-space()='Sign in']").click()
-  // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-  await this.page.locator("//input[@id='crn']").fill('1100014934')
-  await this.page.locator("//input[@id='password']").fill('Password456')
-  await this.page.locator("//button[@id='next']").click()
-  await this.page
-    .locator("//a[normalize-space()='View and update your business details']")
-    .click()
-})
+Given(
+  'I am on SignIn page and enter the credentials for {string}',
+  async function (detailsType) {
+    switch (detailsType.toLowerCase()) {
+      case 'businessdetails':
+        // await this.page.goto("https://fcp-sfd-frontend.test.cdp-int.defra.cloud/business-details");
+        await this.page.goto(
+          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
+        )
+        await this.page.waitForTimeout(3000)
+        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
+        await this.page.locator("//input[@id='crn']").fill('1100407200')
+        await this.page.locator("//input[@id='password']").fill('Password456')
+        await this.page.locator("//button[@id='next']").click()
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your business details']"
+          )
+          .click()
+        break
+      case 'personaldetails':
+        await this.page.goto(
+          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
+        )
+        await this.page.waitForTimeout(3000)
+        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
+        await this.page.locator("//input[@id='crn']").fill('1100407200')
+        await this.page.locator("//input[@id='password']").fill('Password456')
+        await this.page.locator("//button[@id='next']").click()
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your personal details']"
+          )
+          .click()
+        break
+
+      default:
+        throw new Error('unknow link type:$(detailsType)')
+    }
+  }
+)
 
 When(
   'I click the BusinessType link on the BusinessDetails page',
@@ -350,7 +375,6 @@ Then(
         )
         break
       }
-
       case 'businessaddress': {
         // const actTxt = await this.page.locator("//p[@class='govuk-notification-banner__heading']").textContent();
         const actAddressUpdatedMsg = await this.page
@@ -365,7 +389,6 @@ Then(
         )
         break
       }
-
       case 'businessname': {
         const actBusinessNameMsg = await this.page
           .locator("//p[@class='govuk-notification-banner__heading']")
@@ -373,6 +396,18 @@ Then(
         expect(actBusinessNameMsg).toBe('You have updated your business name1')
         expect(actBusinessNameMsg).toContain(
           'You have updated your business name1'
+        )
+        break
+      }
+      case 'vatnumber': {
+        const actVatNumberMsg = await this.page
+          .locator("//p[@class='govuk-notification-banner__heading']")
+          .innerText()
+        expect(actVatNumberMsg).toBe(
+          'You have updated your VAT registration number'
+        )
+        expect(actVatNumberMsg).toContain(
+          'You have updated your VAT registration number'
         )
         break
       }
@@ -388,7 +423,6 @@ Then(
         )
         break
       }
-
       case 'no': {
         const actNoUpdatedMsgForvatnumber = await this.page.locator(
           "//p[@class='govuk-notification-banner__heading']"
@@ -397,7 +431,6 @@ Then(
         expect(await actNoUpdatedMsgForvatnumber.isVisible()).toBe(false)
         break
       }
-
       default:
         throw new Error('unknow link type:$(linkType)')
     }
@@ -778,8 +811,8 @@ Given(
   'I enter the test data on the field {string} with value as {string} on the {string} page',
   async function (field, length, page) {
     this.generateValue = generateValidationTestData(field, length)
-    // console.log(this.generateValue)
-    // console.log(this.generateValue)
+    /*  console.log(this.generateValue)
+    console.log(this.generateValue) */
 
     switch (field.toLowerCase()) {
       case 'businessname':
@@ -830,6 +863,16 @@ Given(
           .locator("//button[normalize-space()='Continue']")
           .click()
         break
+
+      case 'vatnumber':
+        await this.page.locator('//input[@id="business-vat"]').clear()
+
+        await this.page.fill('//input[@id="business-vat"]', this.generateValue)
+        await this.page
+          .locator('//button[normalize-space()="Continue"]')
+          .click()
+        // await this.page.locator(' //button[normalize-space()="Submit"]').click();
+        break
     }
   }
 )
@@ -862,10 +905,21 @@ When('I add the VAT Number', async function () {
   await this.page.locator(' //button[normalize-space()="Submit"]').click()
 })
 
-When('I click Remove link', async function () {
-  await this.page
-    .locator('  //a[@href="/business-vat-registration-remove"]')
-    .click()
+When('I click {string} link', async function (link) {
+  switch (link.toLowerCase()) {
+    case 'remove':
+      await this.page
+        .locator('//a[@href="/business-vat-registration-remove"]')
+        .click()
+
+      break
+    case 'change':
+      await this.page
+        .locator('//a[@href="/business-vat-registration-number-change"]')
+        .click()
+
+      break
+  }
 })
 
 When(
@@ -886,6 +940,106 @@ When(
   }
 )
 
+Given(
+  'I Update the VAT number in WhatIsYourVATRegistrationNumber page and submit',
+  async function () {
+    //  await this.page.locator('//a[@href="/business-vat-registration-number-change"]').click();
+    await this.page.locator('//input[@id="business-vat"]').clear()
+
+    await this.page.fill('//input[@id="business-vat"]', '987654321')
+    await this.page.locator('//button[normalize-space()="Continue"]').click()
+    await this.page.locator(' //button[normalize-space()="Submit"]').click()
+  }
+)
+
+Then(
+  'ViewAndUpdateYourBusinessType page should display updated VAT number',
+  async function () {
+    const actUpdatedVATnumber = await this.page
+      .locator(
+        "//dt[normalize-space()='VAT registration number']/following-sibling::dd[1]"
+      )
+      .innerText()
+    await this.page.waitForTimeout(5000)
+    expect(actUpdatedVATnumber).toBe('987654321')
+    expect(actUpdatedVATnumber).toContain('987654321')
+  }
+)
+
+When(
+  'I click the {string} link on the "ViewAndUpdateYourPersonalDetails"Page',
+  async function (linkType) {
+    await this.page.waitForTimeout(2000)
+    switch (linkType.toLowerCase()) {
+      case 'personalphonenumbers':
+        await this.page
+          .getByRole('link', { name: 'Personal phone numbers' })
+          .click()
+        break
+
+      default:
+        throw new Error('unknow link type:$(linkType)')
+    }
+  }
+)
+
+When('I update Personal phone number', async function () {
+  await this.page.locator('[id="personalTelephone"]').clear()
+  // Generate random phone number
+  this.personalPhonenumber = generateRandomPhoneNumber()
+  await this.page.fill('#personalTelephone', this.personalPhonenumber)
+  await this.page.waitForTimeout(3000)
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
+
+Then(
+  'Verfiy updated phone details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly',
+  async function () {
+    const actPhNum = await this.page.getByText('Telephone').textContent()
+    const actual = actPhNum.split(':')[1].trim()
+    await this.page.waitForTimeout(5000)
+    expect(actual).toBe(this.personalPhonenumber)
+    expect(actual).toContain(this.personalPhonenumber)
+  }
+)
+
+// Then('Verify Success Updated message is displayed for {string} on the page ViewAndUpdateYourPersonalDetails page', async function (updatedMsgType) {
+
+Then(
+  'Verify Success Updated message is displayed for {string} on the page ViewAndUpdateYourPersonalDetails page',
+  async function (linkType) {
+    switch (linkType.toLowerCase()) {
+      case 'personalPhonenumbers': {
+        const actPhoneUpdatedMsg = await this.page
+          .locator("//p[@class='govuk-notification-banner__heading']")
+          .innerText()
+
+        expect(actPhoneUpdatedMsg).toBe(
+          'You have updated your personal phone numbers'
+        )
+        expect(actPhoneUpdatedMsg).toContain(
+          'You have updated your personal phone numbers'
+        )
+        break
+      }
+      case 'personalPhonenumbers1': {
+        const actPhoneUpdatedMsg1 = await this.page
+          .locator("//p[@class='govuk-notification-banner__heading']")
+          .innerText()
+
+        expect(actPhoneUpdatedMsg1).toBe(
+          'You have updated your personal phone numbers'
+        )
+        expect(actPhoneUpdatedMsg1).toContain(
+          'You have updated your personal phone numbers'
+        )
+        break
+      }
+    }
+  }
+)
+
 // Helper function
 function generateRandomPhoneNumber() {
   let phone = '0'
@@ -894,6 +1048,15 @@ function generateRandomPhoneNumber() {
   }
   return phone
 }
+
+function generateVatNumber(length) {
+  let vatNumber = '0'
+  for (let i = 0; i <= length; i++) {
+    vatNumber += Math.floor(Math.random() * 10)
+  }
+  return vatNumber
+}
+
 function generateRandomEmail() {
   const timestamp = Date.now()
   const randomString = Math.random().toString(36).substring(2, 8)
@@ -923,46 +1086,68 @@ function generateDiffLengthRandomEmail(lenght) {
   // const ss=number + '' + street;
   const ss1 = `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
   return `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
-  // return number + '' + street;
+  return number + '' + street
 } */
-
-/* function generateRandomAddressLine1b() {
-  faker.location.streetAddress();
-
-
+/* 
+function generateRandomAddressLine1b() {
+  faker.location.streetAddress()
 } */
 
 /* function generateRandomAddressLine1a() {
-  const number = Math.floor(Math.random() * 999 + 1);
-  const streetNames = ['High Street', 'Main Road', 'Park Avenue', 'Church Lane', 'Station Road'];
-  const prefixes = ['oak', 'Hill', 'green', 'park'];
+  const number = Math.floor(Math.random() * 999 + 1)
+  const streetNames = [
+    'High Street',
+    'Main Road',
+    'Park Avenue',
+    'Church Lane',
+    'Station Road'
+  ]
+  const prefixes = ['oak', 'Hill', 'green', 'park']
 
-  const street = streetNames[Math.floor(Math.random() * streetNames.lenght)];
-  const prefix = prefixes[Math.floor(Math.random() * prefixes.lenght)];
-  const aa = `${number}${prefix}${street}`
+  const street = streetNames[Math.floor(Math.random() * streetNames.lenght)]
+  const prefix = prefixes[Math.floor(Math.random() * prefixes.lenght)]
+ // const aa = `${number}${prefix}${street}`
   return `${number}${prefix}${street}`
 
-  const ss1 = `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
+ // const ss1 = `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
   return `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
-
-
 } */
 
 /* function generateRandomTown() {
-
-  const towns = ['London', 'Manchester', 'Birmingham', 'Leeds', 'Bristol', 'Liverpool', 'Glasgow'];
-  const ss1 = towns[Math.floor(Math.random() * towns.lenght)];
-  return towns[Math.floor(Math.random() * towns.lenght)];
-
-
+  const towns = [
+    'London',
+    'Manchester',
+    'Birmingham',
+    'Leeds',
+    'Bristol',
+    'Liverpool',
+    'Glasgow'
+  ]
+  const ss1 = towns[Math.floor(Math.random() * towns.lenght)]
+  return towns[Math.floor(Math.random() * towns.lenght)]
 } */
 
 /* function generateRandomAddressLine2() {
-  const areas = ['North', 'South', 'East', 'West', 'Central', 'Heights', 'Gardens'];
-  const ss2 = areas[Math.floor(Math.random() * areas.lenght)] + '' + (Math.floor(Math.random() * 50) + 1);
-  return areas[Math.floor(Math.random() * areas.lenght)] + '' + (Math.floor(Math.random() * 50) + 1);
-
+  const areas = [
+    'North',
+    'South',
+    'East',
+    'West',
+    'Central',
+    'Heights',
+    'Gardens'
+  ]
+  const ss2 =
+    areas[Math.floor(Math.random() * areas.lenght)] +
+    '' +
+    (Math.floor(Math.random() * 50) + 1)
+  return (
+    areas[Math.floor(Math.random() * areas.lenght)] +
+    '' +
+    (Math.floor(Math.random() * 50) + 1)
+  )
 } */
+
 /* 
 function generateRandomPostcode() {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -1024,14 +1209,14 @@ function generateRandomUKPostcode() {
   const outward = patterns[Math.floor(Math.random() * patterns.length)]()
   const inward =
     randomDigit() + randomChar(inwardLetters) + randomChar(inwardLetters)
-  // const tt = outward + ' ' + inward;
+  // const tt = outward + ' ' + inward
   return outward + ' ' + inward
 }
 
 /* function randomItem(arr, name = 'array') {
   if (!Array.isArray(arr)) {
     throw new Error(`${name}is not an array`)
-  } 
+  }
 
   if (arr.length === 0) {
     throw new Error(`${name}is empty`)
@@ -1071,6 +1256,10 @@ function generateValidationTestData(field, length) {
 
       case 'businessemailaddress':
         value += generateRandomEmail() + ''
+        break
+
+      case 'vatnumber':
+        value += generateVatNumber(length) + ''
         break
     }
   }
