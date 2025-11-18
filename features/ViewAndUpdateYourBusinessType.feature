@@ -231,3 +231,20 @@ Feature: View And Update Your BusinessType Page Test scenarios
     And I update Personal phone number
     Then Verfiy updated phone details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "PersonalPhoneNumbers" on the page ViewAndUpdateYourPersonalDetails page
+
+  @test18 @tt
+  Scenario: Verify  Personal Name gets updated post change on ViewAndUpdateYourPersonalDetails page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I update Personal Name
+    Then Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
+    And Verify Success Updated message is displayed for "FullName" on the page ViewAndUpdateYourPersonalDetails page
+
+  @test19 @tt
+  Scenario: Verify  Personal Name gets updated again by clicking change link on CheckYourNameIsCorrectBeforeSubmitting page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I update Personal Name and click the Change link in CheckYourNameIsCorrectBeforeSubmitting page
+    And Change the Personal Name again in WhatIsYourFullName? Page
+    Then Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
+    And Verify Success Updated message is displayed for "FullName" on the page ViewAndUpdateYourPersonalDetails page

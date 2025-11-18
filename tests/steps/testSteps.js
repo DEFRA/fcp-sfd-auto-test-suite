@@ -1,8 +1,14 @@
 // features/steps/testSteps.js
-const { Given, When, Then, setDefaultTimeout } = require('@cucumber/cucumber')
-const { expect } = require('@playwright/test')
-const { fakerEN_GB: faker } = require('@faker-js/faker')
+// const { Given, When, Then, setDefaultTimeout } = require('@cucumber/cucumber')
+// const { expect } = require('@playwright/test')
+// const { fakerEN_GB: faker } = require('@faker-js/faker')
 // const {Faker,en_GB,en} = require('@faker-js/faker');
+
+import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber'
+import { expect } from '@playwright/test'
+//  import { fakerEN_GB, faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
+//  const {Faker,en_GB,en} = require('@faker-js/faker');
 
 setDefaultTimeout(120 * 1000) // 2 minutes
 
@@ -143,12 +149,12 @@ Given(
       case 'businessdetails':
         // await this.page.goto("https://fcp-sfd-frontend.test.cdp-int.defra.cloud/business-details");
         await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
+          'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
         )
         await this.page.waitForTimeout(3000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-        await this.page.locator("//input[@id='crn']").fill('1100407200')
+        await this.page.locator("//input[@id='crn']").fill('1100381252')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
         await this.page
@@ -159,12 +165,12 @@ Given(
         break
       case 'personaldetails':
         await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
+          'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
         )
         await this.page.waitForTimeout(3000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-        await this.page.locator("//input[@id='crn']").fill('1100407200')
+        await this.page.locator("//input[@id='crn']").fill('1100381252')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
         await this.page
@@ -977,6 +983,13 @@ When(
           .click()
         break
 
+      case 'fullname':
+        await this.page.getByRole('link', { name: 'Full name' }).click()
+        break
+      case 'personaladdress':
+        await this.page.getByRole('link', { name: 'Personal address' }).click()
+        break
+
       default:
         throw new Error('unknow link type:$(linkType)')
     }
@@ -1009,12 +1022,35 @@ Then(
 Then(
   'Verify Success Updated message is displayed for {string} on the page ViewAndUpdateYourPersonalDetails page',
   async function (linkType) {
+    /* 
+  switch (linkType.toLowerCase()) {
+    case 'personalPhonenumbers':
+      const actPhoneUpdatedMsg = await this.page.locator("//p[@class='govuk-notification-banner__heading']").innerText();
+
+      expect(actPhoneUpdatedMsg).toBe("You have updated your personal phone numbers");
+      expect(actPhoneUpdatedMsg).toContain("You have updated your personal phone numbers");
+      break;
+ case 'fullname':
+      const actFullName = await this.page.locator("//p[@class='govuk-notification-banner__heading']").innerText();
+
+      expect(actFullName).toBe("You have updated your full name");
+      expect(actFullName).toContain("You have updated your full name");
+      break;
+
+       case 'personalAddress':
+      const personalAddress = await this.page.locator("//p[@class='govuk-notification-banner__heading']").innerText();
+
+      expect(personalAddress).toBe("You have updated your personal address");
+      expect(personalAddress).toContain("You have updated your personal address");
+      break;
+  } */
+
+    await this.page.waitForTimeout(2000)
     switch (linkType.toLowerCase()) {
-      case 'personalPhonenumbers': {
+      case 'personalphonenumbers': {
         const actPhoneUpdatedMsg = await this.page
           .locator("//p[@class='govuk-notification-banner__heading']")
           .innerText()
-
         expect(actPhoneUpdatedMsg).toBe(
           'You have updated your personal phone numbers'
         )
@@ -1023,23 +1059,114 @@ Then(
         )
         break
       }
-      case 'personalPhonenumbers1': {
-        const actPhoneUpdatedMsg1 = await this.page
+      case 'fullname': {
+        const actFullName = await this.page
           .locator("//p[@class='govuk-notification-banner__heading']")
           .innerText()
-
-        expect(actPhoneUpdatedMsg1).toBe(
-          'You have updated your personal phone numbers'
-        )
-        expect(actPhoneUpdatedMsg1).toContain(
-          'You have updated your personal phone numbers'
+        expect(actFullName).toBe('You have updated your full name')
+        expect(actFullName).toContain('You have updated your full name')
+        break
+      }
+      case 'personaladdress': {
+        const personalAddress = await this.page
+          .locator("//p[@class='govuk-notification-banner__heading']")
+          .innerText()
+        expect(personalAddress).toBe('You have updated your personal address')
+        expect(personalAddress).toContain(
+          'You have updated your personal address'
         )
         break
       }
+      default:
+        throw new Error('unknow link type:$(linkType)')
     }
   }
 )
 
+Given('I update Personal Name', async function () {
+  await this.page.locator('//input[@id="first"]', this.firstName).clear()
+  await this.page.locator('//input[@id="middle"]', this.middleName).clear()
+  await this.page.locator('//input[@id="last"]', this.lastName).clear()
+
+  this.firstName = faker.person.firstName()
+  this.middleName = faker.person.middleName()
+  this.lastName = faker.person.lastName()
+
+  await this.page.fill('//input[@id="first"]', this.firstName)
+  await this.page.fill('//input[@id="middle"]', this.middleName)
+  await this.page.fill('//input[@id="last"]', this.lastName)
+  await this.page.waitForTimeout(3000)
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
+
+Then(
+  'Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly',
+  async function () {
+    const actBusinessName = await this.page
+      .locator("//dt[normalize-space()='Full name']/following-sibling::dd[1]")
+      .innerText()
+    await this.page.waitForTimeout(5000)
+    /* const aa =
+      this.firstNameChanged +
+      '' +
+      this.middleNameChanged +
+      '' +
+      this.lastNameChanged
+    const bb =
+      this.firstNameChanged +
+      ' ' +
+      this.middleNameChanged +
+      ' ' +
+      this.lastNameChanged */
+    expect(actBusinessName).toBe(
+      this.firstName + ' ' + this.middleName + ' ' + this.lastName
+    )
+    expect(actBusinessName).toContain(
+      this.firstName + ' ' + this.middleName + ' ' + this.lastName
+    )
+  }
+)
+
+Given(
+  'I update Personal Name and click the Change link in CheckYourNameIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="first"]', this.firstName).clear()
+    await this.page.locator('//input[@id="middle"]', this.middleName).clear()
+    await this.page.locator('//input[@id="last"]', this.lastName).clear()
+
+    this.firstName = faker.person.firstName()
+    this.middleName = faker.person.middleName()
+    this.lastName = faker.person.lastName()
+
+    await this.page.fill('//input[@id="first"]', this.firstName)
+    await this.page.fill('//input[@id="middle"]', this.middleName)
+    await this.page.fill('//input[@id="last"]', this.lastName)
+    await this.page.waitForTimeout(3000)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.getByRole('link', { name: 'Full name' }).click()
+  }
+)
+
+Given(
+  'Change the Personal Name again in WhatIsYourFullName? Page',
+  async function () {
+    await this.page.locator('//input[@id="first"]', this.firstName).clear()
+    await this.page.locator('//input[@id="middle"]', this.middleName).clear()
+    await this.page.locator('//input[@id="last"]', this.lastName).clear()
+
+    this.firstName = faker.person.firstName()
+    this.middleName = faker.person.middleName()
+    this.lastName = faker.person.lastName()
+
+    await this.page.fill('//input[@id="first"]', this.firstName)
+    await this.page.fill('//input[@id="middle"]', this.middleName)
+    await this.page.fill('//input[@id="last"]', this.lastName)
+    await this.page.waitForTimeout(3000)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.locator("//button[normalize-space()='Submit']").click()
+  }
+)
 // Helper function
 function generateRandomPhoneNumber() {
   let phone = '0'
