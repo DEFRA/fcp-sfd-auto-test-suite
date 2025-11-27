@@ -248,3 +248,117 @@ Feature: View And Update Your BusinessType Page Test scenarios
     And Change the Personal Name again in WhatIsYourFullName? Page
     Then Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "FullName" on the page ViewAndUpdateYourPersonalDetails page
+
+     @test20 @demo
+  Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatAreYourPersonalPhoneNumbers? page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField              | TestData | ErrorMessage                                               | ValidationPage                  |
+      | PersonalPhone          |      101 | Personal telephone number must be 50 characters or less    | WhatAreYourPersonalPhoneNumbers |
+      | PersonalPhone          |        1 | Personal telephone number must be 10 characters or more    | WhatAreYourPersonalPhoneNumbers |
+      | PersonalAndMobilePhone |          | Enter at least one phone number                            | WhatAreYourPersonalPhoneNumbers |
+      | PersonalMobilePhone    |      101 | Personal mobile phone number must be 50 characters or less | WhatAreYourPersonalPhoneNumbers |
+      | PersonalMobilePhone    |        1 | Personal mobile phone number must be 10 characters or more | WhatAreYourPersonalPhoneNumbers |
+  @test21 @demo @demo
+  Scenario Outline: Verify the previously entered details are still displayed in WhatAreYourPersonalPhoneNumbers page while navigating back from CheckYourPersonalPhoneNumbersAreCorrectBeforeSubmitting page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I update Personal phone number and click the "<Link>" in the CheckYourPersonalPhoneNumbersAreCorrectBeforeSubmitting page
+    Then Verify the previously entered details are still displayed in WhatAreYourPersonalPhoneNumbers? page
+
+    Examples:
+      | Link   |
+      | change |
+      | back   |
+
+       @test22 @demo
+  Scenario Outline: Verify  postal address gets updated post change on ViewAndUpdateYourPersonalDetails page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I Update the Personal address "<AddressType>"
+  # Then Verfiy updated PersonalAddress details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
+    And Verify Success Updated message is displayed for "PersonalAddress" on the page ViewAndUpdateYourPersonalDetails page
+
+    Examples:
+      | AddressType    |
+      | Manually       |
+      | PostcodeLookup |
+
+      
+  @test23 @tt @demo
+  Scenario Outline: Verify  Personal postal address gets updated again by clicking change link on CheckYourPersonalAddressIsCorrectBeforeSubmitting page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I update Personal Address Manually and click the Change link in CheckYourPersonalAddressIsCorrectBeforeSubmitting Page
+    And Change the Personal Address Manually again in EnterYourPersonalAddress Page
+    Then Verfiy updated Personal Address Manually changed details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
+
+      @test24 @testv @demo
+  Scenario Outline: Verify relevant Error message displaying for various validation criterias on EnterYourPersonalAddress page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the EnterYourPersonalAddress page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField    | TestData | ErrorMessage                                            |
+      | AddressLine1 |      101 | Address line 1 must be 100 characters or less           |
+      | AddressLine2 |      101 | Address line 2 must be 100 characters or less           |
+      | County       |      101 | County must be 60 characters or less                    |
+      | Country      |       61 | Country must be 60 characters or less                   |
+      | Town         |      101 | Town or city must be 60 characters or less              |
+      | AddressLine1 |        0 | Enter address line 1, typically the building and street |
+      | Country      |        0 | Enter a country                                         |
+      | Town         |        0 | Enter town or city                                      |
+
+      
+  @test25 @testv @demo
+  Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatIsYourPersonalAddress page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I enter the test data on with value as "<TestData>" on the WhatIsYourPersonalAddress page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TestData  | ErrorMessage                             |
+      |           | Enter a postcode                         |
+      | BS1   5AH | Postal code must be 8 characters or less |
+
+      @test26 @testdob @demo
+  Scenario: Verify  Personal Date of birth gets updated post change on ViewAndUpdateYourPersonalDetails page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalDOB" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I update the dob
+    And Verify Success Updated message is displayed for "DOB" on the page ViewAndUpdateYourPersonalDetails page
+
+      @test27 @testdob @demo
+  Scenario Outline: Verify the previously entered details are still displayed in WhatIsYourDateOfBirth page while navigating back from CheckYourDateOfBirthIsCorrectBeforeSubmitting page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalDOB" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I update Personal DateOfBirth and click the "<Link>" in the CheckYourDateOfBirthIsCorrectBeforeSubmitting page
+    Then Verify the previously entered details are still displayed in WhatIsYourDateOfBirth? page
+
+    Examples:
+      | Link   |
+      | change |
+      | back   |
+
+      
+  @test28 @testdob @demo
+  Scenario Outline: Verify the previously entered details are still displayed in WhatIsYourDateOfBirth page while navigating back from CheckYourDateOfBirthIsCorrectBeforeSubmitting page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the WhatIsYourFullName? page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField          | TestData | ErrorMessage                                |
+      | Personalfirstname  |      101 | First name must be 100 characters or less   |
+      | personalmiddlename |      101 | Middle names must be 100 characters or less |
+      | personallastname   |      101 | Last name must be 100 characters or less    |
+      | Personalfirstname  |          | Enter first name                            |
+      | personallastname   |          | Enter last name                             |
