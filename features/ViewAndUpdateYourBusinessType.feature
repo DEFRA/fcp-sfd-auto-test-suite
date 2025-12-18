@@ -124,9 +124,9 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | TextField       | TestData | ErrorMessage                                            |
       | AddressLine1    |      101 | Address line 1 must be 100 characters or less           |
       | AddressLine2    |      101 | Address line 2 must be 100 characters or less           |
-      | BusinessCounty  |      101 | County must be 100 characters or less                   |
+      | BusinessCounty  |      101 | County must be 60 characters or less                   |
       | BusinessCountry |       61 | Country must be 60 characters or less                   |
-      | BusinessTown    |      101 | Town or city must be 100 characters or less             |
+      | BusinessTown    |      101 | Town or city must be 60 characters or less             |
       | AddressLine1    |        0 | Enter address line 1, typically the building and street |
       | BusinessCountry |        0 | Enter a country                                         |
       | BusinessTown    |        0 | Enter town or city                                      |
@@ -360,3 +360,48 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | personallastname   |      101 | Last name must be 100 characters or less    |
       | Personalfirstname  |          | Enter first name                            |
       | personallastname   |          | Enter last name                             |
+
+  @test33 @sfd544 @tta1
+  Scenario Outline: Verify  Personal Date of birth gets updated post change on WhatIsYourDateOfBirth page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "PersonalDOB" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I enter the test data with value on the field Day "<Day>" Month "<Month>" and Year "<Year>" On the WhatIsYourDateOfBirth page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField         | Day | Month | Year | ErrorMessage                                |
+      | Personalfirstname |  32 |    01 | 2001 | Date of birth must be a real date           |
+      | Personalfirstname |  02 |    13 | 2002 | Date of birth must be a real date           |
+      | Personalfirstname |  30 |    02 | 2002 | Date of birth must be a real date           |
+      | Personalfirstname |  30 | fe    | 2002 | Date of birth must be a real date           |
+      | Personalfirstname |     |       |      | Enter your date of birth                    |
+      | Personalfirstname |     |    01 | 1990 | Date of birth must include a day            |
+      | Personalfirstname |  10 |       | 1960 | Date of birth must include a month          |
+      | Personalfirstname |  15 |       | 1970 | Date of birth must include a month          |
+      | Personalfirstname |  15 |    02 |      | Date of birth must include a year           |
+      | Personalfirstname |     |       | 2000 | Date of birth must include a day and month  |
+      | Personalfirstname |     |    03 |      | Date of birth must include a day and year   |
+      | Personalfirstname |  11 |       |      | Date of birth must include a month and year |
+      | Personalfirstname |  29 |    03 | 2026 | Date of birth must be in the past           |
+      | Personalfirstname |   1 |     2 |   90 | Enter a year with 4 numbers, like 1975      |
+      | Personalfirstname |  31 |    12 |  990 | Enter a year with 4 numbers, like 1975      |
+
+  @test34 @sfd348
+  Scenario Outline: Verify  Email gets updated post change on ViewAndUpdateYourPersonalDetails page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I update Personal Email
+    Then Verfiy Updated Personal Email Address details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
+    And Verify Success Updated message is displayed for "personalemailaddress" on the page ViewAndUpdateYourPersonalDetails page
+
+  @test35 @sfd348
+  Scenario Outline: Verify the previously entered details are still displayed in WhatIsYourPersonalEmailAddress page while navigating back from CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page
+    Given I am on SignIn page and enter the credentials for "PersonalDetails"
+    When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I update Personal email address and click the "<Link>" in the CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page
+    Then Verify the previously entered details are still displayed in WhatIsYourPersonalEmailAddress? page
+
+    Examples:
+      | Link   |
+      | change |
+      | back   |

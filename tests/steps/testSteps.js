@@ -99,7 +99,9 @@ When('I update Business Address', async function () {
     this.postcode = generateRandomPostcode(); */
 
   // this.postcode = generateRandomUKPostcode();
-
+  await this.page
+    .locator("//a[normalize-space()='Enter address manually']")
+    .click()
   await this.page.locator('//input[@id="address-1"]').clear()
   // await this.page.fill('//input[@id="address-1"]', this.addressLine1);
   this.addressline1 = faker.location.streetAddress()
@@ -147,10 +149,12 @@ Given(
   async function (detailsType) {
     switch (detailsType.toLowerCase()) {
       case 'businessdetails':
-        // await this.page.goto("https://fcp-sfd-frontend.test.cdp-int.defra.cloud/business-details");
         await this.page.goto(
-          'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
+          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
         )
+        /*      await this.page.goto(
+          'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
+         ) */
         await this.page.waitForTimeout(3000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
@@ -165,7 +169,7 @@ Given(
         break
       case 'personaldetails':
         await this.page.goto(
-          'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
+          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
         )
         await this.page.waitForTimeout(3000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
@@ -399,9 +403,9 @@ Then(
         const actBusinessNameMsg = await this.page
           .locator("//p[@class='govuk-notification-banner__heading']")
           .innerText()
-        expect(actBusinessNameMsg).toBe('You have updated your business name1')
+        expect(actBusinessNameMsg).toBe('You have updated your business name')
         expect(actBusinessNameMsg).toContain(
-          'You have updated your business name1'
+          'You have updated your business name'
         )
         break
       }
@@ -498,7 +502,7 @@ Given('I sign In on the first tab', async function () {
   await this.page1.goto('https://fcp-sfd-frontend.test.cdp-int.defra.cloud/')
   await this.page1.waitForTimeout(3000)
   await this.page1.locator("//a[normalize-space()='Sign in']").click()
-  await this.page1.locator("//input[@id='crn']").fill('1100014934')
+  await this.page1.locator("//input[@id='crn']").fill('1100381252')
   await this.page1.locator("//input[@id='password']").fill('Password456')
   await this.page1.locator("//button[@id='next']").click()
   await this.page1
@@ -543,7 +547,7 @@ Then(
       .locator("//h1[@id='header']")
       .innerText()
 
-    expect(actSignOutPage).toBe('Sign in to farming front door')
+    expect(actSignOutPage).toBe('Sign in to farm and land service')
     await this.page1.waitForTimeout(3000)
   }
 )
@@ -577,6 +581,9 @@ Given(
 Given(
   'I update Business Address and click the Change link in CheckYourBusinessAddressIsCorrectBeforeSubmitting Page',
   async function () {
+    await this.page
+      .locator("//a[normalize-space()='Enter address manually']")
+      .click()
     await this.page.locator('//input[@id="address-1"]').clear()
     // await this.page.fill('//input[@id="address-1"]', this.addressLine1);
     this.addressline1 = faker.location.streetAddress()
@@ -729,6 +736,9 @@ Then(
 Given(
   'I enter the test data on the field {string} with value as {string} on the BusinessAddress page',
   async function (field, length) {
+    await this.page
+      .locator("//a[normalize-space()='Enter address manually']")
+      .click()
     await this.page.locator('//input[@id="address-1"]').clear()
 
     this.addressline1 = faker.location.streetAddress()
@@ -944,7 +954,7 @@ Then(
   async function () {
     const expTxt = await this.page.locator("//h1[@id='header']").innerText()
 
-    expect(expTxt).toBe('Sign in to farming front door')
+    expect(expTxt).toBe('Sign in to farm and land service')
   }
 )
 
@@ -1041,7 +1051,11 @@ When(
       case 'personaldob':
         await this.page.getByRole('link', { name: 'Date of birth' }).click()
         break
-
+      case 'personalemailaddress':
+        await this.page
+          .getByRole('link', { name: 'Personal email address' })
+          .click()
+        break
       default:
         throw new Error('unknow link type:$(linkType)')
     }
@@ -1135,6 +1149,15 @@ Then(
           .innerText()
         expect(dob).toBe('You have updated your date of birth')
         expect(dob).toContain('You have updated your date of birth')
+        break
+      }
+
+      case 'personalemailaddress': {
+        const dob = await this.page
+          .locator("//p[@class='govuk-notification-banner__heading']")
+          .innerText()
+        expect(dob).toBe('You have updated your personal email address')
+        expect(dob).toContain('You have updated your personal email address')
         break
       }
       default:
@@ -1660,6 +1683,97 @@ Given(
           .click()
         break
     }
+  }
+)
+
+When('I update Personal Email', async function () {
+  await this.page.locator('//input[@id="personal-email"]').clear()
+  // Generate random email
+  this.personalEmail = generateRandomEmail()
+  await this.page.fill('//input[@id="personal-email"]', this.personalEmail)
+  await this.page.waitForTimeout(3000)
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
+
+Then(
+  'Verfiy Updated Personal Email Address details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly',
+  async function () {
+    const actEmail = await this.page
+      .locator(
+        "//dt[normalize-space()='Personal email address']/following-sibling::dd[1]"
+      )
+      .innerText()
+    //  const actTxt =  await this.page.locator("#//p[@class='govuk-notification-banner__heading']").textContent();
+    //  const email = actEmail.split(':')[1].trim();
+    await this.page.waitForTimeout(5000)
+    expect(actEmail).toBe(this.personalEmail)
+    expect(actEmail).toContain(this.personalEmail)
+  }
+)
+Given(
+  'I update Personal email address and click the {string} in the CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page',
+  async function (linkType) {
+    switch (linkType.toLowerCase()) {
+      case 'change':
+        await this.page.locator('//input[@id="personal-email"]').clear()
+        // Generate random email
+        this.personalEmail = generateRandomEmail()
+        await this.page.fill(
+          '//input[@id="personal-email"]',
+          this.personalEmail
+        )
+        await this.page.waitForTimeout(3000)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+
+        await this.page.getByRole('link', { name: 'Personal email' }).click()
+
+        break
+      case 'back':
+        await this.page.locator('//input[@id="personal-email"]').clear()
+        // Generate random email
+        this.personalEmail = generateRandomEmail()
+        await this.page.fill(
+          '//input[@id="personal-email"]',
+          this.personalEmail
+        )
+        await this.page.waitForTimeout(3000)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+
+        await this.page.locator('//a[normalize-space()="Back"]').click()
+
+        break
+    }
+  }
+)
+
+Given(
+  'I enter the test data with value on the field Day {string} Month {string} and Year {string} On the WhatIsYourDateOfBirth page',
+  async function (day, month, year) {
+    await this.page.locator("//input[@id='day']").clear()
+    await this.page.fill("//input[@id='day']", day)
+
+    await this.page.locator("//input[@id='month']").clear()
+    await this.page.fill("//input[@id='month']", month)
+
+    await this.page.locator("//input[@id='year']").clear()
+    await this.page.fill("//input[@id='year']", year)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+  }
+)
+Then(
+  'Verify the previously entered details are still displayed in WhatIsYourPersonalEmailAddress? page',
+  async function () {
+    const actPersonalEmail = await this.page
+      .locator("//input[@id='personal-email']")
+      .inputValue()
+    await this.page.waitForTimeout(5000)
+    expect(actPersonalEmail).toBe(this.personalEmail)
+    expect(actPersonalEmail).toContain(this.personalEmail)
   }
 )
 // Helper function
