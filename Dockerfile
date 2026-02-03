@@ -18,6 +18,8 @@ WORKDIR /app
 
 COPY . .
 RUN npm install
+# Install Playwright browsers after npm install to ensure version compatibility
+RUN npx playwright install --with-deps
 
 ENTRYPOINT [ "./entrypoint.sh" ]
 
