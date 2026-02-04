@@ -171,17 +171,19 @@ Given(
         await this.page.goto(
           'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
         )
-        await this.page.waitForTimeout(3000)
+        await this.page.waitForTimeout(13000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
         await this.page.locator("//input[@id='crn']").fill('1100381252')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
+        await this.page.waitForTimeout(13000)
         await this.page
           .locator(
             "//a[normalize-space()='View and update your personal details']"
           )
           .click()
+        await this.page.waitForTimeout(13000)
         break
 
       default:
