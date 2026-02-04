@@ -1,7 +1,8 @@
 #!/bin/sh
 
 echo "run_id: $RUN_ID"
-npm test
+#
+npm test:allure
 
 npm run report:publish
 publish_exit_code=$?
