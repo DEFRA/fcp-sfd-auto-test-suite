@@ -183,7 +183,7 @@ Given(
             "//a[normalize-space()='View and update your personal details']"
           )
           .click()
-        await this.page.waitForTimeout(13000)
+        await this.page.waitForTimeout(16000)
         break
 
       default:
