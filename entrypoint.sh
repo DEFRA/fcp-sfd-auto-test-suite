@@ -1,9 +1,9 @@
 #!/bin/sh
 
 echo "run_id: $RUN_ID"
-npm run test:allure
+npm run test:ci
 
-#npm run report:publish
+npm run report:publish
 publish_exit_code=$?
 
 if [ $publish_exit_code -ne 0 ]; then
