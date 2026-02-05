@@ -150,22 +150,13 @@ Given(
     switch (detailsType.toLowerCase()) {
       case 'businessdetails':
         await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
+          'https://fcp-mpdp-frontend.test.cdp-int.defra.cloud/'
         )
         /*      await this.page.goto(
           'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
          ) */
         await this.page.waitForTimeout(13000)
-        await this.page.locator("//a[normalize-space()='Sign in']").click()
-        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-        await this.page.locator("//input[@id='crn']").fill('1100381252')
-        await this.page.locator("//input[@id='password']").fill('Password456')
-        await this.page.locator("//button[@id='next']").click()
-        await this.page
-          .locator(
-            "//a[normalize-space()='View and update your business details']"
-          )
-          .click()
+        await this.page.locator("//a[@id='start-button']").click()
         break
       case 'personaldetails':
         await this.page.goto(
