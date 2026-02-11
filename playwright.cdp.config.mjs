@@ -1,7 +1,7 @@
 const { defineConfig } = require ('@playwright/test');
 const { ProxyAgent, setGlobalDispatcher }= require ('undici');
 const { bootstrap }= require ('global-agent');
-const baseConfig= require ('./playwright.config.cjs');
+const baseConfig= require ('./playwright.config.mjs');
 
 // ---- HARDCODED PROXY ----
 const dispatcher = new ProxyAgent({
