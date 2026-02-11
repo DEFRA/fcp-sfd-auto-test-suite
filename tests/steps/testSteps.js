@@ -64,7 +64,7 @@ When('I update phone2', async function () {
 
 When('I update phone number', async function () {
   // await this.page.getByRole('link', { name: 'Change business phone' }).click();
-  await this.page.locator('[id="businessTelephone"]').clear()
+  await this.page.locator('[id="businessTelephone12"]').clear()
   // Generate random phone number
   this.phonenumber = generateRandomPhoneNumber()
   await this.page.fill('#businessTelephone', this.phonenumber)
