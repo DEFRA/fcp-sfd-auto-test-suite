@@ -1,7 +1,7 @@
-import { defineConfig } from '@playwright/test';
-import { ProxyAgent, setGlobalDispatcher } from 'undici';
-import { bootstrap } from 'global-agent';
-import baseConfig from './playwright.config.js';
+const { defineConfig } = require ('@playwright/test');
+const { ProxyAgent, setGlobalDispatcher }= require ('undici');
+const { bootstrap }= require ('global-agent');
+const baseConfig= require ('./playwright.config.js');
 
 // ---- HARDCODED PROXY ----
 const dispatcher = new ProxyAgent({
@@ -12,7 +12,7 @@ bootstrap();
 global.GLOBAL_AGENT.HTTP_PROXY = 'http://localhost:3128';
 
 // ---- CONFIG EXPORT ----
-export default defineConfig({
+module.exports= defineConfig({
   ...baseConfig,
   // No need to set baseURL here since your step definitions use full URLs
 });
