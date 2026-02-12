@@ -22,10 +22,10 @@ Before(async function () {
   // Launch browser before each scenario
   // console.log('i am inside hooks')
   this.browser = await chromium.launch({
-    headless: true,
-    proxy: {
+    headless: true
+    /*     proxy: {
       server: 'http://localhost:3128'
-    }
+    } */
   })
 
   this.context = await this.browser.newContext()
