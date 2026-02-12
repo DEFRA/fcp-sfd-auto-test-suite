@@ -218,8 +218,11 @@ When(
     await this.page.waitForTimeout(2000)
     switch (linkType.toLowerCase()) {
       case 'businessphonenumbers':
-        await this.page
+        /* await this.page
           .getByRole('link', { name: 'Business phone numbers' })
+          .click() */
+        await this.page
+          .locator("//a[@href='/business-phone-numbers-change']")
           .click()
         break
       case 'businesstype':
@@ -376,7 +379,7 @@ Then(
     switch (updatedMsgType.toLowerCase()) {
       case 'businessphonenumbers': {
         const actPhoneUpdatedMsg = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
 
         expect(actPhoneUpdatedMsg).toBe(
@@ -389,7 +392,7 @@ Then(
       }
       case 'businessemailaddress': {
         const actEmailUpdatedMsg = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(actEmailUpdatedMsg).toBe(
           'You have updated your business email address'
@@ -402,7 +405,7 @@ Then(
       case 'businessaddress': {
         // const actTxt = await this.page.locator("//p[@class='govuk-notification-banner__heading']").textContent();
         const actAddressUpdatedMsg = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
 
         expect(actAddressUpdatedMsg).toBe(
@@ -415,7 +418,7 @@ Then(
       }
       case 'businessname': {
         const actBusinessNameMsg = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(actBusinessNameMsg).toBe('You have updated your business name')
         expect(actBusinessNameMsg).toContain(
@@ -425,7 +428,7 @@ Then(
       }
       case 'vatnumber': {
         const actVatNumberMsg = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(actVatNumberMsg).toBe(
           'You have updated your VAT registration number'
@@ -437,7 +440,7 @@ Then(
       }
       case 'yes': {
         const actvatnumberRemovedMsg = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(actvatnumberRemovedMsg).toBe(
           'You have removed your VAT registration number'
@@ -449,7 +452,7 @@ Then(
       }
       case 'no': {
         const actNoUpdatedMsgForvatnumber = await this.page.locator(
-          "//p[@class='govuk-notification-banner__heading']"
+          "//div[@class='govuk-notification-banner__content']"
         )
         expect(actNoUpdatedMsgForvatnumber).not.toBeVisible()
         expect(await actNoUpdatedMsgForvatnumber.isVisible()).toBe(false)
