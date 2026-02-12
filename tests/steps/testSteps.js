@@ -145,28 +145,28 @@ Then('I need to check phone number', async function () {
 })
 
 Given(
-   'I am on SignIn page and enter the credentials for {string}',
+  'I am on SignIn page and enter the credentials for {string}',
   async function (detailsType) {
-    console.log('I am inside GIVEN BLOCK')
+    //  console.log('I AM INSIDE GIVEN BLOCK')
     switch (detailsType.toLowerCase()) {
       case 'businessdetails':
-      /*   await this.page.goto(
+        /*   await this.page.goto(
           'https://fcp-mpdp-frontend.test.cdp-int.defra.cloud/'
-        ) */ 
- /*               await this.page.goto(
+        ) */
+        /*               await this.page.goto(
           'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
         ) */
-              await this.page.goto(
+        await this.page.goto(
           'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
-         ) 
+        )
         await this.page.waitForTimeout(3000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-      //  await this.page.locator("//input[@id='crn']").fill('1100381252')
-         await this.page.locator("//input[@id='crn']").fill('3010000031')
+        //  await this.page.locator("//input[@id='crn']").fill('1100381252')
+        await this.page.locator("//input[@id='crn']").fill('3010000031')
         await this.page.locator("//input[@id='password']").fill('Password456')
-      //  await this.page.locator("//button[@id='next']").click()
-         await this.page.locator("//button[@id='submit']").click()
+        //  await this.page.locator("//button[@id='next']").click()
+        await this.page.locator("//button[@id='submit']").click()
         await this.page
           .locator(
             "//a[normalize-space()='View and update your business details']"
@@ -174,21 +174,21 @@ Given(
           .click()
         break
       case 'personaldetails':
-       /*  await this.page.goto(
+        /*  await this.page.goto(
           'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
         ) */
 
-                   await this.page.goto(
+        await this.page.goto(
           'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
-         )
+        )
         await this.page.waitForTimeout(13000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-      //  await this.page.locator("//input[@id='crn']").fill('1100381252')
-           await this.page.locator("//input[@id='crn']").fill('3010000031')
+        //  await this.page.locator("//input[@id='crn']").fill('1100381252')
+        await this.page.locator("//input[@id='crn']").fill('3010000031')
         await this.page.locator("//input[@id='password']").fill('Password456')
-       // await this.page.locator("//button[@id='next']").click()
-         await this.page.locator("//button[@id='submit']").click()
+        // await this.page.locator("//button[@id='next']").click()
+        await this.page.locator("//button[@id='submit']").click()
         await this.page.waitForTimeout(13000)
         await this.page
           .locator(
