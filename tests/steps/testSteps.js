@@ -147,7 +147,7 @@ Then('I need to check phone number', async function () {
 Given(
    'I am on SignIn page and enter the credentials for {string}',
   async function (detailsType) {
-    console.log('I am inside GIVEN')
+    console.log('I am inside GIVEN BLOCK')
     switch (detailsType.toLowerCase()) {
       case 'businessdetails':
       /*   await this.page.goto(
