@@ -64,7 +64,7 @@ When('I update phone2', async function () {
 
 When('I update phone number', async function () {
   // await this.page.getByRole('link', { name: 'Change business phone' }).click();
-  await this.page.locator('[id="businessTelephone121"]').clear()
+  await this.page.locator('[id="businessTelephone"]').clear()
   // Generate random phone number
   this.phonenumber = generateRandomPhoneNumber()
   await this.page.fill('#businessTelephone', this.phonenumber)
@@ -147,26 +147,25 @@ Then('I need to check phone number', async function () {
 Given(
   'I am on SignIn page and enter the credentials for {string}',
   async function (detailsType) {
-    //  console.log('I AM INSIDE GIVEN BLOCK')
     switch (detailsType.toLowerCase()) {
       case 'businessdetails':
         /*   await this.page.goto(
-          'https://fcp-mpdp-frontend.test.cdp-int.defra.cloud/'
-        ) */
-        /*               await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
-        ) */
+            'https://fcp-mpdp-frontend.test.cdp-int.defra.cloud/'
+          ) */
         await this.page.goto(
-          'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
+          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
         )
+        /*             await this.page.goto(
+                'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
+               )  */
         await this.page.waitForTimeout(3000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-        //  await this.page.locator("//input[@id='crn']").fill('1100381252')
-        await this.page.locator("//input[@id='crn']").fill('3010000031')
+        await this.page.locator("//input[@id='crn']").fill('1100381252')
+        //   await this.page.locator("//input[@id='crn']").fill('3010000031')
         await this.page.locator("//input[@id='password']").fill('Password456')
-        //  await this.page.locator("//button[@id='next']").click()
-        await this.page.locator("//button[@id='submit']").click()
+        await this.page.locator("//button[@id='next']").click()
+        //    await this.page.locator("//button[@id='submit']").click()
         await this.page
           .locator(
             "//a[normalize-space()='View and update your business details']"
@@ -174,21 +173,21 @@ Given(
           .click()
         break
       case 'personaldetails':
-        /*  await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
-        ) */
-
         await this.page.goto(
-          'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
+          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
         )
+
+        /*                 await this.page.goto(
+               'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
+              ) */
         await this.page.waitForTimeout(13000)
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-        //  await this.page.locator("//input[@id='crn']").fill('1100381252')
-        await this.page.locator("//input[@id='crn']").fill('3010000031')
+        await this.page.locator("//input[@id='crn']").fill('1100381252')
+        //    await this.page.locator("//input[@id='crn']").fill('3010000031')
         await this.page.locator("//input[@id='password']").fill('Password456')
-        // await this.page.locator("//button[@id='next']").click()
-        await this.page.locator("//button[@id='submit']").click()
+        await this.page.locator("//button[@id='next']").click()
+        //  await this.page.locator("//button[@id='submit']").click()
         await this.page.waitForTimeout(13000)
         await this.page
           .locator(
@@ -303,11 +302,14 @@ Then(
 Then(
   'Verfiy updated phone details on the ViewAndUpdateYourBusinessType page are been displayed correctly',
   async function () {
-    const actPhNum = await this.page.getByText('Telephone').textContent()
-    const actual = actPhNum.split(':')[1].trim()
+    const actPhNum = await this.page
+      .locator(
+        '//dt[normalize-space()="Business phone numbers"]/following-sibling::dd[1]/div[1]/span'
+      )
+      .textContent()
     await this.page.waitForTimeout(5000)
-    expect(actual).toBe(this.phonenumber)
-    expect(actual).toContain(this.phonenumber)
+    expect(actPhNum).toBe(this.phonenumber)
+    expect(actPhNum).toContain(this.phonenumber)
   }
 )
 
@@ -483,7 +485,8 @@ When('I click signOut link on the {string} page', async function (signOutPage) {
       break
     case 'whatareyourbusinessphonemembers':
       await this.page
-        .getByRole('link', { name: 'Business phone numbers' })
+        .getByRole('link', { name: 'Change Business telephone numbers' })
+
         .click()
       await this.page.locator("//a[normalize-space()='Sign out']").click()
 
@@ -700,11 +703,14 @@ Given(
 Then(
   'Verfiy Updated Business PhoneNumber details on the ViewAndUpdateYourBusinessType page are been displayed correctly',
   async function () {
-    const actPhNum = await this.page.getByText('Telephone').textContent()
-    const actual = actPhNum.split(':')[1].trim()
+    const actPhNum = await this.page
+      .locator(
+        '//dt[normalize-space()="Business phone numbers"]/following-sibling::dd[1]/div[1]/span'
+      )
+      .textContent()
     await this.page.waitForTimeout(5000)
-    expect(actual).toBe(this.phonenumber)
-    expect(actual).toContain(this.phonenumber)
+    expect(actPhNum).toBe(this.phonenumber)
+    expect(actPhNum).toContain(this.phonenumber)
   }
 )
 
@@ -954,6 +960,17 @@ Given(
           .click()
         // await this.page.locator(' //button[normalize-space()="Submit"]').click();
         break
+      case 'personalemailaddress':
+        await this.page.locator('//input[@id="personal-email"]').clear()
+
+        // Generate random email
+        this.email = generateDiffLengthRandomEmail(length)
+        await this.page.locator('//input[@id="personal-email"]', this.email)
+        await this.page.waitForTimeout(3000)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
     }
   }
 )
@@ -1132,7 +1149,7 @@ Then(
     switch (linkType.toLowerCase()) {
       case 'personalphonenumbers': {
         const actPhoneUpdatedMsg = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(actPhoneUpdatedMsg).toBe(
           'You have updated your personal phone numbers'
@@ -1144,7 +1161,7 @@ Then(
       }
       case 'fullname': {
         const actFullName = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(actFullName).toBe('You have updated your full name')
         expect(actFullName).toContain('You have updated your full name')
@@ -1152,7 +1169,7 @@ Then(
       }
       case 'personaladdress': {
         const personalAddress = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(personalAddress).toBe('You have updated your personal address')
         expect(personalAddress).toContain(
@@ -1162,7 +1179,7 @@ Then(
       }
       case 'dob': {
         const dob = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(dob).toBe('You have updated your date of birth')
         expect(dob).toContain('You have updated your date of birth')
@@ -1171,7 +1188,7 @@ Then(
 
       case 'personalemailaddress': {
         const dob = await this.page
-          .locator("//p[@class='govuk-notification-banner__heading']")
+          .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
         expect(dob).toBe('You have updated your personal email address')
         expect(dob).toContain('You have updated your personal email address')
@@ -1319,17 +1336,17 @@ When('I Update the Personal address {string}', async function (addressType) {
       await this.page
         .locator("//a[normalize-space()='Enter address manually']")
         .click()
-      await this.page.locator('//input[@id="address-1"]').clear()
+
+      await this.page.locator('//input[@id="address1"]').clear()
 
       this.addressline1 = faker.location.streetAddress()
-      await this.page.fill('//input[@id="address-1"]', this.addressline1)
+      await this.page.fill('//input[@id="address1"]', this.addressline1)
 
-      await this.page.locator('//input[@id="address-2"]').clear()
+      await this.page.locator('//input[@id="address2"]').clear()
 
       this.addressline2 = faker.location.secondaryAddress()
-      await this.page.fill('//input[@id="address-2"]', this.addressline2)
-
-      await this.page.locator('//input[@id="address-3"]').clear()
+      await this.page.fill('//input[@id="address2"]', this.addressline2)
+      await this.page.locator('//input[@id="address3"]').clear()
 
       await this.page.locator("//input[@id='city']").clear()
       this.city = faker.location.city()
@@ -1399,17 +1416,20 @@ Given(
     await this.page
       .locator("//a[normalize-space()='Enter address manually']")
       .click()
-    await this.page.locator('//input[@id="address-1"]').clear()
+
+    await this.page.locator('//input[@id="address1"]').clear()
 
     this.addressline1 = faker.location.streetAddress()
-    await this.page.fill('//input[@id="address-1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address-2"]').clear()
+    await this.page.fill('//input[@id="address1"]', this.addressline1)
+
+    await this.page.locator('//input[@id="address2"]').clear()
 
     this.addressline2 = faker.location.secondaryAddress()
-    await this.page.fill('//input[@id="address-2"]', this.addressline2)
 
-    await this.page.locator('//input[@id="address-3"]').clear()
+    await this.page.fill('//input[@id="address2"]', this.addressline2)
+
+    await this.page.locator('//input[@id="address3"]').clear()
 
     await this.page.locator("//input[@id='city']").clear()
     this.city = faker.location.city()
@@ -1431,17 +1451,19 @@ Given(
 Given(
   'Change the Personal Address Manually again in EnterYourPersonalAddress Page',
   async function () {
-    await this.page.locator('//input[@id="address-1"]').clear()
+    await this.page.locator('//input[@id="address1"]').clear()
 
     this.addressline1 = faker.location.streetAddress()
-    await this.page.fill('//input[@id="address-1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address-2"]').clear()
+    await this.page.fill('//input[@id="address1"]', this.addressline1)
+
+    await this.page.locator('//input[@id="address2"]').clear()
 
     this.addressline2 = faker.location.secondaryAddress()
-    await this.page.fill('//input[@id="address-2"]', this.addressline2)
 
-    await this.page.locator('//input[@id="address-3"]').clear()
+    await this.page.fill('//input[@id="address2"]', this.addressline2)
+
+    await this.page.locator('//input[@id="address3"]').clear()
 
     await this.page.locator("//input[@id='city']").clear()
     this.city = faker.location.city()
@@ -1496,17 +1518,17 @@ Given(
     await this.page
       .locator("//a[normalize-space()='Enter address manually']")
       .click()
-    await this.page.locator('//input[@id="address-1"]').clear()
+    await this.page.locator('//input[@id="address1"]').clear()
 
     this.addressline1 = faker.location.streetAddress()
-    await this.page.fill('//input[@id="address-1"]', this.addressline1)
+    await this.page.fill('//input[@id="address1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address-2"]').clear()
+    await this.page.locator('//input[@id="address2"]').clear()
 
     this.addressline2 = faker.location.secondaryAddress()
-    await this.page.fill('//input[@id="address-2"]', this.addressline2)
+    await this.page.fill('//input[@id="address2"]', this.addressline2)
 
-    await this.page.locator('//input[@id="address-3"]').clear()
+    await this.page.locator('//input[@id="address3"]').clear()
 
     await this.page.locator("//input[@id='city']").clear()
     this.city = faker.location.city()
@@ -1525,8 +1547,10 @@ Given(
     switch (field.toLowerCase()) {
       case 'addressline1':
         // console.log(this.generateValue);
-        await this.page.locator('//input[@id="address-1"]').clear()
-        await this.page.fill('//input[@id="address-1"]', this.generateValue)
+
+        await this.page.locator('//input[@id="address1"]').clear()
+        await this.page.fill('//input[@id="address1"]', this.generateValue)
+        await this.page.locator('//input[@id="address1"]').clear()
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
@@ -1534,8 +1558,8 @@ Given(
         break
 
       case 'addressline2':
-        await this.page.locator('//input[@id="address-2"]').clear()
-        await this.page.fill('//input[@id="address-2"]', this.generateValue)
+        await this.page.locator('//input[@id="address2"]').clear()
+        await this.page.fill('//input[@id="address2"]', this.generateValue)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
@@ -1793,6 +1817,284 @@ Then(
     expect(actPersonalEmail).toContain(this.personalEmail)
   }
 )
+
+Given(
+  'I am on SignIn page and enter the credentials for {string} with {string}',
+  async function (businessdetails, permission) {
+    businessdetails = businessdetails?.toLowerCase()
+    permission = permission?.toLowerCase()
+    switch (true) {
+      case businessdetails === 'businessdetails' &&
+        permission === 'amendpermission':
+        await this.page.goto(
+          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
+        )
+        // await this.page.goto("https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/");
+        await this.page.waitForTimeout(3000)
+        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
+        //  await this.page.locator("//input[@id='crn']").fill("1100381252");
+        await this.page.locator("//input[@id='crn']").fill('1100774679')
+        await this.page.locator("//input[@id='password']").fill('Password456')
+        await this.page.locator("//button[@id='next']").click()
+        await this.page
+          .locator(
+            '//label[normalize-space()="Joseph Heap Property Limited - SBI 107176577"]'
+          )
+          .click()
+        await this.page.locator("//button[@id='continueReplacement']").click()
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your business details']"
+          )
+          .click()
+        await this.page.waitForTimeout(3000)
+        break
+
+      case businessdetails === 'businessdetails' &&
+        permission === 'viewpermission':
+        await this.page.goto(
+          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
+        )
+        // await this.page.goto("https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/");
+        await this.page.waitForTimeout(3000)
+        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
+        //  await this.page.locator("//input[@id='crn']").fill("1100381252");
+        await this.page.locator("//input[@id='crn']").fill('1101145676')
+        await this.page.locator("//input[@id='password']").fill('Password456')
+        await this.page.locator("//button[@id='next']").click()
+        // await this.page.locator('label:has-text("Mr & Mrs A Perryman - SBI 113912887")').click();
+        // await this.page.locator("//button[@id='continueReplacement']").click();
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your business details']"
+          )
+          .click()
+        await this.page.waitForTimeout(3000)
+        break
+
+      case 'personaldetails':
+        break
+      default:
+        throw new Error('unknow link type:$(detailsType)')
+    }
+  }
+)
+
+Then(
+  'The {string} change link should be {string}',
+  async function (linkType, visible) {
+    const shouldBeVisible = visible.toLowerCase() === 'yes'
+    // const aa = await this.page.getByText('Change business address').innerText();
+    switch (linkType.toLowerCase()) {
+      case 'businessaddress': {
+        const businessaddressCount = await this.page
+          .getByRole('link', { name: 'Change Business address' })
+          .count()
+        if (shouldBeVisible) {
+          expect(businessaddressCount).toBeGreaterThan(0)
+        } else {
+          expect(businessaddressCount).toBe(0)
+        }
+        break
+      }
+      case 'businessphonenumbers': {
+        //  await this.page.locator("//a[@href='/business-phone-numbers-change']").click()
+        const businessPhoneNumbersCount = await this.page
+          .getByRole('link', { name: 'Change Business telephone numbers' })
+          .count()
+        if (shouldBeVisible) {
+          expect(businessPhoneNumbersCount).toBeGreaterThan(0)
+        } else {
+          expect(businessPhoneNumbersCount).toBe(0)
+        }
+        break
+      }
+      case 'businessemailaddress': {
+        //  await this.page          .getByRole('link', { name: 'Business email address' })
+        const businessemailaddressCount = await this.page
+          .getByRole('link', { name: 'Change Business email address' })
+          .count()
+        if (shouldBeVisible) {
+          expect(businessemailaddressCount).toBeGreaterThan(0)
+        } else {
+          expect(businessemailaddressCount).toBe(0)
+        }
+        break
+      }
+
+      case 'businessname': {
+        const businessnameCount = await this.page
+          .getByRole('link', { name: 'Change business name' })
+          .count()
+        if (shouldBeVisible) {
+          expect(businessnameCount).toBeGreaterThan(0)
+        } else {
+          expect(businessnameCount).toBe(0)
+        }
+        break
+      }
+      case 'businesslegalstatus': {
+        const businesslegalstatusCount = await this.page
+          .getByRole('link', { name: 'Change business legal status' })
+          .count()
+        if (shouldBeVisible) {
+          expect(businesslegalstatusCount).toBeGreaterThan(0)
+        } else {
+          expect(businesslegalstatusCount).toBe(0)
+        }
+        break
+      }
+      case 'businesstype': {
+        const businesstypeCount = await this.page
+          .getByRole('link', { name: 'Change business type' })
+          .count()
+        if (shouldBeVisible) {
+          expect(businesstypeCount).toBeGreaterThan(0)
+        } else {
+          expect(businesstypeCount).toBe(0)
+        }
+        break
+      }
+
+      case 'vatnumber': {
+        const vatnumberCount = await this.page
+          .getByRole('link', { name: 'Change VAT registration number' })
+          .count()
+        if (shouldBeVisible) {
+          expect(vatnumberCount).toBeGreaterThan(0)
+        } else {
+          expect(vatnumberCount).toBe(0)
+        }
+        break
+      }
+      /*    default:
+        throw new Error('unknow element: ${element}') */
+      default:
+        throw new Error('unknow link type:$(linkType)')
+    }
+  }
+)
+
+Then(
+  'Verify relevant Permission message type for {string} is displayed on the page ViewAndUpdateYourBusinessType',
+  async function (linkType) {
+    switch (linkType.toLowerCase()) {
+      case 'amendpermission': {
+        const actMsg = await this.page
+          .locator("//p[@class='govuk-body']")
+          .innerText()
+
+        expect(actMsg).toBe(
+          'You only have permission to update contact details for this business. You can ask the business to raise your permission level.'
+        )
+        expect(actMsg).toContain(
+          'You only have permission to update contact details for this business. You can ask the business to raise your permission level.'
+        )
+
+        break
+      }
+      case 'viewpermission': {
+        const actMsg = await this.page
+          .locator("//p[@class='govuk-body']")
+          .innerText()
+
+        expect(actMsg).toBe(
+          'You do not have permission to update details for this business. You can ask the business to raise your permission level.'
+        )
+        expect(actMsg).toContain(
+          'You do not have permission to update details for this business. You can ask the business to raise your permission level.'
+        )
+        break
+      }
+
+      default:
+        throw new Error('unknow link type:$(detailsType)')
+    }
+  }
+)
+
+/* Then('Verify relevant Permission message type for {string} is displayed on the page ViewAndUpdateYourBusinessType', async function (linkType) {
+
+  switch (linkType.toLowerCase()) {
+
+    case 'amendpermission':
+      {
+        break;
+      }
+    case 'viewpermission':
+      {
+        const actMsg = await this.page.locator("//p[@class='govuk-body']").innerText();
+
+        expect(actMsg).toBe("You do not have permission to update details for this business. You can ask the business to raise your permission level.");
+        expect(actMsg).toContain("You do not have permission to update details for this business. You can ask the business to raise your permission level.");
+        break;
+      }
+
+    default:
+      throw new Error('unknow link type:$(detailsType)')
+  }
+
+}); */
+
+Given(
+  'I enter the test data on the Emailformat as {string} on the {string} page',
+  async function (emailFormat, string2) {
+    await this.page.locator('//input[@id="personal-email"]').clear()
+    await this.page.fill('//input[@id="personal-email"]', emailFormat)
+    await this.page.locator('//button[normalize-space()="Continue"]').click()
+  }
+)
+
+Given(
+  'Verify relevant Header for {string} is displayed on the ViewAndUpdateYourBusinessType Page',
+  async function (linkType) {
+    switch (linkType.toLowerCase()) {
+      case 'amendpermission': {
+        break
+      }
+      case 'viewpermission': {
+        const actMsg = await this.page
+          .locator("//*[@id='main-content']//h1")
+          .innerText()
+
+        expect(actMsg).toBe('View business details')
+        expect(actMsg).toContain('View business details')
+        break
+      }
+
+      default:
+        throw new Error('unknow link type:$(detailsType)')
+    }
+  }
+)
+
+Then('Navigate to {string}', async function (baseurl) {
+  await this.page.goto(
+    'https://fcp-sfd-frontend.test.cdp-int.defra.cloud' + baseurl
+  )
+})
+
+/* Then('Navigate to {string}', async function (baseurl) {
+  console.log(baseurl)
+  console.log("https://fcp-sfd-frontend.test.cdp-int.defra.cloud" + baseurl)
+  await this.page.goto("https://fcp-sfd-frontend.test.cdp-int.defra.cloud" + baseurl);
+}); */
+
+Then(
+  'Application should display with Message as {string}',
+  async function (expMsg) {
+    // const actMsg = await this.page.locator("//h1[normalize-space()='You do not have permission to access this page']").innerText();
+    //  const actMsg = await this.page.getByRole('heading').innerText();
+    const actMsg = await this.page
+      .locator('//*[@id="main-content"]//h1')
+      .innerText()
+    await this.page.waitForTimeout(3000)
+    expect(actMsg).toBe(expMsg)
+  }
+)
+
 // Helper function
 function generateRandomPhoneNumber() {
   let phone = '0'
