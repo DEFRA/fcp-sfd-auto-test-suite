@@ -14,6 +14,8 @@
     "components": "test/components"
   },
   "scripts": {
+    "test:tag": "cucumber-js --format progress --tags \"%TAG%\"",
+    "test:tag:allure": "cucumber-js --format progress --format allure-cucumberjs/reporter --tags \"%TAG%\" && npx allure generate allure-results --clean -o allure-report && npx allure open allure-report",
     "clean": "rm -rf allure-results && rm -rf allure-report",
     "test_bk": "npm run clean && wdio run wdio.conf.js",
     "test:browserstack": "npm run clean && wdio run wdio.browserstack.conf.js",
