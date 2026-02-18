@@ -16,7 +16,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     Then Verfiy Updated email details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessEmailAddress" on the page ViewAndUpdateYourBusinessType
 
-  @test3 @sfd174  @a7
+  @test3 @sfd174
   Scenario: Verify  postal address gets updated post change on ViewAndUpdateYourBusinessType page
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click the "BusinessAddress" link on the BusinessDetails page
@@ -32,7 +32,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     Then Verfiy Updated Business Name details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessName" on the page ViewAndUpdateYourBusinessType
 
-  @test5 @sfd176 
+  @test5 @sfd176
   Scenario Outline: Verify  Application is landing on the appropriate signout page after clicking signout link from any page
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click signOut link on the "<SignOutPage>" page
@@ -56,7 +56,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     And I click on the link on the second tab
     Then I should be redirected to the signIn page from the second tab
 
-  @test7 @sfd179 
+  @test7 @sfd179
   Scenario Outline: Verify all relevant details shown whilist cliking the BusinessLegalStatus and BusinessType Link
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click the "<ExpectedLink>" link on the BusinessDetails page
@@ -67,7 +67,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | BusinessType        | ChangeYourBusinessType |
       | BusinessLegalStatus | ChangeYourLegalStatus  |
 
-  @test8 @sfd287  @reRun
+  @test8 @sfd287
   Scenario: Verify  PhoneNumber gets updated post changes on ViewAndUpdateYourBusinessType page
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
@@ -95,7 +95,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     Then Verfiy Updated Business Address details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessAddress" on the page ViewAndUpdateYourBusinessType
 
-  @test11 @sfd287  
+  @test11 @sfd287
   Scenario: Verify  PhoneNumber address gets updated again by clicking change link on CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting page
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
@@ -124,14 +124,14 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | TextField       | TestData | ErrorMessage                                            |
       | AddressLine1    |      101 | Address line 1 must be 100 characters or less           |
       | AddressLine2    |      101 | Address line 2 must be 100 characters or less           |
-      | BusinessCounty  |      101 | County must be 60 characters or less                   |
+      | BusinessCounty  |      101 | County must be 60 characters or less                    |
       | BusinessCountry |       61 | Country must be 60 characters or less                   |
-      | BusinessTown    |      101 | Town or city must be 60 characters or less             |
+      | BusinessTown    |      101 | Town or city must be 60 characters or less              |
       | AddressLine1    |        0 | Enter address line 1, typically the building and street |
       | BusinessCountry |        0 | Enter a country                                         |
       | BusinessTown    |        0 | Enter town or city                                      |
 
-  @test14 @sfd286  
+  @test14 @sfd286
   Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatIsYourBusinessName page
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click the "BusinessName" link on the BusinessDetails page
@@ -143,7 +143,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | BusinessName |      301 | Business name must be 160 characters or less | WhatIsYourBusinessName |
       | BusinessName |        0 | Enter business name                          | WhatIsYourBusinessName |
 
-  @test15 @sfd288  
+  @test15 @sfd288
   Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatAreYourBusinessPhoneNumbers? page
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
@@ -151,10 +151,10 @@ Feature: View And Update Your BusinessType Page Test scenarios
     Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
 
     Examples:
-      | TextField              | TestData | ErrorMessage                                             | ValidationPage                  |
+      | TextField              | TestData | ErrorMessage                                            | ValidationPage                  |
       | BusinessPhone          |      101 | Business telephone number must be 50 characters or less | WhatAreYourBusinessPhoneNumbers |
-      | BusinessPhone          |        1 | Business telephone number must be 10 characters or more  | WhatAreYourBusinessPhoneNumbers |
-      | BusinessAndMobilePhone |          | Enter at least one phone number                          | WhatAreYourBusinessPhoneNumbers |
+      | BusinessPhone          |        1 | Business telephone number must be 10 characters or more | WhatAreYourBusinessPhoneNumbers |
+      | BusinessAndMobilePhone |          | Enter at least one phone number                         | WhatAreYourBusinessPhoneNumbers |
 
   @test16 @sfd288
   Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatIsYourBusinessEmailAddress? page
@@ -168,7 +168,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | BusinessEmailAddress |      255 | Business email address must be 254 characters or less | WhatIsYourBusinessEmailAddress |
       | BusinessEmailAddress |          | Enter business email address                          | WhatIsYourBusinessEmailAddress |
 
-  @test17 @sfd324 
+  @test17 @sfd324
   Scenario Outline: Verify  Application is navigating to SignInToFarmingFrontDoor page post clicking SignIn link in LandAndFarmService page
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click signOut link on the "<SignOutPage>" page
@@ -224,7 +224,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | Change | VATnumber |          | Enter a VAT registration number                 | WhatIsYourVATRegistrationNumber |
       | Change | VATnumber |       10 | Enter a VAT registration number, like 123456789 | WhatIsYourVATRegistrationNumber |
 
-  @test21 @sfd351  
+  @test21 @sfd351
   Scenario: Verify  Personal PhoneNumber gets updated post changes on ViewAndUpdateYourPersonalDetails page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -232,7 +232,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     Then Verfiy updated phone details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "PersonalPhoneNumbers" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test22 @sfd347 
+  @test22 @sfd347
   Scenario: Verify  Personal Name gets updated post change on ViewAndUpdateYourPersonalDetails page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -240,7 +240,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     Then Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "FullName" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test23 @sfd347  
+  @test23 @sfd347
   Scenario: Verify  Personal Name gets updated again by clicking change link on CheckYourNameIsCorrectBeforeSubmitting page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -276,7 +276,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | change |
       | back   |
 
-  @test26 @sfd349  
+  @test26 @sfd349
   Scenario Outline: Verify  postal address gets updated post change on ViewAndUpdateYourPersonalDetails page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -289,7 +289,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | Manually       |
       | PostcodeLookup |
 
-  @test27 @sfd349 @ttt7
+  @test27 @sfd349
   Scenario Outline: Verify  Personal postal address gets updated again by clicking change link on CheckYourPersonalAddressIsCorrectBeforeSubmitting page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -297,7 +297,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     And Change the Personal Address Manually again in EnterYourPersonalAddress Page
     Then Verfiy updated Personal Address Manually changed details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
 
-  @test28 @sfd457  @reRun
+  @test28 @sfd457 
   Scenario Outline: Verify relevant Error message displaying for various validation criterias on EnterYourPersonalAddress page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -306,7 +306,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
 
     Examples:
       | TextField    | TestData | ErrorMessage                                            |
-      | AddressLine1 |      101 | Enter address line 1, typically the building and street           |
+      | AddressLine1 |      101 | Enter address line 1, typically the building and street |
       | AddressLine2 |      101 | Address line 2 must be 100 characters or less           |
       | County       |      101 | County must be 60 characters or less                    |
       | Country      |       61 | Country must be 60 characters or less                   |
@@ -346,7 +346,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | change |
       | back   |
 
-  @test32 @sfd455 @ttt8
+  @test32 @sfd455 
   Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatIsYourFullName? page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -361,7 +361,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | Personalfirstname  |          | Enter first name                            |
       | personallastname   |          | Enter last name                             |
 
-  @test33 @sfd544 @reRun
+  @test33 @sfd544 @rerun
   Scenario Outline: Verify  Personal Date of birth gets updated post change on WhatIsYourDateOfBirth page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "PersonalDOB" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -372,7 +372,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | TextField         | Day | Month | Year | ErrorMessage                                |
       | Personalfirstname |  32 |    01 | 2001 | Date of birth must be a real date           |
       | Personalfirstname |  02 |    13 | 2002 | Date of birth must be a real date           |
-     | Personalfirstname |  30 |    02 | 2002 | Date of birth must be a real date           |
+      | Personalfirstname |  30 |    02 | 2002 | Date of birth must be a real date           |
       | Personalfirstname |  30 | fe    | 2002 | Date of birth must be a real date           |
       | Personalfirstname |     |       |      | Enter your date of birth                    |
       | Personalfirstname |     |    01 | 1990 | Date of birth must include a day            |
@@ -386,7 +386,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | Personalfirstname |   1 |     2 |   90 | Enter a year with 4 numbers, like 1975      |
       | Personalfirstname |  31 |    12 |  990 | Enter a year with 4 numbers, like 1975      |
 
-  @test34 @sfd348
+  @test34 @sfd348 
   Scenario Outline: Verify  Email gets updated post change on ViewAndUpdateYourPersonalDetails page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -394,7 +394,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     Then Verfiy Updated Personal Email Address details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "personalemailaddress" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test35 @sfd348
+  @test35 @sfd348 
   Scenario Outline: Verify the previously entered details are still displayed in WhatIsYourPersonalEmailAddress page while navigating back from CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -405,7 +405,8 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | Link   |
       | change |
       | back   |
-@sfd569  @ttt2
+
+  @test36 @sfd569
   Scenario Outline: Verify  relevant Change links are shown for AmendPermission Level type on ViewAndUpdateYourBusinessType page
     Given I am on SignIn page and enter the credentials for "BusinessDetails" with "AmendPermission"
     Then The "<Element>" change link should be "<Visible>"
@@ -418,10 +419,10 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | BusinessEmailAddress | Yes     |
       | BusinessName         | No      |
       | BusinessLegalStatus  | No      |
-    | BusinessType         | No      |
+      | BusinessType         | No      |
       | VATNumber            | No      |
 
-  @sfd456   @ttt6
+  @test37 @sfd456
   Scenario Outline: Verify relevant Error message displaying for various validation criterias on ViewAndUpdateYourPersonalDetails page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -432,7 +433,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | TextField            | TestData | ErrorMessage                   | ValidationPage                 |
       | PersonalEmailAddress |          | Enter a personal email address | WhatIsYourBusinessEmailAddress |
 
-  @sfd456   @ttt1
+  @test38 @sfd456
   Scenario Outline: Verify relevant Error message displaying for various Invalid PersonalEmail formats on ViewAndUpdateYourPersonalDetails page
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
     When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
@@ -451,8 +452,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | testemailaddress[@email.com | Enter an email address, like name@example.com | WhatIsYourPersonalEmailAddress |
       | test emailaddress@email.com | Enter an email address, like name@example.com | WhatIsYourPersonalEmailAddress |
 
-
-  @sfd572   @ttt4
+  @test39 @sfd572
   Scenario Outline: Verify for AmendPermission Level type redirecting to Unauthorised Page for relevant business journey types not having change links ViewAndUpdateYourBusinessType
     Given I am on SignIn page and enter the credentials for "BusinessDetails" with "AmendPermission"
     Then Navigate to "<URL>"
@@ -468,7 +468,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | /business-name-change                    | You do not have permission to access this page |
       | /business-name-check                     | You do not have permission to access this page |
 
-  @sfd572   @ttt5
+  @test40 @sfd572
   Scenario Outline: Verify for AmendPermission Level type redirecting to relevant Page whilist clicking Change link
     Given I am on SignIn page and enter the credentials for "BusinessDetails" with "AmendPermission"
     Then Navigate to "<URL>"
@@ -482,10 +482,10 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | /business-phone-numbers-change | What are your business phone numbers?                          |
       | /business-email-change         | What is your business email address?                           |
       | /business-email-check          | Check your business email address is correct before submitting |
-    #  | /business-address-select       | You do not have permission to access this page                 |
-    #  | /business-phone-numbers-check  | You do not have permission to access this page                 |
+    #  | /business-address-select       | Choose your business address                 |
+    #  | /business-phone-numbers-check  | Check your business phone numbers are correct before submitting                 |
 
-  @sfd571   @ttt3
+  @test41 @sfd571
   Scenario Outline: Verify  relevant Change links are shown for ViewPermission Level type on ViewAndUpdateYourBusinessType page
     Given I am on SignIn page and enter the credentials for "BusinessDetails" with "ViewPermission"
     Then The "<Element>" change link should be "<Visible>"
@@ -501,3 +501,27 @@ Feature: View And Update Your BusinessType Page Test scenarios
       | BusinessLegalStatus  | No      |
       | BusinessType         | No      |
       | VATNumber            | No      |
+
+  @test44 @sfd573
+  Scenario Outline: Verify for ViewPermission Level type redirecting to Unauthorised Page for relevant business journey types not having change links ViewAndUpdateYourBusinessType
+    Given I am on SignIn page and enter the credentials for "BusinessDetails" with "ViewPermission"
+    Then Navigate to "<URL>"
+    And Application should display with Message as "<Message>"
+
+    Examples:
+      | URL                                      | Message                                        |
+      | /business-type-change                    | You do not have permission to access this page |
+      | /business-legal-status-change            | You do not have permission to access this page |
+      | /business-vat-registration-remove        | You do not have permission to access this page |
+      | /business-vat-registration-number-check  | You do not have permission to access this page |
+      | /business-vat-registration-number-change | You do not have permission to access this page |
+      | /business-name-change                    | You do not have permission to access this page |
+      | /business-name-check                     | You do not have permission to access this page |
+      | /business-email-change                   | You do not have permission to access this page |
+      | /business-email-check                    | You do not have permission to access this page |
+      | /business-phone-numbers-change           | You do not have permission to access this page |
+      | /business-phone-numbers-check            | You do not have permission to access this page |
+      | /business-address-change                  | You do not have permission to access this page |
+      | /business-address-select                  | You do not have permission to access this page |
+      | /business-address-enter                   | You do not have permission to access this page |
+      | /business-address-check                   | You do not have permission to access this page |

@@ -1861,15 +1861,15 @@ Given(
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
         //  await this.page.locator("//input[@id='crn']").fill("1100381252");
-        await this.page.locator("//input[@id='crn']").fill('1101145676')
+        await this.page.locator("//input[@id='crn']").fill('1100806911')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
-        // await this.page.locator('label:has-text("Mr & Mrs A Perryman - SBI 113912887")').click();
-        // await this.page.locator("//button[@id='continueReplacement']").click();
         await this.page
-          .locator(
-            "//a[normalize-space()='View and update your business details']"
-          )
+          .locator("label:has-text('Chefnalls - SBI 113912887')")
+          .click()
+        await this.page.locator('#continueReplacement').click()
+        await this.page
+          .locator("//a[normalize-space()='View your Business details']")
           .click()
         await this.page.waitForTimeout(3000)
         break
