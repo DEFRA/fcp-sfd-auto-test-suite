@@ -22,7 +22,7 @@ Before(async function () {
   // Launch browser before each scenario
   // console.log('i am inside hooks')
   this.browser = await chromium.launch({
-    headless: true
+    headless: false
     // Proxy for CDP
     /*    proxy: {
       server: 'http://localhost:3128'
