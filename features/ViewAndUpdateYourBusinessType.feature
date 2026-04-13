@@ -16,7 +16,7 @@ Feature: View And Update Your BusinessType Page Test scenarios
     Then Verfiy Updated email details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessEmailAddress" on the page ViewAndUpdateYourBusinessType
 
-  @test3 @sfd174 @anwar
+  @test3 @sfd174
   Scenario: Verify  postal address gets updated post change on ViewAndUpdateYourBusinessType page
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
     When I click the "BusinessAddress" link on the BusinessDetails page

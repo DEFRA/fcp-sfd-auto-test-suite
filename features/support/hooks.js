@@ -3,7 +3,12 @@
 //   const { chromium } = require('playwright');
 //   const { allure } = require('allure-cucumberjs');
 
-import { Before, After, setWorldConstructor } from '@cucumber/cucumber'
+import {
+  Before,
+  After,
+  setWorldConstructor,
+  setDefaultTimeout
+} from '@cucumber/cucumber'
 import { chromium } from 'playwright'
 //  import { allure } from 'allure-cucumberjs';
 
@@ -16,13 +21,15 @@ class CustomWorld {
   }
 }
 
+setDefaultTimeout(60 * 1000) // 60 seconds per step
+
 setWorldConstructor(CustomWorld)
 
 Before(async function () {
   // Launch browser before each scenario
   // console.log('i am inside hooks')
   this.browser = await chromium.launch({
-    headless: false
+    headless: true
     // Proxy for CDP
     /*    proxy: {
       server: 'http://localhost:3128'

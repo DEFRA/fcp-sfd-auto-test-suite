@@ -1,31 +1,28 @@
+/* eslint-disable prettier/prettier */
 // features/steps/testSteps.js
 // const { Given, When, Then, setDefaultTimeout } = require('@cucumber/cucumber')
 // const { expect } = require('@playwright/test')
 // const { fakerEN_GB: faker } = require('@faker-js/faker')
 // const {Faker,en_GB,en} = require('@faker-js/faker');
 
-import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber'
+import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 //  import { fakerEN_GB, faker } from '@faker-js/faker'
 import { faker } from '@faker-js/faker'
 //  const {Faker,en_GB,en} = require('@faker-js/faker');
 
-setDefaultTimeout(120 * 1000) // 2 minutes
-
 Given('I am in Given test', async function () {
   await this.page.goto(
     'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/business-details'
   )
-  await this.page.waitForTimeout(3000)
+  await this.page.locator("//input[@id='crn']").waitFor({ state: 'visible' })
   await this.page.locator("//input[@id='crn']").fill('1100014934')
   await this.page.locator("//input[@id='password']").fill('Password456')
   await this.page.locator("//button[@id='next']").click()
 })
 
 When('I update phone', async function () {
-  await this.page.waitForTimeout(3000)
   await this.page.getByRole('link', { name: 'Business type' }).click()
-  await this.page.waitForTimeout(3000)
   await expect(
     this.page.getByText(
       'If your business type is incorrect, contact the Rural Payments Agency to update it.'
@@ -43,9 +40,7 @@ When('I update phone', async function () {
 })
 
 When('I update phone2', async function () {
-  await this.page.waitForTimeout(5000)
   await this.page.getByRole('link', { name: 'Business type' }).click()
-  await this.page.waitForTimeout(5000)
   await expect(
     this.page.getByText(
       'If your business type is incorrect, contact the Rural Payments Agency to update it.'
@@ -68,7 +63,6 @@ When('I update phone number', async function () {
   // Generate random phone number
   this.phonenumber = generateRandomPhoneNumber()
   await this.page.fill('#businessTelephone', this.phonenumber)
-  await this.page.waitForTimeout(3000)
   await this.page.locator("//button[normalize-space()='Continue']").click()
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
@@ -78,7 +72,6 @@ When('I update Email', async function () {
   // Generate random email
   this.email = generateRandomEmail()
   await this.page.fill('//input[@id="business-email"]', this.email)
-  await this.page.waitForTimeout(3000)
   await this.page.locator("//button[normalize-space()='Continue']").click()
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
@@ -87,7 +80,6 @@ When('I update Business Name', async function () {
   // Generate random email
   this.businessName = faker.company.name()
   await this.page.fill('//input[@id="business-name"]', this.businessName)
-  await this.page.waitForTimeout(3000)
   await this.page.locator("//button[normalize-space()='Continue']").click()
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
@@ -158,7 +150,9 @@ Given(
         /*             await this.page.goto(
                 'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
                )  */
-        await this.page.waitForTimeout(3000)
+        await this.page
+          .locator("//a[normalize-space()='Sign in']")
+          .waitFor({ state: 'visible' })
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
         await this.page.locator("//input[@id='crn']").fill('1100381252')
@@ -180,7 +174,9 @@ Given(
         /*                 await this.page.goto(
                'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
               ) */
-        await this.page.waitForTimeout(13000)
+        await this.page
+          .locator("//a[normalize-space()='Sign in']")
+          .waitFor({ state: 'visible' })
         await this.page.locator("//a[normalize-space()='Sign in']").click()
         // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
         await this.page.locator("//input[@id='crn']").fill('1100381252')
@@ -188,13 +184,16 @@ Given(
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
         //  await this.page.locator("//button[@id='submit']").click()
-        await this.page.waitForTimeout(13000)
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your personal details']"
+          )
+          .waitFor({ state: 'visible' })
         await this.page
           .locator(
             "//a[normalize-space()='View and update your personal details']"
           )
           .click()
-        await this.page.waitForTimeout(16000)
         break
 
       default:
@@ -520,7 +519,9 @@ Then('Application should Navigate to mp06 Signed Out page.', async function () {
 Given('I sign In on the first tab', async function () {
   this.page1 = await this.context.newPage()
   await this.page1.goto('https://fcp-sfd-frontend.test.cdp-int.defra.cloud/')
-  await this.page1.waitForTimeout(3000)
+  await this.page1
+    .locator("//a[normalize-space()='Sign in']")
+    .waitFor({ state: 'visible' })
   await this.page1.locator("//a[normalize-space()='Sign in']").click()
   await this.page1.locator("//input[@id='crn']").fill('1100381252')
   await this.page1.locator("//input[@id='password']").fill('Password456')
@@ -534,7 +535,9 @@ When('I open another tab with the same session', async function () {
   this.page2 = await this.context.newPage()
 
   await this.page2.goto('https://fcp-sfd-frontend.test.cdp-int.defra.cloud/')
-  await this.page2.waitForTimeout(3000)
+  await this.page2
+    .locator("//a[normalize-space()='Sign in']")
+    .waitFor({ state: 'visible' })
   await this.page2.locator("//a[normalize-space()='Sign in']").click()
   // await this.page2.locator("//input[@id='crn']").fill("1100014934");
   //  await this.page2.locator("//input[@id='password']").fill("Password456");
@@ -552,12 +555,10 @@ When('I signOut on the first tab', async function () {
 
 When('I switch to the second tab', async function () {
   await this.page2.bringToFront()
-  await this.page2.waitForTimeout(2000)
 })
 
 When('I click on the link on the second tab', async function () {
   await this.page2.getByRole('link', { name: 'Business name' }).click()
-  await this.page2.waitForTimeout(2000)
 })
 
 Then(
@@ -568,7 +569,6 @@ Then(
       .innerText()
 
     expect(actSignOutPage).toBe('Sign in to farm and land service')
-    await this.page1.waitForTimeout(3000)
   }
 )
 
@@ -579,7 +579,6 @@ Given(
     // Generate random email
     this.businessName = faker.company.name()
     await this.page.fill('//input[@id="business-name"]', this.businessName)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.getByRole('link', { name: 'Business name' }).click()
   }
@@ -592,7 +591,6 @@ Given(
     // Generate random email
     this.businessName = faker.company.name()
     await this.page.fill('//input[@id="business-name"]', this.businessName)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
@@ -677,7 +675,6 @@ Given(
     // Generate random phone number
     this.phonenumber = generateRandomPhoneNumber()
     await this.page.fill('#businessTelephone', this.phonenumber)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     //  await this.page.locator("//button[normalize-space()='Submit']").click();
     await this.page
@@ -693,7 +690,6 @@ Given(
     // Generate random phone number
     this.phonenumber = generateRandomPhoneNumber()
     await this.page.fill('#businessTelephone', this.phonenumber)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.locator("//button[normalize-space()='Submit']").click()
     // await this.page.getByRole('link', { name: 'Business phone numbers' }).click();
@@ -708,7 +704,6 @@ Then(
         '//dt[normalize-space()="Business phone numbers"]/following-sibling::dd[1]/div[1]/span'
       )
       .textContent()
-    await this.page.waitForTimeout(5000)
     expect(actPhNum).toBe(this.phonenumber)
     expect(actPhNum).toContain(this.phonenumber)
   }
@@ -721,7 +716,6 @@ Given(
     // Generate random email
     this.email = generateRandomEmail()
     await this.page.fill('//input[@id="business-email"]', this.email)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     // await this.page.locator("//button[normalize-space()='Submit']").click();
     // await this.page.getByRole('link', { name: 'Business email address' }).click();
@@ -736,7 +730,6 @@ Given(
     // Generate random email
     this.email = generateRandomEmail()
     await this.page.fill('//input[@id="business-email"]', this.email)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.locator("//button[normalize-space()='Submit']").click()
     // await this.page.getByRole('link', { name: '  Business email address' }).click();
@@ -840,7 +833,6 @@ Then(
     const actErrMsg = await this.page
       .locator("//ul[@class='govuk-list govuk-error-summary__list']//li")
       .innerText()
-    await this.page.waitForTimeout(3000)
     expect(actErrMsg).toBe(errMsg)
     //  expect(actEmail).toContain(this.email);
   }
@@ -897,7 +889,6 @@ Given(
         // Generate random email
         this.email = generateDiffLengthRandomEmail(length)
         await this.page.fill('//input[@id="business-email"]', this.email)
-        await this.page.waitForTimeout(3000)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
