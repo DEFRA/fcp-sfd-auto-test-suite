@@ -1,225 +1,117 @@
-// features/steps/testSteps.js
-// const { Given, When, Then, setDefaultTimeout } = require('@cucumber/cucumber')
-// const { expect } = require('@playwright/test')
-// const { fakerEN_GB: faker } = require('@faker-js/faker')
-// const {Faker,en_GB,en} = require('@faker-js/faker');
-
-import { Given, When, Then, setDefaultTimeout } from '@cucumber/cucumber'
+/* eslint-disable prettier/prettier */
+import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
-//  import { fakerEN_GB, faker } from '@faker-js/faker'
 import { faker } from '@faker-js/faker'
-//  const {Faker,en_GB,en} = require('@faker-js/faker');
 
-setDefaultTimeout(120 * 1000) // 2 minutes
-
-Given('I am in Given test', async function () {
-  await this.page.goto(
-    'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/business-details'
-  )
-  await this.page.waitForTimeout(3000)
-  await this.page.locator("//input[@id='crn']").fill('1100014934')
-  await this.page.locator("//input[@id='password']").fill('Password456')
-  await this.page.locator("//button[@id='next']").click()
-})
-
-When('I update phone', async function () {
-  await this.page.waitForTimeout(3000)
-  await this.page.getByRole('link', { name: 'Business type' }).click()
-  await this.page.waitForTimeout(3000)
-  await expect(
-    this.page.getByText(
-      'If your business type is incorrect, contact the Rural Payments Agency to update it.'
-    )
-  ).toBeVisible()
-  await expect(this.page.locator('.govuk-heading-m')).toContainText(
-    'Contact the Rural Payments Agency'
-  )
-  await expect(this.page.getByText('Phone: 03000 200 301')).toBeVisible()
-  await expect(
-    this.page.getByText(
-      'Monday to Friday, 8.30am to 5pm (except bank holidays)'
-    )
-  ).toBeVisible()
-})
-
-When('I update phone2', async function () {
-  await this.page.waitForTimeout(5000)
-  await this.page.getByRole('link', { name: 'Business type' }).click()
-  await this.page.waitForTimeout(5000)
-  await expect(
-    this.page.getByText(
-      'If your business type is incorrect, contact the Rural Payments Agency to update it.'
-    )
-  ).toBeVisible()
-  await expect(this.page.locator('.govuk-heading-m')).toContainText(
-    'Contact the Rural Payments Agency'
-  )
-  await expect(this.page.getByText('Phone: 03000 200 301')).toBeVisible()
-  await expect(
-    this.page.getByText(
-      'Monday to Friday, 8.30am to 5pm (except bank holidays1)'
-    )
-  ).toBeVisible()
-})
-
-When('I update phone number', async function () {
-  // await this.page.getByRole('link', { name: 'Change business phone' }).click();
-  await this.page.locator('[id="businessTelephone"]').clear()
-  // Generate random phone number
-  this.phonenumber = generateRandomPhoneNumber()
-  await this.page.fill('#businessTelephone', this.phonenumber)
-  await this.page.waitForTimeout(3000)
-  await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.locator("//button[normalize-space()='Submit']").click()
-})
-
-When('I update Email', async function () {
-  await this.page.locator('//input[@id="business-email"]').clear()
-  // Generate random email
-  this.email = generateRandomEmail()
-  await this.page.fill('//input[@id="business-email"]', this.email)
-  await this.page.waitForTimeout(3000)
-  await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.locator("//button[normalize-space()='Submit']").click()
-})
-When('I update Business Name', async function () {
-  await this.page.locator('//input[@id="business-name"]').clear()
-  // Generate random email
-  this.businessName = faker.company.name()
-  await this.page.fill('//input[@id="business-name"]', this.businessName)
-  await this.page.waitForTimeout(3000)
-  await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.locator("//button[normalize-space()='Submit']").click()
-})
-
-When('I update Business Address', async function () {
-  /*   this.addressLine1 = generateRandomAddressLine1a();
-    this.addressLine2 = generateRandomAddressLine2();
-    this.town = generateRandomTown();
-    this.postcode = generateRandomPostcode(); */
-
-  // this.postcode = generateRandomUKPostcode();
-  await this.page
-    .locator("//a[normalize-space()='Enter address manually']")
-    .click()
-  await this.page.locator('//input[@id="address-1"]').clear()
-  // await this.page.fill('//input[@id="address-1"]', this.addressLine1);
-  this.addressline1 = faker.location.streetAddress()
-  await this.page.fill('//input[@id="address-1"]', this.addressline1)
-
-  await this.page.locator('//input[@id="address-2"]').clear()
-  // await this.page.fill('//input[@id="address-2"]', this.addressLine2);
-  this.addressline2 = faker.location.secondaryAddress()
-  await this.page.fill('//input[@id="address-2"]', this.addressline2)
-
-  //  await this.page.waitForTimeout(3000);
-  await this.page.locator('//input[@id="address-3"]').clear()
-
-  await this.page.locator("//input[@id='city']").clear()
-  // await this.page.fill("//input[@id='city']", this.town);
-  this.city = faker.location.city()
-  await this.page.fill("//input[@id='city']", this.city)
-
-  await this.page.locator("//input[@id='county']").clear()
-  await this.page.locator("//input[@id='postcode']").clear()
-  this.postcode = generateRandomUKPostcode()
-  await this.page.fill("//input[@id='postcode']", this.postcode)
-
-  // const cf=new Faker({locale:[en_GB,en]})
-  // const f= faker.location.
-  // const f= faker.location.postcode();
-  // await this.page.fill("//input[@id='postcode']", faker.location.postcode());
-
-  await this.page.locator("//input[@id='country']").clear()
-  await this.page.fill("//input[@id='country']", 'United Kingdom')
-
-  await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.locator("//button[normalize-space()='Submit']").click()
-})
-
-Then('I need to check phone number', async function () {
-  const actPhNum = await this.page.getByText('Telephone').textContent()
-  const actual = actPhNum.split(':')[1].trim()
-  expect(actual).toBe(this.phonenumber)
-  expect(actual).toContain(this.phonenumber)
-})
+const BASE_URL = 'https://fcp-sfd-frontend.test.cdp-int.defra.cloud'
 
 Given(
   'I am on SignIn page and enter the credentials for {string}',
   async function (detailsType) {
     switch (detailsType.toLowerCase()) {
       case 'businessdetails':
-        /*   await this.page.goto(
-            'https://fcp-mpdp-frontend.test.cdp-int.defra.cloud/'
-          ) */
-        await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
-        )
-        /*             await this.page.goto(
-                'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
-               )  */
-        await this.page.waitForTimeout(3000)
+        await this.page.goto(`${BASE_URL}/`)
+        await this.page
+          .locator("//a[normalize-space()='Sign in']")
+          .waitFor({ state: 'visible' })
         await this.page.locator("//a[normalize-space()='Sign in']").click()
-        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
         await this.page.locator("//input[@id='crn']").fill('1100381252')
-        //   await this.page.locator("//input[@id='crn']").fill('3010000031')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
-        //    await this.page.locator("//button[@id='submit']").click()
         await this.page
           .locator(
             "//a[normalize-space()='View and update your business details']"
           )
           .click()
         break
-      case 'personaldetails':
-        await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
-        )
 
-        /*                 await this.page.goto(
-               'https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/'
-              ) */
-        await this.page.waitForTimeout(13000)
+      case 'personaldetails':
+        await this.page.goto(`${BASE_URL}/`)
+        await this.page
+          .locator("//a[normalize-space()='Sign in']")
+          .waitFor({ state: 'visible' })
         await this.page.locator("//a[normalize-space()='Sign in']").click()
-        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
         await this.page.locator("//input[@id='crn']").fill('1100381252')
-        //    await this.page.locator("//input[@id='crn']").fill('3010000031')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
-        //  await this.page.locator("//button[@id='submit']").click()
-        await this.page.waitForTimeout(13000)
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your personal details']"
+          )
+          .waitFor({ state: 'visible' })
         await this.page
           .locator(
             "//a[normalize-space()='View and update your personal details']"
           )
           .click()
-        await this.page.waitForTimeout(16000)
         break
 
       default:
-        throw new Error('unknow link type:$(detailsType)')
+        throw new Error(`Unknown details type: ${detailsType}`)
     }
   }
 )
 
-When(
-  'I click the BusinessType link on the BusinessDetails page',
-  async function () {
-    await this.page.waitForTimeout(2000)
-    await this.page.getByRole('link', { name: 'Business type' }).click()
+Given(
+  'I am on SignIn page and enter the credentials for {string} with {string}',
+  async function (businessdetails, permission) {
+    businessdetails = businessdetails?.toLowerCase()
+    permission = permission?.toLowerCase()
+
+    switch (true) {
+      case businessdetails === 'businessdetails' &&
+        permission === 'amendpermission':
+        await this.page.goto(`${BASE_URL}/`)
+        await this.page.waitForTimeout(3000)
+        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        await this.page.locator("//input[@id='crn']").fill('1100774679')
+        await this.page.locator("//input[@id='password']").fill('Password456')
+        await this.page.locator("//button[@id='next']").click()
+        await this.page
+          .locator(
+            '//label[normalize-space()="Joseph Heap Property Limited - SBI 107176577"]'
+          )
+          .click()
+        await this.page.locator("//button[@id='continueReplacement']").click()
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your business details']"
+          )
+          .click()
+        await this.page.waitForTimeout(3000)
+        break
+
+      case businessdetails === 'businessdetails' &&
+        permission === 'viewpermission':
+        await this.page.goto(`${BASE_URL}/`)
+        await this.page.waitForTimeout(3000)
+        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        await this.page.locator("//input[@id='crn']").fill('1100806911')
+        await this.page.locator("//input[@id='password']").fill('Password456')
+        await this.page.locator("//button[@id='next']").click()
+        await this.page
+          .locator("label:has-text('Chefnalls - SBI 113912887')")
+          .click()
+        await this.page.locator('#continueReplacement').click()
+        await this.page
+          .locator("//a[normalize-space()='View your Business details']")
+          .click()
+        await this.page.waitForTimeout(3000)
+        break
+
+      default:
+        throw new Error(
+          `Unknown credentials combination: ${businessdetails} / ${permission}`
+        )
+    }
   }
 )
 
 When(
   'I click the {string} link on the BusinessDetails page',
   async function (linkType) {
-    await this.page.waitForTimeout(2000)
     switch (linkType.toLowerCase()) {
       case 'businessphonenumbers':
-        /* await this.page
-          .getByRole('link', { name: 'Business phone numbers' })
-          .click() */
         await this.page
           .locator("//a[@href='/business-phone-numbers-change']")
           .click()
@@ -243,21 +135,17 @@ When(
           .getByRole('link', { name: 'Business Legal Status' })
           .click()
         break
-
       default:
-        throw new Error('unknow link type:$(linkType)')
+        throw new Error(`Unknown link type: ${linkType}`)
     }
   }
 )
 
-// Then('Verfiy all relevant details on the ChangeYourBusinessType page are been displayed correctly', async function (linkType) {
 Then(
   'Verfiy all relevant details on the {string} page are been displayed correctly',
   async function (linkType) {
-    await this.page.waitForTimeout(2000)
     switch (linkType.toLowerCase()) {
       case 'changeyourbusinesstype':
-        await this.page.waitForTimeout(3000)
         await expect(
           this.page.getByText(
             'If your business type is incorrect, contact the Rural Payments Agency to update it.'
@@ -272,10 +160,9 @@ Then(
             'Monday to Friday, 8.30am to 5pm (except bank holidays)'
           )
         ).toBeVisible()
-
         break
+
       case 'changeyourlegalstatus':
-        await this.page.waitForTimeout(3000)
         await expect(
           this.page.getByText(
             'If your legal status is incorrect, contact the Rural Payments Agency to update it.'
@@ -290,11 +177,10 @@ Then(
             'Monday to Friday, 8.30am to 5pm (except bank holidays)'
           )
         ).toBeVisible()
-
         break
 
       default:
-        throw new Error('unknow link type:$(linkType)')
+        throw new Error(`Unknown link type: ${linkType}`)
     }
   }
 )
@@ -307,26 +193,19 @@ Then(
         '//dt[normalize-space()="Business phone numbers"]/following-sibling::dd[1]/div[1]/span'
       )
       .textContent()
-    await this.page.waitForTimeout(5000)
     expect(actPhNum).toBe(this.phonenumber)
-    expect(actPhNum).toContain(this.phonenumber)
   }
 )
 
 Then(
   'Verfiy Updated email details on the ChangeYourBusinessType page are been displayed correctly',
   async function () {
-    // const txt =  await this.page.locator("//dt[normalize-space()='Business email address']/following-sibling::dd[1]").textContent();
     const actEmail = await this.page
       .locator(
         "//dt[normalize-space()='Business email address']/following-sibling::dd[1]"
       )
       .innerText()
-    //  const actTxt =  await this.page.locator("#//p[@class='govuk-notification-banner__heading']").textContent();
-    //  const email = actEmail.split(':')[1].trim();
-    await this.page.waitForTimeout(5000)
     expect(actEmail).toBe(this.email)
-    expect(actEmail).toContain(this.email)
   }
 )
 
@@ -338,9 +217,7 @@ Then(
         "//dt[normalize-space()='Business name']/following-sibling::dd[1]"
       )
       .innerText()
-    await this.page.waitForTimeout(5000)
     expect(actBusinessName).toBe(this.businessName)
-    expect(actBusinessName).toContain(this.businessName)
   }
 )
 
@@ -367,7 +244,6 @@ Then(
         "//dt[normalize-space()='Business address']/following-sibling::dd[1]/div[4]"
       )
       .innerText()
-    await this.page.waitForTimeout(5000)
     expect(actAddrLine1).toBe(this.addressline1)
     expect(actAddrLine2).toContain(this.addressline2)
     expect(actCity).toBe(this.city)
@@ -380,97 +256,120 @@ Then(
   async function (updatedMsgType) {
     switch (updatedMsgType.toLowerCase()) {
       case 'businessphonenumbers': {
-        const actPhoneUpdatedMsg = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-
-        expect(actPhoneUpdatedMsg).toBe(
-          'You have updated your business phone numbers'
-        )
-        expect(actPhoneUpdatedMsg).toContain(
-          'You have updated your business phone numbers'
-        )
+        expect(msg).toBe('You have updated your business phone numbers')
         break
       }
       case 'businessemailaddress': {
-        const actEmailUpdatedMsg = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(actEmailUpdatedMsg).toBe(
-          'You have updated your business email address'
-        )
-        expect(actEmailUpdatedMsg).toContain(
-          'You have updated your business email address'
-        )
+        expect(msg).toBe('You have updated your business email address')
         break
       }
       case 'businessaddress': {
-        // const actTxt = await this.page.locator("//p[@class='govuk-notification-banner__heading']").textContent();
-        const actAddressUpdatedMsg = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-
-        expect(actAddressUpdatedMsg).toBe(
-          'You have updated your business address'
-        )
-        expect(actAddressUpdatedMsg).toContain(
-          'You have updated your business address'
-        )
+        expect(msg).toBe('You have updated your business address')
         break
       }
       case 'businessname': {
-        const actBusinessNameMsg = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(actBusinessNameMsg).toBe('You have updated your business name')
-        expect(actBusinessNameMsg).toContain(
-          'You have updated your business name'
-        )
+        expect(msg).toBe('You have updated your business name')
         break
       }
       case 'vatnumber': {
-        const actVatNumberMsg = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(actVatNumberMsg).toBe(
-          'You have updated your VAT registration number'
-        )
-        expect(actVatNumberMsg).toContain(
-          'You have updated your VAT registration number'
-        )
+        expect(msg).toBe('You have updated your VAT registration number')
         break
       }
       case 'yes': {
-        const actvatnumberRemovedMsg = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(actvatnumberRemovedMsg).toBe(
-          'You have removed your VAT registration number'
-        )
-        expect(actvatnumberRemovedMsg).toContain(
-          'You have removed your VAT registration number'
-        )
+        expect(msg).toBe('You have removed your VAT registration number')
         break
       }
       case 'no': {
-        const actNoUpdatedMsgForvatnumber = await this.page.locator(
+        const banner = this.page.locator(
           "//div[@class='govuk-notification-banner__content']"
         )
-        expect(actNoUpdatedMsgForvatnumber).not.toBeVisible()
-        expect(await actNoUpdatedMsgForvatnumber.isVisible()).toBe(false)
+        await expect(banner).not.toBeVisible()
         break
       }
       default:
-        throw new Error('unknow link type:$(linkType)')
+        throw new Error(`Unknown updatedMsgType: ${updatedMsgType}`)
     }
   }
 )
+
+When('I update phone number', async function () {
+  await this.page.locator('[id="businessTelephone"]').clear()
+  this.phonenumber = generateRandomPhoneNumber()
+  await this.page.fill('#businessTelephone', this.phonenumber)
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
+
+When('I update Email', async function () {
+  await this.page.locator('//input[@id="business-email"]').clear()
+  this.email = generateRandomEmail()
+  await this.page.fill('//input[@id="business-email"]', this.email)
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
+
+When('I update Business Name', async function () {
+  await this.page.locator('//input[@id="business-name"]').clear()
+  this.businessName = faker.company.name()
+  await this.page.fill('//input[@id="business-name"]', this.businessName)
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
+
+When('I update Business Address', async function () {
+  await this.page
+    .locator("//a[normalize-space()='Enter address manually']")
+    .click()
+
+  this.addressline1 = faker.location.streetAddress()
+  await this.page.locator('//input[@id="address-1"]').clear()
+  await this.page.fill('//input[@id="address-1"]', this.addressline1)
+
+  this.addressline2 = faker.location.secondaryAddress()
+  await this.page.locator('//input[@id="address-2"]').clear()
+  await this.page.fill('//input[@id="address-2"]', this.addressline2)
+
+  await this.page.locator('//input[@id="address-3"]').clear()
+
+  this.city = faker.location.city()
+  await this.page.locator("//input[@id='city']").clear()
+  await this.page.fill("//input[@id='city']", this.city)
+
+  await this.page.locator("//input[@id='county']").clear()
+
+  this.postcode = generateRandomUKPostcode()
+  await this.page.locator("//input[@id='postcode']").clear()
+  await this.page.fill("//input[@id='postcode']", this.postcode)
+
+  await this.page.locator("//input[@id='country']").clear()
+  await this.page.fill("//input[@id='country']", 'United Kingdom')
+
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
 
 When('I click signOut link on the {string} page', async function (signOutPage) {
   switch (signOutPage.toLowerCase()) {
     case 'viewandupdateyourbusinesstype':
       await this.page.locator("//a[normalize-space()='Sign out']").click()
-
       break
     case 'whatisyourbusinessname':
       await this.page.getByRole('link', { name: 'Business name' }).click()
@@ -481,46 +380,38 @@ When('I click signOut link on the {string} page', async function (signOutPage) {
         .getByRole('link', { name: 'Business email address' })
         .click()
       await this.page.locator("//a[normalize-space()='Sign out']").click()
-
       break
     case 'whatareyourbusinessphonemembers':
       await this.page
         .getByRole('link', { name: 'Change Business telephone numbers' })
-
         .click()
       await this.page.locator("//a[normalize-space()='Sign out']").click()
-
       break
     case 'whatisyourbusinessemailaddress':
       await this.page
         .getByRole('link', { name: 'Business email address' })
         .click()
       await this.page.locator("//a[normalize-space()='Sign out']").click()
-
       break
     case 'changeyourbusinesstype':
       await this.page.getByRole('link', { name: 'Business type' }).click()
       await this.page.locator("//a[normalize-space()='Sign out']").click()
-
       break
-
     default:
-      throw new Error('unknow link type:$(linkType)')
+      throw new Error(`Unknown signOutPage: ${signOutPage}`)
   }
 })
 
 Then('Application should Navigate to mp06 Signed Out page.', async function () {
-  // await this.page.waitForTimeout(5000);
-  const link = await this.page.locator('a[href="/auth/sign-in"]')
-  // const textt = await link.innerText()
-  // console.log(textt)
-  await expect(link).toBeVisible()
+  await expect(this.page.locator('a[href="/auth/sign-in"]')).toBeVisible()
 })
 
 Given('I sign In on the first tab', async function () {
   this.page1 = await this.context.newPage()
-  await this.page1.goto('https://fcp-sfd-frontend.test.cdp-int.defra.cloud/')
-  await this.page1.waitForTimeout(3000)
+  await this.page1.goto(`${BASE_URL}/`)
+  await this.page1
+    .locator("//a[normalize-space()='Sign in']")
+    .waitFor({ state: 'visible' })
   await this.page1.locator("//a[normalize-space()='Sign in']").click()
   await this.page1.locator("//input[@id='crn']").fill('1100381252')
   await this.page1.locator("//input[@id='password']").fill('Password456')
@@ -532,13 +423,11 @@ Given('I sign In on the first tab', async function () {
 
 When('I open another tab with the same session', async function () {
   this.page2 = await this.context.newPage()
-
-  await this.page2.goto('https://fcp-sfd-frontend.test.cdp-int.defra.cloud/')
-  await this.page2.waitForTimeout(3000)
+  await this.page2.goto(`${BASE_URL}/`)
+  await this.page2
+    .locator("//a[normalize-space()='Sign in']")
+    .waitFor({ state: 'visible' })
   await this.page2.locator("//a[normalize-space()='Sign in']").click()
-  // await this.page2.locator("//input[@id='crn']").fill("1100014934");
-  //  await this.page2.locator("//input[@id='password']").fill("Password456");
-  //  await this.page2.locator("//button[@id='next']").click();
   await this.page2
     .locator("//a[normalize-space()='View and update your business details']")
     .click()
@@ -547,17 +436,15 @@ When('I open another tab with the same session', async function () {
 When('I signOut on the first tab', async function () {
   await this.page1.bringToFront()
   await this.page1.locator("//a[normalize-space()='Sign out']").click()
-  await this.page1.waitForTimeout(7000)
+  await this.page1.waitForURL(`${BASE_URL}/**`)
 })
 
 When('I switch to the second tab', async function () {
   await this.page2.bringToFront()
-  await this.page2.waitForTimeout(2000)
 })
 
 When('I click on the link on the second tab', async function () {
   await this.page2.getByRole('link', { name: 'Business name' }).click()
-  await this.page2.waitForTimeout(2000)
 })
 
 Then(
@@ -566,9 +453,7 @@ Then(
     const actSignOutPage = await this.page2
       .locator("//h1[@id='header']")
       .innerText()
-
     expect(actSignOutPage).toBe('Sign in to farm and land service')
-    await this.page1.waitForTimeout(3000)
   }
 )
 
@@ -576,10 +461,8 @@ Given(
   'I update Business Name and click the Change link in CheckYourBusinessNameIsCorrectBeforeSubmitting Page',
   async function () {
     await this.page.locator('//input[@id="business-name"]').clear()
-    // Generate random email
     this.businessName = faker.company.name()
     await this.page.fill('//input[@id="business-name"]', this.businessName)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.getByRole('link', { name: 'Business name' }).click()
   }
@@ -589,10 +472,8 @@ Given(
   'Change the Business Name again in WhatIsYourBusinessName? Page',
   async function () {
     await this.page.locator('//input[@id="business-name"]').clear()
-    // Generate random email
     this.businessName = faker.company.name()
     await this.page.fill('//input[@id="business-name"]', this.businessName)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
@@ -604,27 +485,25 @@ Given(
     await this.page
       .locator("//a[normalize-space()='Enter address manually']")
       .click()
-    await this.page.locator('//input[@id="address-1"]').clear()
-    // await this.page.fill('//input[@id="address-1"]', this.addressLine1);
+
     this.addressline1 = faker.location.streetAddress()
+    await this.page.locator('//input[@id="address-1"]').clear()
     await this.page.fill('//input[@id="address-1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address-2"]').clear()
-    // await this.page.fill('//input[@id="address-2"]', this.addressLine2);
     this.addressline2 = faker.location.secondaryAddress()
+    await this.page.locator('//input[@id="address-2"]').clear()
     await this.page.fill('//input[@id="address-2"]', this.addressline2)
 
-    //  await this.page.waitForTimeout(3000);
     await this.page.locator('//input[@id="address-3"]').clear()
 
-    await this.page.locator("//input[@id='city']").clear()
-    // await this.page.fill("//input[@id='city']", this.town);
     this.city = faker.location.city()
+    await this.page.locator("//input[@id='city']").clear()
     await this.page.fill("//input[@id='city']", this.city)
 
     await this.page.locator("//input[@id='county']").clear()
-    await this.page.locator("//input[@id='postcode']").clear()
+
     this.postcode = generateRandomUKPostcode()
+    await this.page.locator("//input[@id='postcode']").clear()
     await this.page.fill("//input[@id='postcode']", this.postcode)
 
     await this.page.locator("//input[@id='country']").clear()
@@ -638,34 +517,30 @@ Given(
 Given(
   'Change the Business Address again in EnterYourBusinessAddress Page',
   async function () {
-    await this.page.locator('//input[@id="address-1"]').clear()
-    // await this.page.fill('//input[@id="address-1"]', this.addressLine1);
     this.addressline1 = faker.location.streetAddress()
+    await this.page.locator('//input[@id="address-1"]').clear()
     await this.page.fill('//input[@id="address-1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address-2"]').clear()
-    // await this.page.fill('//input[@id="address-2"]', this.addressLine2);
     this.addressline2 = faker.location.secondaryAddress()
+    await this.page.locator('//input[@id="address-2"]').clear()
     await this.page.fill('//input[@id="address-2"]', this.addressline2)
 
-    //  await this.page.waitForTimeout(3000);
     await this.page.locator('//input[@id="address-3"]').clear()
 
-    await this.page.locator("//input[@id='city']").clear()
-    // await this.page.fill("//input[@id='city']", this.town);
     this.city = faker.location.city()
+    await this.page.locator("//input[@id='city']").clear()
     await this.page.fill("//input[@id='city']", this.city)
 
     await this.page.locator("//input[@id='county']").clear()
-    await this.page.locator("//input[@id='postcode']").clear()
+
     this.postcode = generateRandomUKPostcode()
+    await this.page.locator("//input[@id='postcode']").clear()
     await this.page.fill("//input[@id='postcode']", this.postcode)
 
     await this.page.locator("//input[@id='country']").clear()
     await this.page.fill("//input[@id='country']", 'United Kingdom')
 
     await this.page.locator("//button[normalize-space()='Continue']").click()
-
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -674,12 +549,9 @@ Given(
   'I update Business PhoneNumber and click the Change link in CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting Page',
   async function () {
     await this.page.locator('[id="businessTelephone"]').clear()
-    // Generate random phone number
     this.phonenumber = generateRandomPhoneNumber()
     await this.page.fill('#businessTelephone', this.phonenumber)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    //  await this.page.locator("//button[normalize-space()='Submit']").click();
     await this.page
       .getByRole('link', { name: 'Business phone numbers' })
       .click()
@@ -690,13 +562,10 @@ Given(
   'Change the Business PhoneNumber again in WhatAreYourBusinessPhoneNumbers? Page',
   async function () {
     await this.page.locator('[id="businessTelephone"]').clear()
-    // Generate random phone number
     this.phonenumber = generateRandomPhoneNumber()
     await this.page.fill('#businessTelephone', this.phonenumber)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.locator("//button[normalize-space()='Submit']").click()
-    // await this.page.getByRole('link', { name: 'Business phone numbers' }).click();
   }
 )
 
@@ -708,9 +577,7 @@ Then(
         '//dt[normalize-space()="Business phone numbers"]/following-sibling::dd[1]/div[1]/span'
       )
       .textContent()
-    await this.page.waitForTimeout(5000)
     expect(actPhNum).toBe(this.phonenumber)
-    expect(actPhNum).toContain(this.phonenumber)
   }
 )
 
@@ -718,13 +585,9 @@ Given(
   'I update Business EmailAddress and click the Change link in CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting Page',
   async function () {
     await this.page.locator('//input[@id="business-email"]').clear()
-    // Generate random email
     this.email = generateRandomEmail()
     await this.page.fill('//input[@id="business-email"]', this.email)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // await this.page.locator("//button[normalize-space()='Submit']").click();
-    // await this.page.getByRole('link', { name: 'Business email address' }).click();
     await this.page.getByRole('link', { name: 'Business email' }).click()
   }
 )
@@ -733,13 +596,10 @@ Given(
   'Change the Business EmailAddress again in CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting Page',
   async function () {
     await this.page.locator('//input[@id="business-email"]').clear()
-    // Generate random email
     this.email = generateRandomEmail()
     await this.page.fill('//input[@id="business-email"]', this.email)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.locator("//button[normalize-space()='Submit']").click()
-    // await this.page.getByRole('link', { name: '  Business email address' }).click();
   }
 )
 
@@ -752,7 +612,6 @@ Then(
       )
       .innerText()
     expect(actEmail).toBe(this.email)
-    expect(actEmail).toContain(this.email)
   }
 )
 
@@ -762,25 +621,25 @@ Given(
     await this.page
       .locator("//a[normalize-space()='Enter address manually']")
       .click()
-    await this.page.locator('//input[@id="address-1"]').clear()
 
     this.addressline1 = faker.location.streetAddress()
+    await this.page.locator('//input[@id="address-1"]').clear()
     await this.page.fill('//input[@id="address-1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address-2"]').clear()
-
     this.addressline2 = faker.location.secondaryAddress()
+    await this.page.locator('//input[@id="address-2"]').clear()
     await this.page.fill('//input[@id="address-2"]', this.addressline2)
 
     await this.page.locator('//input[@id="address-3"]').clear()
 
-    await this.page.locator("//input[@id='city']").clear()
     this.city = faker.location.city()
+    await this.page.locator("//input[@id='city']").clear()
     await this.page.fill("//input[@id='city']", this.city)
 
     await this.page.locator("//input[@id='county']").clear()
-    await this.page.locator("//input[@id='postcode']").clear()
+
     this.postcode = generateRandomUKPostcode()
+    await this.page.locator("//input[@id='postcode']").clear()
     await this.page.fill("//input[@id='postcode']", this.postcode)
 
     await this.page.locator("//input[@id='country']").clear()
@@ -790,22 +649,18 @@ Given(
 
     switch (field.toLowerCase()) {
       case 'addressline1':
-        // console.log(this.generateValue);
         await this.page.locator('//input[@id="address-1"]').clear()
         await this.page.fill('//input[@id="address-1"]', this.generateValue)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
-
         break
-
       case 'addressline2':
         await this.page.locator('//input[@id="address-2"]').clear()
         await this.page.fill('//input[@id="address-2"]', this.generateValue)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
-
         break
       case 'businesstown':
         await this.page.locator("//input[@id='city']").clear()
@@ -814,7 +669,6 @@ Given(
           .locator("//button[normalize-space()='Continue']")
           .click()
         break
-
       case 'businesscountry':
         await this.page.locator("//input[@id='country']").clear()
         await this.page.fill("//input[@id='country']", this.generateValue)
@@ -822,7 +676,6 @@ Given(
           .locator("//button[normalize-space()='Continue']")
           .click()
         break
-
       case 'businesscounty':
         await this.page.locator("//input[@id='county']").clear()
         await this.page.fill("//input[@id='county']", this.generateValue)
@@ -840,64 +693,49 @@ Then(
     const actErrMsg = await this.page
       .locator("//ul[@class='govuk-list govuk-error-summary__list']//li")
       .innerText()
-    await this.page.waitForTimeout(3000)
     expect(actErrMsg).toBe(errMsg)
-    //  expect(actEmail).toContain(this.email);
   }
 )
 
 Given(
   'I enter the test data on the field {string} with value as {string} on the {string} page',
-  async function (field, length, page) {
+  async function (field, length, _page) {
     this.generateValue = generateValidationTestData(field, length)
-    /*  console.log(this.generateValue)
-    console.log(this.generateValue) */
 
     switch (field.toLowerCase()) {
       case 'businessname':
         await this.page.locator('//input[@id="business-name"]').clear()
-
         await this.page.fill('//input[@id="business-name"]', this.generateValue)
-
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
-
         break
+
       case 'businessphone':
         await this.page.locator('[id="businessTelephone"]').clear()
-
         await this.page.fill('#businessTelephone', this.generateValue)
-
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
-
         break
 
       case 'businessandmobilephone':
         await this.page.locator('[id="businessTelephone"]').clear()
-
         await this.page.fill('#businessTelephone', this.generateValue)
         await this.page.locator("//input[@id='businessMobile']").clear()
-
         await this.page.fill(
           "//input[@id='businessMobile']",
           this.generateValue
         )
-
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
-
         break
 
       case 'businessemailaddress':
         await this.page.locator('//input[@id="business-email"]').clear()
-        // Generate random email
         this.email = generateDiffLengthRandomEmail(length)
         await this.page.fill('//input[@id="business-email"]', this.email)
-        await this.page.waitForTimeout(3000)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
@@ -905,7 +743,6 @@ Given(
 
       case 'personalphone':
         await this.page.locator('//input[@id="personalTelephone"]').clear()
-
         await this.page.fill(
           '//input[@id="personalTelephone"]',
           this.generateValue
@@ -913,60 +750,47 @@ Given(
         await this.page
           .locator('//button[normalize-space()="Continue"]')
           .click()
-
         break
 
       case 'personalandmobilephone':
         await this.page.locator('//input[@id="personalTelephone"]').clear()
-
         await this.page.fill(
           '//input[@id="personalTelephone"]',
           this.generateValue
         )
-
         await this.page.locator('//input[@id="personalMobile"]').clear()
-
         await this.page.fill(
           '//input[@id="personalMobile"]',
           this.generateValue
         )
-
         await this.page
           .locator('//button[normalize-space()="Continue"]')
           .click()
-
         break
 
       case 'personalmobilephone':
         await this.page.locator('//input[@id="personalMobile"]').clear()
-
         await this.page.fill(
           '//input[@id="personalMobile"]',
           this.generateValue
         )
-
         await this.page
           .locator('//button[normalize-space()="Continue"]')
           .click()
-
         break
 
       case 'vatnumber':
         await this.page.locator('//input[@id="business-vat"]').clear()
-
         await this.page.fill('//input[@id="business-vat"]', this.generateValue)
         await this.page
           .locator('//button[normalize-space()="Continue"]')
           .click()
-        // await this.page.locator(' //button[normalize-space()="Submit"]').click();
         break
+
       case 'personalemailaddress':
         await this.page.locator('//input[@id="personal-email"]').clear()
-
-        // Generate random email
         this.email = generateDiffLengthRandomEmail(length)
-        await this.page.locator('//input[@id="personal-email"]', this.email)
-        await this.page.waitForTimeout(3000)
+        await this.page.fill('//input[@id="personal-email"]', this.email)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
@@ -978,7 +802,6 @@ Given(
 Given(
   'I click a link signIn link in LandAndFarmService page',
   async function () {
-    //  await this.page.locator("//button[normalize-space()='Continue']").click();
     await this.page.locator('a[href="/auth/sign-in"]').click()
   }
 )
@@ -987,7 +810,6 @@ Then(
   'Application should Navigate to SignInToFarmingFrontDoor page.',
   async function () {
     const expTxt = await this.page.locator("//h1[@id='header']").innerText()
-
     expect(expTxt).toBe('Sign in to farm and land service')
   }
 )
@@ -997,10 +819,9 @@ When('I add the VAT Number', async function () {
     .locator('//a[@href="/business-vat-registration-number-change"]')
     .click()
   await this.page.locator('//input[@id="business-vat"]').clear()
-
   await this.page.fill('//input[@id="business-vat"]', '123456789')
   await this.page.locator('//button[normalize-space()="Continue"]').click()
-  await this.page.locator(' //button[normalize-space()="Submit"]').click()
+  await this.page.locator('//button[normalize-space()="Submit"]').click()
 })
 
 When('I click {string} link', async function (link) {
@@ -1009,13 +830,11 @@ When('I click {string} link', async function (link) {
       await this.page
         .locator('//a[@href="/business-vat-registration-remove"]')
         .click()
-
       break
     case 'change':
       await this.page
         .locator('//a[@href="/business-vat-registration-number-change"]')
         .click()
-
       break
   }
 })
@@ -1027,12 +846,10 @@ When(
       case 'yes':
         await this.page.locator('//input[@id="confirmRemove"]').click()
         await this.page.locator('//button[normalize-space()="Submit"]').click()
-
         break
       case 'no':
         await this.page.locator('//input[@id="confirmRemove-2"]').click()
         await this.page.locator('//button[normalize-space()="Submit"]').click()
-
         break
     }
   }
@@ -1041,12 +858,10 @@ When(
 Given(
   'I Update the VAT number in WhatIsYourVATRegistrationNumber page and submit',
   async function () {
-    //  await this.page.locator('//a[@href="/business-vat-registration-number-change"]').click();
     await this.page.locator('//input[@id="business-vat"]').clear()
-
     await this.page.fill('//input[@id="business-vat"]', '987654321')
     await this.page.locator('//button[normalize-space()="Continue"]').click()
-    await this.page.locator(' //button[normalize-space()="Submit"]').click()
+    await this.page.locator('//button[normalize-space()="Submit"]').click()
   }
 )
 
@@ -1058,30 +873,25 @@ Then(
         "//dt[normalize-space()='VAT registration number']/following-sibling::dd[1]"
       )
       .innerText()
-    await this.page.waitForTimeout(5000)
     expect(actUpdatedVATnumber).toBe('987654321')
-    expect(actUpdatedVATnumber).toContain('987654321')
   }
 )
 
 When(
   'I click the {string} link on the "ViewAndUpdateYourPersonalDetails"Page',
   async function (linkType) {
-    await this.page.waitForTimeout(2000)
     switch (linkType.toLowerCase()) {
       case 'personalphonenumbers':
         await this.page
           .getByRole('link', { name: 'Personal phone numbers' })
           .click()
         break
-
       case 'fullname':
         await this.page.getByRole('link', { name: 'Full name' }).click()
         break
       case 'personaladdress':
         await this.page.getByRole('link', { name: 'Personal address' }).click()
         break
-
       case 'personaldob':
         await this.page.getByRole('link', { name: 'Date of birth' }).click()
         break
@@ -1091,17 +901,15 @@ When(
           .click()
         break
       default:
-        throw new Error('unknow link type:$(linkType)')
+        throw new Error(`Unknown link type: ${linkType}`)
     }
   }
 )
 
 When('I update Personal phone number', async function () {
   await this.page.locator('[id="personalTelephone"]').clear()
-  // Generate random phone number
   this.personalPhonenumber = generateRandomPhoneNumber()
   await this.page.fill('#personalTelephone', this.personalPhonenumber)
-  await this.page.waitForTimeout(3000)
   await this.page.locator("//button[normalize-space()='Continue']").click()
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
@@ -1111,99 +919,59 @@ Then(
   async function () {
     const actPhNum = await this.page.getByText('Telephone').textContent()
     const actual = actPhNum.split(':')[1].trim()
-    await this.page.waitForTimeout(5000)
     expect(actual).toBe(this.personalPhonenumber)
-    expect(actual).toContain(this.personalPhonenumber)
   }
 )
-
-// Then('Verify Success Updated message is displayed for {string} on the page ViewAndUpdateYourPersonalDetails page', async function (updatedMsgType) {
 
 Then(
   'Verify Success Updated message is displayed for {string} on the page ViewAndUpdateYourPersonalDetails page',
   async function (linkType) {
-    /* 
-  switch (linkType.toLowerCase()) {
-    case 'personalPhonenumbers':
-      const actPhoneUpdatedMsg = await this.page.locator("//p[@class='govuk-notification-banner__heading']").innerText();
-
-      expect(actPhoneUpdatedMsg).toBe("You have updated your personal phone numbers");
-      expect(actPhoneUpdatedMsg).toContain("You have updated your personal phone numbers");
-      break;
- case 'fullname':
-      const actFullName = await this.page.locator("//p[@class='govuk-notification-banner__heading']").innerText();
-
-      expect(actFullName).toBe("You have updated your full name");
-      expect(actFullName).toContain("You have updated your full name");
-      break;
-
-       case 'personalAddress':
-      const personalAddress = await this.page.locator("//p[@class='govuk-notification-banner__heading']").innerText();
-
-      expect(personalAddress).toBe("You have updated your personal address");
-      expect(personalAddress).toContain("You have updated your personal address");
-      break;
-  } */
-
-    await this.page.waitForTimeout(2000)
     switch (linkType.toLowerCase()) {
       case 'personalphonenumbers': {
-        const actPhoneUpdatedMsg = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(actPhoneUpdatedMsg).toBe(
-          'You have updated your personal phone numbers'
-        )
-        expect(actPhoneUpdatedMsg).toContain(
-          'You have updated your personal phone numbers'
-        )
+        expect(msg).toBe('You have updated your personal phone numbers')
         break
       }
       case 'fullname': {
-        const actFullName = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(actFullName).toBe('You have updated your full name')
-        expect(actFullName).toContain('You have updated your full name')
+        expect(msg).toBe('You have updated your full name')
         break
       }
       case 'personaladdress': {
-        const personalAddress = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(personalAddress).toBe('You have updated your personal address')
-        expect(personalAddress).toContain(
-          'You have updated your personal address'
-        )
+        expect(msg).toBe('You have updated your personal address')
         break
       }
       case 'dob': {
-        const dob = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(dob).toBe('You have updated your date of birth')
-        expect(dob).toContain('You have updated your date of birth')
+        expect(msg).toBe('You have updated your date of birth')
         break
       }
-
       case 'personalemailaddress': {
-        const dob = await this.page
+        const msg = await this.page
           .locator("//div[@class='govuk-notification-banner__content']")
           .innerText()
-        expect(dob).toBe('You have updated your personal email address')
-        expect(dob).toContain('You have updated your personal email address')
+        expect(msg).toBe('You have updated your personal email address')
         break
       }
       default:
-        throw new Error('unknow link type:$(linkType)')
+        throw new Error(`Unknown linkType: ${linkType}`)
     }
   }
 )
 
 Given('I update Personal Name', async function () {
-  await this.page.locator('//input[@id="first"]', this.firstName).clear()
-  await this.page.locator('//input[@id="middle"]', this.middleName).clear()
-  await this.page.locator('//input[@id="last"]', this.lastName).clear()
+  await this.page.locator('//input[@id="first"]').clear()
+  await this.page.locator('//input[@id="middle"]').clear()
+  await this.page.locator('//input[@id="last"]').clear()
 
   this.firstName = faker.person.firstName()
   this.middleName = faker.person.middleName()
@@ -1212,7 +980,6 @@ Given('I update Personal Name', async function () {
   await this.page.fill('//input[@id="first"]', this.firstName)
   await this.page.fill('//input[@id="middle"]', this.middleName)
   await this.page.fill('//input[@id="last"]', this.lastName)
-  await this.page.waitForTimeout(3000)
   await this.page.locator("//button[normalize-space()='Continue']").click()
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
@@ -1220,27 +987,11 @@ Given('I update Personal Name', async function () {
 Then(
   'Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly',
   async function () {
-    const actBusinessName = await this.page
+    const actName = await this.page
       .locator("//dt[normalize-space()='Full name']/following-sibling::dd[1]")
       .innerText()
-    await this.page.waitForTimeout(5000)
-    /* const aa =
-      this.firstNameChanged +
-      '' +
-      this.middleNameChanged +
-      '' +
-      this.lastNameChanged
-    const bb =
-      this.firstNameChanged +
-      ' ' +
-      this.middleNameChanged +
-      ' ' +
-      this.lastNameChanged */
-    expect(actBusinessName).toBe(
-      this.firstName + ' ' + this.middleName + ' ' + this.lastName
-    )
-    expect(actBusinessName).toContain(
-      this.firstName + ' ' + this.middleName + ' ' + this.lastName
+    expect(actName).toBe(
+      `${this.firstName} ${this.middleName} ${this.lastName}`
     )
   }
 )
@@ -1248,9 +999,9 @@ Then(
 Given(
   'I update Personal Name and click the Change link in CheckYourNameIsCorrectBeforeSubmitting page',
   async function () {
-    await this.page.locator('//input[@id="first"]', this.firstName).clear()
-    await this.page.locator('//input[@id="middle"]', this.middleName).clear()
-    await this.page.locator('//input[@id="last"]', this.lastName).clear()
+    await this.page.locator('//input[@id="first"]').clear()
+    await this.page.locator('//input[@id="middle"]').clear()
+    await this.page.locator('//input[@id="last"]').clear()
 
     this.firstName = faker.person.firstName()
     this.middleName = faker.person.middleName()
@@ -1259,7 +1010,6 @@ Given(
     await this.page.fill('//input[@id="first"]', this.firstName)
     await this.page.fill('//input[@id="middle"]', this.middleName)
     await this.page.fill('//input[@id="last"]', this.lastName)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.getByRole('link', { name: 'Full name' }).click()
   }
@@ -1268,9 +1018,9 @@ Given(
 Given(
   'Change the Personal Name again in WhatIsYourFullName? Page',
   async function () {
-    await this.page.locator('//input[@id="first"]', this.firstName).clear()
-    await this.page.locator('//input[@id="middle"]', this.middleName).clear()
-    await this.page.locator('//input[@id="last"]', this.lastName).clear()
+    await this.page.locator('//input[@id="first"]').clear()
+    await this.page.locator('//input[@id="middle"]').clear()
+    await this.page.locator('//input[@id="last"]').clear()
 
     this.firstName = faker.person.firstName()
     this.middleName = faker.person.middleName()
@@ -1279,41 +1029,27 @@ Given(
     await this.page.fill('//input[@id="first"]', this.firstName)
     await this.page.fill('//input[@id="middle"]', this.middleName)
     await this.page.fill('//input[@id="last"]', this.lastName)
-    await this.page.waitForTimeout(3000)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
+
 Given(
   'I update Personal phone number and click the {string} in the CheckYourPersonalPhoneNumbersAreCorrectBeforeSubmitting page',
   async function (linkType) {
+    await this.page.locator('[id="personalTelephone"]').clear()
+    this.personalPhonenumber = generateRandomPhoneNumber()
+    await this.page.fill('#personalTelephone', this.personalPhonenumber)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+
     switch (linkType.toLowerCase()) {
       case 'change':
-        await this.page.locator('[id="personalTelephone"]').clear()
-
-        this.personalPhonenumber = generateRandomPhoneNumber()
-        await this.page.fill('#personalTelephone', this.personalPhonenumber)
-        await this.page.waitForTimeout(3000)
-        await this.page
-          .locator("//button[normalize-space()='Continue']")
-          .click()
         await this.page
           .getByRole('link', { name: 'Personal phone numbers' })
           .click()
-
         break
       case 'back':
-        await this.page.locator('[id="personalTelephone"]').clear()
-
-        this.personalPhonenumber = generateRandomPhoneNumber()
-        await this.page.fill('#personalTelephone', this.personalPhonenumber)
-        await this.page.waitForTimeout(3000)
-        await this.page
-          .locator("//button[normalize-space()='Continue']")
-          .click()
-
         await this.page.locator('//a[normalize-space()="Back"]').click()
-
         break
     }
   }
@@ -1325,11 +1061,10 @@ Then(
     const acttelephoneNumber = await this.page
       .locator("//input[@id='personalTelephone']")
       .inputValue()
-    await this.page.waitForTimeout(5000)
     expect(acttelephoneNumber).toBe(this.personalPhonenumber)
-    expect(acttelephoneNumber).toContain(this.personalPhonenumber)
   }
 )
+
 When('I Update the Personal address {string}', async function (addressType) {
   switch (addressType.toLowerCase()) {
     case 'manually':
@@ -1337,71 +1072,43 @@ When('I Update the Personal address {string}', async function (addressType) {
         .locator("//a[normalize-space()='Enter address manually']")
         .click()
 
-      await this.page.locator('//input[@id="address1"]').clear()
-
       this.addressline1 = faker.location.streetAddress()
+      await this.page.locator('//input[@id="address1"]').clear()
       await this.page.fill('//input[@id="address1"]', this.addressline1)
 
-      await this.page.locator('//input[@id="address2"]').clear()
-
       this.addressline2 = faker.location.secondaryAddress()
+      await this.page.locator('//input[@id="address2"]').clear()
       await this.page.fill('//input[@id="address2"]', this.addressline2)
+
       await this.page.locator('//input[@id="address3"]').clear()
 
-      await this.page.locator("//input[@id='city']").clear()
       this.city = faker.location.city()
+      await this.page.locator("//input[@id='city']").clear()
       await this.page.fill("//input[@id='city']", this.city)
 
       await this.page.locator("//input[@id='county']").clear()
-      await this.page.locator("//input[@id='postcode']").clear()
+
       this.postcode = generateRandomUKPostcode()
+      await this.page.locator("//input[@id='postcode']").clear()
       await this.page.fill("//input[@id='postcode']", this.postcode)
 
       await this.page.locator("//input[@id='country']").clear()
       await this.page.fill("//input[@id='country']", 'United Kingdom')
       await this.page.locator("//button[normalize-space()='Continue']").click()
       await this.page.locator("//button[normalize-space()='Submit']").click()
-
       break
+
     case 'postcodelookup': {
-      await this.page.locator("//input[@id='postcode']").clear()
       this.postcode = getRandomUKPostcode()
-      //   await this.page.fill("//input[@id='postcode']", "cf645we");
+      await this.page.locator("//input[@id='postcode']").clear()
       await this.page.fill("//input[@id='postcode']", this.postcode)
-
-      // await this.page.waitForTimeout(3000);
       await this.page.locator("//button[normalize-space()='Continue']").click()
+
       const se = '#addresses'
-      // await this.page.locator("#addresses").click();
-      // await this.page.locator("//*[@id='addresses']/option[4]").click();
-
-      // await this.page.selectOption(se,{index:10});
-      await this.page.waitForTimeout(5000)
+      await this.page.locator(se).waitFor({ state: 'visible' })
       const opt = await this.page.$$(se + '> option')
-      const ee = opt.length
-
-      // const e = await this.page.locator("#addresses");
-
-      // await this.page.selectOption("//select[@id='addresses']",{index:2});
-      //  const options=await this.page.locator("//select[@id='addresses']").click();
-
-      // const count = await options.count();
-      const randomIndex = Math.floor(Math.random() * (ee - 1)) + 1
-
+      const randomIndex = Math.floor(Math.random() * (opt.length - 1)) + 1
       await this.page.selectOption(se, { index: randomIndex })
-
-      // const te=$("#addresses :selected").text();
-      // const te= e.options[e.selectedIndex].text;
-
-      //  const mm =await this.page.selectOption(se,{index:randomIndex}).textContent();
-
-      // const selecteText1= await page.$eval('#addresses',el=>el.querySelector('option:checked').text);
-      // console.log(selecteText1);
-      // const selecteText= await page.$eval(se,el=>el.options[el.selectedIndex].text);
-      // console.log(selecteText);
-      // const selectedText = await.page.$eval('se',el => el.options[el.selected])
-      // const  randomValue = await this.page.locator("#addresses").textContent();
-      // console.log(randomValue);
 
       await this.page.locator("//button[normalize-space()='Continue']").click()
       await this.page.locator("//button[normalize-space()='Submit']").click()
@@ -1417,33 +1124,29 @@ Given(
       .locator("//a[normalize-space()='Enter address manually']")
       .click()
 
-    await this.page.locator('//input[@id="address1"]').clear()
-
     this.addressline1 = faker.location.streetAddress()
-
+    await this.page.locator('//input[@id="address1"]').clear()
     await this.page.fill('//input[@id="address1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address2"]').clear()
-
     this.addressline2 = faker.location.secondaryAddress()
-
+    await this.page.locator('//input[@id="address2"]').clear()
     await this.page.fill('//input[@id="address2"]', this.addressline2)
 
     await this.page.locator('//input[@id="address3"]').clear()
 
-    await this.page.locator("//input[@id='city']").clear()
     this.city = faker.location.city()
+    await this.page.locator("//input[@id='city']").clear()
     await this.page.fill("//input[@id='city']", this.city)
 
     await this.page.locator("//input[@id='county']").clear()
-    await this.page.locator("//input[@id='postcode']").clear()
+
     this.postcode = generateRandomUKPostcode()
+    await this.page.locator("//input[@id='postcode']").clear()
     await this.page.fill("//input[@id='postcode']", this.postcode)
 
     await this.page.locator("//input[@id='country']").clear()
     await this.page.fill("//input[@id='country']", 'United Kingdom')
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // await this.page.locator("//button[normalize-space()='Submit']").click();
     await this.page.getByRole('link', { name: 'Personal address' }).click()
   }
 )
@@ -1451,27 +1154,24 @@ Given(
 Given(
   'Change the Personal Address Manually again in EnterYourPersonalAddress Page',
   async function () {
-    await this.page.locator('//input[@id="address1"]').clear()
-
     this.addressline1 = faker.location.streetAddress()
-
+    await this.page.locator('//input[@id="address1"]').clear()
     await this.page.fill('//input[@id="address1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address2"]').clear()
-
     this.addressline2 = faker.location.secondaryAddress()
-
+    await this.page.locator('//input[@id="address2"]').clear()
     await this.page.fill('//input[@id="address2"]', this.addressline2)
 
     await this.page.locator('//input[@id="address3"]').clear()
 
-    await this.page.locator("//input[@id='city']").clear()
     this.city = faker.location.city()
+    await this.page.locator("//input[@id='city']").clear()
     await this.page.fill("//input[@id='city']", this.city)
 
     await this.page.locator("//input[@id='county']").clear()
-    await this.page.locator("//input[@id='postcode']").clear()
+
     this.postcode = generateRandomUKPostcode()
+    await this.page.locator("//input[@id='postcode']").clear()
     await this.page.fill("//input[@id='postcode']", this.postcode)
 
     await this.page.locator("//input[@id='country']").clear()
@@ -1504,7 +1204,6 @@ Then(
         "//dt[normalize-space()='Personal address']/following-sibling::dd[1]/div[4]"
       )
       .innerText()
-    await this.page.waitForTimeout(5000)
     expect(actAddrLine1).toBe(this.addressline1)
     expect(actAddrLine2).toContain(this.addressline2)
     expect(actCity).toBe(this.city)
@@ -1518,25 +1217,25 @@ Given(
     await this.page
       .locator("//a[normalize-space()='Enter address manually']")
       .click()
-    await this.page.locator('//input[@id="address1"]').clear()
 
     this.addressline1 = faker.location.streetAddress()
+    await this.page.locator('//input[@id="address1"]').clear()
     await this.page.fill('//input[@id="address1"]', this.addressline1)
 
-    await this.page.locator('//input[@id="address2"]').clear()
-
     this.addressline2 = faker.location.secondaryAddress()
+    await this.page.locator('//input[@id="address2"]').clear()
     await this.page.fill('//input[@id="address2"]', this.addressline2)
 
     await this.page.locator('//input[@id="address3"]').clear()
 
-    await this.page.locator("//input[@id='city']").clear()
     this.city = faker.location.city()
+    await this.page.locator("//input[@id='city']").clear()
     await this.page.fill("//input[@id='city']", this.city)
 
     await this.page.locator("//input[@id='county']").clear()
-    await this.page.locator("//input[@id='postcode']").clear()
+
     this.postcode = generateRandomUKPostcode()
+    await this.page.locator("//input[@id='postcode']").clear()
     await this.page.fill("//input[@id='postcode']", this.postcode)
 
     await this.page.locator("//input[@id='country']").clear()
@@ -1546,24 +1245,18 @@ Given(
 
     switch (field.toLowerCase()) {
       case 'addressline1':
-        // console.log(this.generateValue);
-
         await this.page.locator('//input[@id="address1"]').clear()
         await this.page.fill('//input[@id="address1"]', this.generateValue)
-        await this.page.locator('//input[@id="address1"]').clear()
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
-
         break
-
       case 'addressline2':
         await this.page.locator('//input[@id="address2"]').clear()
         await this.page.fill('//input[@id="address2"]', this.generateValue)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
-
         break
       case 'town':
         await this.page.locator("//input[@id='city']").clear()
@@ -1572,7 +1265,6 @@ Given(
           .locator("//button[normalize-space()='Continue']")
           .click()
         break
-
       case 'country':
         await this.page.locator("//input[@id='country']").clear()
         await this.page.fill("//input[@id='country']", this.generateValue)
@@ -1580,7 +1272,6 @@ Given(
           .locator("//button[normalize-space()='Continue']")
           .click()
         break
-
       case 'county':
         await this.page.locator("//input[@id='county']").clear()
         await this.page.fill("//input[@id='county']", this.generateValue)
@@ -1591,15 +1282,16 @@ Given(
     }
   }
 )
+
 Given(
   'I enter the test data on with value as {string} on the WhatIsYourPersonalAddress page',
   async function (testData) {
     await this.page.locator("//input[@id='postcode']").clear()
-    //  this.postcode = getRandomUKPostcode()
     await this.page.fill("//input[@id='postcode']", testData)
     await this.page.locator("//button[normalize-space()='Continue']").click()
   }
 )
+
 Given('I update the dob', async function () {
   const dob = faker.date.birthdate({ min: 18, max: 90, mode: 'age' })
   const day = (dob.getDate() + 1).toString().padStart(2, '0')
@@ -1608,10 +1300,8 @@ Given('I update the dob', async function () {
 
   await this.page.locator("//input[@id='day']").clear()
   await this.page.fill("//input[@id='day']", day)
-
   await this.page.locator("//input[@id='month']").clear()
   await this.page.fill("//input[@id='month']", month)
-
   await this.page.locator("//input[@id='year']").clear()
   await this.page.fill("//input[@id='year']", year)
   await this.page.locator("//button[normalize-space()='Continue']").click()
@@ -1626,43 +1316,25 @@ Given(
     this.month = (dob.getMonth() + 1).toString().padStart(2, '0')
     this.year = (dob.getFullYear() + 1).toString()
 
+    await this.page.locator("//input[@id='day']").clear()
+    await this.page.fill("//input[@id='day']", this.day)
+    await this.page.locator("//input[@id='month']").clear()
+    await this.page.fill("//input[@id='month']", this.month)
+    await this.page.locator("//input[@id='year']").clear()
+    await this.page.fill("//input[@id='year']", this.year)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+
     switch (linkType.toLowerCase()) {
       case 'change':
-        await this.page.locator("//input[@id='day']").clear()
-        await this.page.fill("//input[@id='day']", this.day)
-
-        await this.page.locator("//input[@id='month']").clear()
-        await this.page.fill("//input[@id='month']", this.month)
-
-        await this.page.locator("//input[@id='year']").clear()
-        await this.page.fill("//input[@id='year']", this.year)
-        await this.page.waitForTimeout(3000)
-        await this.page
-          .locator("//button[normalize-space()='Continue']")
-          .click()
         await this.page.getByRole('link', { name: 'Date of birth' }).click()
-
         break
       case 'back':
-        await this.page.locator("//input[@id='day']").clear()
-        await this.page.fill("//input[@id='day']", this.day)
-
-        await this.page.locator("//input[@id='month']").clear()
-        await this.page.fill("//input[@id='month']", this.month)
-
-        await this.page.locator("//input[@id='year']").clear()
-        await this.page.fill("//input[@id='year']", this.year)
-        await this.page.waitForTimeout(3000)
-        await this.page
-          .locator("//button[normalize-space()='Continue']")
-          .click()
-
         await this.page.locator('//a[normalize-space()="Back"]').click()
-
         break
     }
   }
 )
+
 Then(
   'Verify the previously entered details are still displayed in WhatIsYourDateOfBirth? page',
   async function () {
@@ -1675,7 +1347,6 @@ Then(
     const actYearValue = await this.page
       .locator("//input[@id='year']")
       .inputValue()
-    await this.page.waitForTimeout(5000)
     expect(actDayValue).toBe(this.day)
     expect(actMonthValue).toContain(this.month)
     expect(actYearValue).toBe(this.year)
@@ -1685,30 +1356,28 @@ Then(
 Given(
   'I enter the test data on the field {string} with value as {string} on the WhatIsYourFullName? page',
   async function (field, length) {
-    await this.page.locator('//input[@id="first"]').clear()
     this.firstName = faker.person.firstName()
+    await this.page.locator('//input[@id="first"]').clear()
     await this.page.fill('//input[@id="first"]', this.firstName)
 
-    await this.page.locator('//input[@id="middle"]').clear()
     this.middleName = faker.person.middleName()
+    await this.page.locator('//input[@id="middle"]').clear()
     await this.page.fill('//input[@id="middle"]', this.middleName)
 
-    await this.page.locator('//input[@id="last"]').clear()
     this.lastName = faker.person.lastName()
+    await this.page.locator('//input[@id="last"]').clear()
     await this.page.fill('//input[@id="last"]', this.lastName)
 
     this.generateValue = generateValidationTestData(field, length)
 
     switch (field.toLowerCase()) {
       case 'personalfirstname':
-        // console.log(this.generateValue);
         await this.page.locator('//input[@id="first"]').clear()
         await this.page.fill('//input[@id="first"]', this.generateValue)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
         break
-
       case 'personalmiddlename':
         await this.page.locator('//input[@id="middle"]').clear()
         await this.page.fill('//input[@id="middle"]', this.generateValue)
@@ -1729,10 +1398,8 @@ Given(
 
 When('I update Personal Email', async function () {
   await this.page.locator('//input[@id="personal-email"]').clear()
-  // Generate random email
   this.personalEmail = generateRandomEmail()
   await this.page.fill('//input[@id="personal-email"]', this.personalEmail)
-  await this.page.waitForTimeout(3000)
   await this.page.locator("//button[normalize-space()='Continue']").click()
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
@@ -1745,50 +1412,36 @@ Then(
         "//dt[normalize-space()='Personal email address']/following-sibling::dd[1]"
       )
       .innerText()
-    //  const actTxt =  await this.page.locator("#//p[@class='govuk-notification-banner__heading']").textContent();
-    //  const email = actEmail.split(':')[1].trim();
-    await this.page.waitForTimeout(5000)
     expect(actEmail).toBe(this.personalEmail)
-    expect(actEmail).toContain(this.personalEmail)
   }
 )
+
 Given(
   'I update Personal email address and click the {string} in the CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page',
   async function (linkType) {
+    await this.page.locator('//input[@id="personal-email"]').clear()
+    this.personalEmail = generateRandomEmail()
+    await this.page.fill('//input[@id="personal-email"]', this.personalEmail)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+
     switch (linkType.toLowerCase()) {
       case 'change':
-        await this.page.locator('//input[@id="personal-email"]').clear()
-        // Generate random email
-        this.personalEmail = generateRandomEmail()
-        await this.page.fill(
-          '//input[@id="personal-email"]',
-          this.personalEmail
-        )
-        await this.page.waitForTimeout(3000)
-        await this.page
-          .locator("//button[normalize-space()='Continue']")
-          .click()
-
         await this.page.getByRole('link', { name: 'Personal email' }).click()
-
         break
       case 'back':
-        await this.page.locator('//input[@id="personal-email"]').clear()
-        // Generate random email
-        this.personalEmail = generateRandomEmail()
-        await this.page.fill(
-          '//input[@id="personal-email"]',
-          this.personalEmail
-        )
-        await this.page.waitForTimeout(3000)
-        await this.page
-          .locator("//button[normalize-space()='Continue']")
-          .click()
-
         await this.page.locator('//a[normalize-space()="Back"]').click()
-
         break
     }
+  }
+)
+
+Then(
+  'Verify the previously entered details are still displayed in WhatIsYourPersonalEmailAddress? page',
+  async function () {
+    const actPersonalEmail = await this.page
+      .locator("//input[@id='personal-email']")
+      .inputValue()
+    expect(actPersonalEmail).toBe(this.personalEmail)
   }
 )
 
@@ -1797,88 +1450,11 @@ Given(
   async function (day, month, year) {
     await this.page.locator("//input[@id='day']").clear()
     await this.page.fill("//input[@id='day']", day)
-
     await this.page.locator("//input[@id='month']").clear()
     await this.page.fill("//input[@id='month']", month)
-
     await this.page.locator("//input[@id='year']").clear()
     await this.page.fill("//input[@id='year']", year)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-  }
-)
-Then(
-  'Verify the previously entered details are still displayed in WhatIsYourPersonalEmailAddress? page',
-  async function () {
-    const actPersonalEmail = await this.page
-      .locator("//input[@id='personal-email']")
-      .inputValue()
-    await this.page.waitForTimeout(5000)
-    expect(actPersonalEmail).toBe(this.personalEmail)
-    expect(actPersonalEmail).toContain(this.personalEmail)
-  }
-)
-
-Given(
-  'I am on SignIn page and enter the credentials for {string} with {string}',
-  async function (businessdetails, permission) {
-    businessdetails = businessdetails?.toLowerCase()
-    permission = permission?.toLowerCase()
-    switch (true) {
-      case businessdetails === 'businessdetails' &&
-        permission === 'amendpermission':
-        await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
-        )
-        // await this.page.goto("https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/");
-        await this.page.waitForTimeout(3000)
-        await this.page.locator("//a[normalize-space()='Sign in']").click()
-        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-        //  await this.page.locator("//input[@id='crn']").fill("1100381252");
-        await this.page.locator("//input[@id='crn']").fill('1100774679')
-        await this.page.locator("//input[@id='password']").fill('Password456')
-        await this.page.locator("//button[@id='next']").click()
-        await this.page
-          .locator(
-            '//label[normalize-space()="Joseph Heap Property Limited - SBI 107176577"]'
-          )
-          .click()
-        await this.page.locator("//button[@id='continueReplacement']").click()
-        await this.page
-          .locator(
-            "//a[normalize-space()='View and update your business details']"
-          )
-          .click()
-        await this.page.waitForTimeout(3000)
-        break
-
-      case businessdetails === 'businessdetails' &&
-        permission === 'viewpermission':
-        await this.page.goto(
-          'https://fcp-sfd-frontend.test.cdp-int.defra.cloud/'
-        )
-        // await this.page.goto("https://fcp-sfd-frontend.dev.cdp-int.defra.cloud/");
-        await this.page.waitForTimeout(3000)
-        await this.page.locator("//a[normalize-space()='Sign in']").click()
-        // await this.page.locator("//a[normalize-space()='View and update your business details']").click();
-        //  await this.page.locator("//input[@id='crn']").fill("1100381252");
-        await this.page.locator("//input[@id='crn']").fill('1100806911')
-        await this.page.locator("//input[@id='password']").fill('Password456')
-        await this.page.locator("//button[@id='next']").click()
-        await this.page
-          .locator("label:has-text('Chefnalls - SBI 113912887')")
-          .click()
-        await this.page.locator('#continueReplacement').click()
-        await this.page
-          .locator("//a[normalize-space()='View your Business details']")
-          .click()
-        await this.page.waitForTimeout(3000)
-        break
-
-      case 'personaldetails':
-        break
-      default:
-        throw new Error('unknow link type:$(detailsType)')
-    }
   }
 )
 
@@ -1886,93 +1462,73 @@ Then(
   'The {string} change link should be {string}',
   async function (linkType, visible) {
     const shouldBeVisible = visible.toLowerCase() === 'yes'
-    // const aa = await this.page.getByText('Change business address').innerText();
+
     switch (linkType.toLowerCase()) {
       case 'businessaddress': {
-        const businessaddressCount = await this.page
+        const count = await this.page
           .getByRole('link', { name: 'Change Business address' })
           .count()
-        if (shouldBeVisible) {
-          expect(businessaddressCount).toBeGreaterThan(0)
-        } else {
-          expect(businessaddressCount).toBe(0)
-        }
+        shouldBeVisible
+          ? expect(count).toBeGreaterThan(0)
+          : expect(count).toBe(0)
         break
       }
       case 'businessphonenumbers': {
-        //  await this.page.locator("//a[@href='/business-phone-numbers-change']").click()
-        const businessPhoneNumbersCount = await this.page
+        const count = await this.page
           .getByRole('link', { name: 'Change Business telephone numbers' })
           .count()
-        if (shouldBeVisible) {
-          expect(businessPhoneNumbersCount).toBeGreaterThan(0)
-        } else {
-          expect(businessPhoneNumbersCount).toBe(0)
-        }
+        shouldBeVisible
+          ? expect(count).toBeGreaterThan(0)
+          : expect(count).toBe(0)
         break
       }
       case 'businessemailaddress': {
-        //  await this.page          .getByRole('link', { name: 'Business email address' })
-        const businessemailaddressCount = await this.page
+        const count = await this.page
           .getByRole('link', { name: 'Change Business email address' })
           .count()
-        if (shouldBeVisible) {
-          expect(businessemailaddressCount).toBeGreaterThan(0)
-        } else {
-          expect(businessemailaddressCount).toBe(0)
-        }
+        shouldBeVisible
+          ? expect(count).toBeGreaterThan(0)
+          : expect(count).toBe(0)
         break
       }
-
       case 'businessname': {
-        const businessnameCount = await this.page
+        const count = await this.page
           .getByRole('link', { name: 'Change business name' })
           .count()
-        if (shouldBeVisible) {
-          expect(businessnameCount).toBeGreaterThan(0)
-        } else {
-          expect(businessnameCount).toBe(0)
-        }
+        shouldBeVisible
+          ? expect(count).toBeGreaterThan(0)
+          : expect(count).toBe(0)
         break
       }
       case 'businesslegalstatus': {
-        const businesslegalstatusCount = await this.page
+        const count = await this.page
           .getByRole('link', { name: 'Change business legal status' })
           .count()
-        if (shouldBeVisible) {
-          expect(businesslegalstatusCount).toBeGreaterThan(0)
-        } else {
-          expect(businesslegalstatusCount).toBe(0)
-        }
+        shouldBeVisible
+          ? expect(count).toBeGreaterThan(0)
+          : expect(count).toBe(0)
         break
       }
       case 'businesstype': {
-        const businesstypeCount = await this.page
+        const count = await this.page
           .getByRole('link', { name: 'Change business type' })
           .count()
-        if (shouldBeVisible) {
-          expect(businesstypeCount).toBeGreaterThan(0)
-        } else {
-          expect(businesstypeCount).toBe(0)
-        }
+        shouldBeVisible
+          ? expect(count).toBeGreaterThan(0)
+          : expect(count).toBe(0)
         break
       }
-
       case 'vatnumber': {
-        const vatnumberCount = await this.page
+        const count = await this.page
           .getByRole('link', { name: 'Change VAT registration number' })
           .count()
-        if (shouldBeVisible) {
-          expect(vatnumberCount).toBeGreaterThan(0)
-        } else {
-          expect(vatnumberCount).toBe(0)
-        }
+        shouldBeVisible
+          ? expect(count).toBeGreaterThan(0)
+          : expect(count).toBe(0)
         break
       }
-      /*    default:
-        throw new Error('unknow element: ${element}') */
       default:
-        throw new Error('unknow link type:$(linkType)')
+        throw new Error(`Unknown link type: ${linkType}`)
     }
   }
 )
@@ -1985,62 +1541,29 @@ Then(
         const actMsg = await this.page
           .locator("//p[@class='govuk-body']")
           .innerText()
-
         expect(actMsg).toBe(
           'You only have permission to update contact details for this business. You can ask the business to raise your permission level.'
         )
-        expect(actMsg).toContain(
-          'You only have permission to update contact details for this business. You can ask the business to raise your permission level.'
-        )
-
         break
       }
       case 'viewpermission': {
         const actMsg = await this.page
           .locator("//p[@class='govuk-body']")
           .innerText()
-
         expect(actMsg).toBe(
-          'You do not have permission to update details for this business. You can ask the business to raise your permission level.'
-        )
-        expect(actMsg).toContain(
           'You do not have permission to update details for this business. You can ask the business to raise your permission level.'
         )
         break
       }
-
       default:
-        throw new Error('unknow link type:$(detailsType)')
+        throw new Error(`Unknown permission type: ${linkType}`)
     }
   }
 )
 
-/* Then('Verify relevant Permission message type for {string} is displayed on the page ViewAndUpdateYourBusinessType', async function (linkType) {
-
-  switch (linkType.toLowerCase()) {
-
-    case 'amendpermission':
-      {
-        break;
-      }
-    case 'viewpermission':
-      {
-        const actMsg = await this.page.locator("//p[@class='govuk-body']").innerText();
-
-        expect(actMsg).toBe("You do not have permission to update details for this business. You can ask the business to raise your permission level.");
-        expect(actMsg).toContain("You do not have permission to update details for this business. You can ask the business to raise your permission level.");
-        break;
-      }
-
-    default:
-      throw new Error('unknow link type:$(detailsType)')
-  }
-
-}); */
-
 Given(
   'I enter the test data on the Emailformat as {string} on the {string} page',
-  async function (emailFormat, string2) {
+  async function (emailFormat, _page) {
     await this.page.locator('//input[@id="personal-email"]').clear()
     await this.page.fill('//input[@id="personal-email"]', emailFormat)
     await this.page.locator('//button[normalize-space()="Continue"]').click()
@@ -2050,65 +1573,38 @@ Given(
 Given(
   'Verify relevant Header for {string} is displayed on the ViewAndUpdateYourBusinessType Page',
   async function (linkType) {
-    switch (linkType.toLowerCase()) {
-      case 'amendpermission': {
-        break
-      }
-      case 'viewpermission': {
-        const actMsg = await this.page
-          .locator("//*[@id='main-content']//h1")
-          .innerText()
-
-        expect(actMsg).toBe('View business details')
-        expect(actMsg).toContain('View business details')
-        break
-      }
-
-      default:
-        throw new Error('unknow link type:$(detailsType)')
+    if (linkType.toLowerCase() === 'viewpermission') {
+      const actMsg = await this.page
+        .locator("//*[@id='main-content']//h1")
+        .innerText()
+      expect(actMsg).toBe('View business details')
     }
   }
 )
 
 Then('Navigate to {string}', async function (baseurl) {
-  await this.page.goto(
-    'https://fcp-sfd-frontend.test.cdp-int.defra.cloud' + baseurl
-  )
+  await this.page.goto(`${BASE_URL}${baseurl}`)
 })
-
-/* Then('Navigate to {string}', async function (baseurl) {
-  console.log(baseurl)
-  console.log("https://fcp-sfd-frontend.test.cdp-int.defra.cloud" + baseurl)
-  await this.page.goto("https://fcp-sfd-frontend.test.cdp-int.defra.cloud" + baseurl);
-}); */
 
 Then(
   'Application should display with Message as {string}',
   async function (expMsg) {
-    // const actMsg = await this.page.locator("//h1[normalize-space()='You do not have permission to access this page']").innerText();
-    //  const actMsg = await this.page.getByRole('heading').innerText();
     const actMsg = await this.page
       .locator('//*[@id="main-content"]//h1')
       .innerText()
-    await this.page.waitForTimeout(3000)
     expect(actMsg).toBe(expMsg)
   }
 )
 
-// Helper function
 function generateRandomPhoneNumber() {
   let phone = '0'
-  for (let i = 0; i < 10; i++) {
-    phone += Math.floor(Math.random() * 10)
-  }
+  for (let i = 0; i < 10; i++) phone += Math.floor(Math.random() * 10)
   return phone
 }
 
 function generateVatNumber(length) {
   let vatNumber = '0'
-  for (let i = 0; i <= length; i++) {
-    vatNumber += Math.floor(Math.random() * 10)
-  }
+  for (let i = 0; i <= length; i++) vatNumber += Math.floor(Math.random() * 10)
   return vatNumber
 }
 
@@ -2123,8 +1619,7 @@ function getRandomUKPostcode() {
     'NE1 4LP',
     'NG1 5FS'
   ]
-  const randomIndex = Math.floor(Math.random() * ukPostcodes.length)
-  return ukPostcodes[randomIndex]
+  return ukPostcodes[Math.floor(Math.random() * ukPostcodes.length)]
 }
 
 function generateRandomEmail() {
@@ -2132,167 +1627,51 @@ function generateRandomEmail() {
   const randomString = Math.random().toString(36).substring(2, 8)
   return `test_${randomString}_${timestamp}@test.com`
 }
-function generateDiffLengthRandomEmail(lenght) {
+
+function generateDiffLengthRandomEmail(length) {
   const domain = '@example.com'
-  if (!lenght || lenght <= domain.length) {
-    return ''
-  }
-  const localPartLength = lenght - domain.length
-  // if (localPartLength <=0) throw new Error ("length too short")
+  if (!length || length <= domain.length) return ''
+  const localPartLength = length - domain.length
   return faker.string.alphanumeric(localPartLength).toLowerCase() + domain
 }
 
-/* function generateRandomAddressLine1() {
-  const number = Math.floor(Math.random() * 999 + 1)
-  const streetNames = [
-    'High Street',
-    'Main Road',
-    'Park Avenue',
-    'Church Lane',
-    'Station Road'
-  ]
-  const prefixes = ['oak', 'Hill', 'green', 'park']
-  // const street = streetNames[Math.floor (Math.random() * streetNames.lenght)];
-  // const ss=number + '' + street;
-  const ss1 = `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
-  return `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
-  return number + '' + street
-} */
-/* 
-function generateRandomAddressLine1b() {
-  faker.location.streetAddress()
-} */
-
-/* function generateRandomAddressLine1a() {
-  const number = Math.floor(Math.random() * 999 + 1)
-  const streetNames = [
-    'High Street',
-    'Main Road',
-    'Park Avenue',
-    'Church Lane',
-    'Station Road'
-  ]
-  const prefixes = ['oak', 'Hill', 'green', 'park']
-
-  const street = streetNames[Math.floor(Math.random() * streetNames.lenght)]
-  const prefix = prefixes[Math.floor(Math.random() * prefixes.lenght)]
- // const aa = `${number}${prefix}${street}`
-  return `${number}${prefix}${street}`
-
- // const ss1 = `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
-  return `${number}${randomItem(prefixes, 'prefixes')}${randomItem(streetNames, 'streetWords')}`
-} */
-
-/* function generateRandomTown() {
-  const towns = [
-    'London',
-    'Manchester',
-    'Birmingham',
-    'Leeds',
-    'Bristol',
-    'Liverpool',
-    'Glasgow'
-  ]
-  const ss1 = towns[Math.floor(Math.random() * towns.lenght)]
-  return towns[Math.floor(Math.random() * towns.lenght)]
-} */
-
-/* function generateRandomAddressLine2() {
-  const areas = [
-    'North',
-    'South',
-    'East',
-    'West',
-    'Central',
-    'Heights',
-    'Gardens'
-  ]
-  const ss2 =
-    areas[Math.floor(Math.random() * areas.lenght)] +
-    '' +
-    (Math.floor(Math.random() * 50) + 1)
-  return (
-    areas[Math.floor(Math.random() * areas.lenght)] +
-    '' +
-    (Math.floor(Math.random() * 50) + 1)
-  )
-} */
-
-/* 
-function generateRandomPostcode() {
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const randomLetter = () => letters.charAt(Math.floor(Math.random() * letters.length))
-  const randomDigit = () => Math.floor(Math.random() * 10);
-  const ff = randomLetter() +
-    (Math.random() > 0.5 ? randomLetter() : '') +
-    randomDigit() +
-    (Math.random() > 0.5 ? randomDigit() : '') +
-    '' +
-    randomDigit() +
-    randomLetter() +
-    randomLetter();
-  return (
-    randomLetter() +
-    (Math.random() > 0.5 ? randomLetter() : '') +
-    randomDigit() +
-    (Math.random() > 0.5 ? randomDigit() : '') +
-    '' +
-    randomDigit() +
-    randomLetter() +
-    randomLetter());
-
-} */
-
 function generateRandomUKPostcode() {
-  const allowedFirstLetters = 'ABCDEFGHJKLMNOPRSTUWYZ' // no Q, V, X
-  const allowedSecondLetters = 'ABCDEFGHJKLMNOPQRSTUVWXYZ' // some restrictions removed for simplicity
-  const inwardLetters = 'ABCDEFGHJLNPQRSTUVWXYZ' // inward code restrictions
+  const allowedFirstLetters = 'ABCDEFGHJKLMNOPRSTUWYZ'
+  const allowedSecondLetters = 'ABCDEFGHJKLMNOPQRSTUVWXYZ'
+  const inwardLetters = 'ABCDEFGHJLNPQRSTUVWXYZ'
 
   const randomChar = (chars) =>
     chars.charAt(Math.floor(Math.random() * chars.length))
   const randomDigit = () => Math.floor(Math.random() * 10)
 
-  // Outward code patterns
   const patterns = [
-    () => randomChar(allowedFirstLetters) + randomDigit(), // A9
-    () => randomChar(allowedFirstLetters) + randomDigit() + randomDigit(), // A99
+    () => randomChar(allowedFirstLetters) + randomDigit(),
+    () => randomChar(allowedFirstLetters) + randomDigit() + randomDigit(),
     () =>
       randomChar(allowedFirstLetters) +
       randomChar(allowedSecondLetters) +
-      randomDigit(), // AA9
-    () =>
-      randomChar(allowedFirstLetters) +
-      randomChar(allowedSecondLetters) +
-      randomDigit() +
-      randomDigit(), // AA99
-    () =>
-      randomChar(allowedFirstLetters) +
-      randomDigit() +
-      randomChar(allowedSecondLetters), // A9A
+      randomDigit(),
     () =>
       randomChar(allowedFirstLetters) +
       randomChar(allowedSecondLetters) +
       randomDigit() +
-      randomChar(allowedSecondLetters) // AA9A
+      randomDigit(),
+    () =>
+      randomChar(allowedFirstLetters) +
+      randomDigit() +
+      randomChar(allowedSecondLetters),
+    () =>
+      randomChar(allowedFirstLetters) +
+      randomChar(allowedSecondLetters) +
+      randomDigit() +
+      randomChar(allowedSecondLetters)
   ]
 
   const outward = patterns[Math.floor(Math.random() * patterns.length)]()
   const inward =
     randomDigit() + randomChar(inwardLetters) + randomChar(inwardLetters)
-  // const tt = outward + ' ' + inward
   return outward + ' ' + inward
 }
-
-/* function randomItem(arr, name = 'array') {
-  if (!Array.isArray(arr)) {
-    throw new Error(`${name}is not an array`)
-  }
-
-  if (arr.length === 0) {
-    throw new Error(`${name}is empty`)
-  }
-  return arr[Math.floor(Math.random() * arr.length)]
-} */
 
 function generateValidationTestData(field, length) {
   let value = ''
@@ -2300,60 +1679,42 @@ function generateValidationTestData(field, length) {
     switch (field.toLowerCase()) {
       case 'addressline1':
       case 'addressline2':
-        value += faker.location.streetAddress() + ''
+        value += faker.location.streetAddress()
         break
-
       case 'businesstown':
       case 'town':
-        value += faker.location.city() + ''
+        value += faker.location.city()
         break
-
       case 'businesscountry':
       case 'country':
-        value += faker.location.country() + ''
+        value += faker.location.country()
         break
-
       case 'businesscounty':
       case 'county':
-        value += faker.location.county() + ''
+        value += faker.location.county()
         break
       case 'businessname':
-        value += faker.company.name() + ''
+        value += faker.company.name()
         break
-
       case 'personalfirstname':
-        value += faker.person.firstName() + ''
+        value += faker.person.firstName()
         break
-
       case 'personalmiddlename':
-        value += faker.person.middleName() + ''
+        value += faker.person.middleName()
         break
-
       case 'personallastname':
-        value += faker.person.lastName() + ''
+        value += faker.person.lastName()
         break
       case 'businessphone':
-        // value += faker.company.generateRandomPhoneNumber() + '';
-        value += generateRandomPhoneNumber() + ''
-
-        break
       case 'personalphone':
-        // value += faker.company.generateRandomPhoneNumber() + '';
-        value += generateRandomPhoneNumber() + ''
-
-        break
       case 'personalmobilephone':
-        // value += faker.company.generateRandomPhoneNumber() + '';
-        value += generateRandomPhoneNumber() + ''
-
+        value += generateRandomPhoneNumber()
         break
-
       case 'businessemailaddress':
-        value += generateRandomEmail() + ''
+        value += generateRandomEmail()
         break
-
       case 'vatnumber':
-        value += generateVatNumber(length) + ''
+        value += generateVatNumber(length)
         break
     }
   }

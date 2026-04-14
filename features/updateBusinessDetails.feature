@@ -1,0 +1,190 @@
+Feature: Update business details
+
+  Background:
+    Given I am on SignIn page and enter the credentials for "BusinessDetails"
+
+  @test1 @sfd175
+  Scenario: Verify phone number gets updated on ViewAndUpdateYourBusinessType page
+    When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
+    And I update phone number
+    Then Verfiy updated phone details on the ViewAndUpdateYourBusinessType page are been displayed correctly
+    And Verify Success Updated message is displayed for "BusinessPhoneNumbers" on the page ViewAndUpdateYourBusinessType
+
+  @test2 @sfd175
+  Scenario: Verify email gets updated on ViewAndUpdateYourBusinessType page
+    When I click the "BusinessEmailAddress" link on the BusinessDetails page
+    And I update Email
+    Then Verfiy Updated email details on the ChangeYourBusinessType page are been displayed correctly
+    And Verify Success Updated message is displayed for "BusinessEmailAddress" on the page ViewAndUpdateYourBusinessType
+
+  @test3 @sfd174
+  Scenario: Verify postal address gets updated on ViewAndUpdateYourBusinessType page
+    When I click the "BusinessAddress" link on the BusinessDetails page
+    And I update Business Address
+    Then Verfiy Updated Business Address details on the ChangeYourBusinessType page are been displayed correctly
+    And Verify Success Updated message is displayed for "BusinessAddress" on the page ViewAndUpdateYourBusinessType
+
+  @test4 @sfd174
+  Scenario: Verify business name gets updated on ViewAndUpdateYourBusinessType page
+    When I click the "BusinessName" link on the BusinessDetails page
+    And I update Business Name
+    Then Verfiy Updated Business Name details on the ChangeYourBusinessType page are been displayed correctly
+    And Verify Success Updated message is displayed for "BusinessName" on the page ViewAndUpdateYourBusinessType
+
+  @test9 @sfd285
+  Scenario: Verify business name gets updated again by clicking change link on CheckYourBusinessNameIsCorrectBeforeSubmitting page
+    When I click the "BusinessName" link on the BusinessDetails page
+    And I update Business Name and click the Change link in CheckYourBusinessNameIsCorrectBeforeSubmitting Page
+    And Change the Business Name again in WhatIsYourBusinessName? Page
+    Then Verfiy Updated Business Name details on the ChangeYourBusinessType page are been displayed correctly
+    And Verify Success Updated message is displayed for "BusinessName" on the page ViewAndUpdateYourBusinessType
+
+  @test10 @sfd285
+  Scenario: Verify postal address gets updated again by clicking change link on EnterYourBusinessAddress page
+    When I click the "BusinessAddress" link on the BusinessDetails page
+    And I update Business Address and click the Change link in CheckYourBusinessAddressIsCorrectBeforeSubmitting Page
+    And Change the Business Address again in EnterYourBusinessAddress Page
+    Then Verfiy Updated Business Address details on the ChangeYourBusinessType page are been displayed correctly
+    And Verify Success Updated message is displayed for "BusinessAddress" on the page ViewAndUpdateYourBusinessType
+
+  @test11 @sfd287
+  Scenario: Verify phone number gets updated again by clicking change link on CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting page
+    When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
+    And I update Business PhoneNumber and click the Change link in CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting Page
+    And Change the Business PhoneNumber again in WhatAreYourBusinessPhoneNumbers? Page
+    Then Verfiy Updated Business PhoneNumber details on the ViewAndUpdateYourBusinessType page are been displayed correctly
+    And Verify Success Updated message is displayed for "BusinessPhonenumbers" on the page ViewAndUpdateYourBusinessType
+
+  @test12 @sfd287
+  Scenario: Verify business email address gets updated again by clicking change link on CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting page
+    When I click the "BusinessEmailAddress" link on the BusinessDetails page
+    And I update Business EmailAddress and click the Change link in CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting Page
+    And Change the Business EmailAddress again in CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting Page
+    Then Verfiy Updated Business EmailAddress details on the ViewAndUpdateYourBusinessType page are been displayed correctly
+    And Verify Success Updated message is displayed for "BusinessEmailAddress" on the page ViewAndUpdateYourBusinessType
+
+  @test5 @sfd176
+  Scenario Outline: Verify application lands on the appropriate sign out page after clicking sign out from any page
+    When I click signOut link on the "<SignOutPage>" page
+    Then Application should Navigate to mp06 Signed Out page.
+
+    Examples:
+      | SignOutPage                     |
+      | ViewAndUpdateYourBusinessType   |
+      | WhatIsYourBusinessName          |
+      | EnterYourBusinessAddress        |
+      | WhatAreYourBusinessPhoneMembers |
+      | WhatIsYourBusinessEmailAddress  |
+      | ChangeYourBusinessType          |
+
+  @test6 @sfd176
+  Scenario: Verify sign out invalidates session across multiple tabs
+    Given I sign In on the first tab
+    When I open another tab with the same session
+    And I signOut on the first tab
+    And I switch to the second tab
+    And I click on the link on the second tab
+    Then I should be redirected to the signIn page from the second tab
+
+  @test17 @sfd324
+  Scenario Outline: Verify application navigates to SignInToFarmingFrontDoor page after clicking sign in link on the signed out page
+    When I click signOut link on the "<SignOutPage>" page
+    And I click a link signIn link in LandAndFarmService page
+    Then Application should Navigate to SignInToFarmingFrontDoor page.
+
+    Examples:
+      | SignOutPage                     |
+      | ViewAndUpdateYourBusinessType   |
+      | WhatIsYourBusinessName          |
+      | EnterYourBusinessAddress        |
+      | WhatAreYourBusinessPhoneMembers |
+      | WhatIsYourBusinessEmailAddress  |
+      | ChangeYourBusinessType          |
+
+  @test18 @sfd325
+  Scenario Outline: Verify application displays relevant message when selecting Yes or No on AreYouSureYouWantToRemoveYourVATRegistrationNumber page
+    When I add the VAT Number
+    And I click "<Link>" link
+    And I click "<VATregistrationButton>" button in the AreYouSureYouWantToRemoveYourVATRegistrationNumber page
+    Then Verify Success Updated message is displayed for "<VATregistrationButton>" on the page ViewAndUpdateYourBusinessType
+
+    Examples:
+      | VATregistrationButton | Link   |
+      | Yes                   | Remove |
+      | No                    | Remove |
+
+  @test19 @sfd383
+  Scenario Outline: Verify updated VAT number is displayed on ViewAndUpdateYourBusinessType page
+    When I add the VAT Number
+    And I click "<Link>" link
+    And I Update the VAT number in WhatIsYourVATRegistrationNumber page and submit
+    Then ViewAndUpdateYourBusinessType page should display updated VAT number
+    And Verify Success Updated message is displayed for "VATnumber" on the page ViewAndUpdateYourBusinessType
+
+    Examples:
+      | Link   |
+      | Change |
+
+  @test13 @sfd286
+  Scenario Outline: Verify relevant error message for various validation criteria on BusinessAddress page
+    When I click the "BusinessAddress" link on the BusinessDetails page
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the BusinessAddress page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField       | TestData | ErrorMessage                                            |
+      | AddressLine1    |      101 | Address line 1 must be 100 characters or less           |
+      | AddressLine2    |      101 | Address line 2 must be 100 characters or less           |
+      | BusinessCounty  |      101 | County must be 60 characters or less                    |
+      | BusinessCountry |       61 | Country must be 60 characters or less                   |
+      | BusinessTown    |      101 | Town or city must be 60 characters or less              |
+      | AddressLine1    |        0 | Enter address line 1, typically the building and street |
+      | BusinessCountry |        0 | Enter a country                                         |
+      | BusinessTown    |        0 | Enter town or city                                      |
+
+  @test14 @sfd286
+  Scenario Outline: Verify relevant error message for various validation criteria on WhatIsYourBusinessName page
+    When I click the "BusinessName" link on the BusinessDetails page
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField    | TestData | ErrorMessage                                 | ValidationPage         |
+      | BusinessName |      301 | Business name must be 160 characters or less | WhatIsYourBusinessName |
+      | BusinessName |        0 | Enter business name                          | WhatIsYourBusinessName |
+
+  @test15 @sfd288
+  Scenario Outline: Verify relevant error message for various validation criteria on WhatAreYourBusinessPhoneNumbers page
+    When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField              | TestData | ErrorMessage                                            | ValidationPage                  |
+      | BusinessPhone          |      101 | Business telephone number must be 50 characters or less | WhatAreYourBusinessPhoneNumbers |
+      | BusinessPhone          |        1 | Business telephone number must be 10 characters or more | WhatAreYourBusinessPhoneNumbers |
+      | BusinessAndMobilePhone |          | Enter at least one phone number                         | WhatAreYourBusinessPhoneNumbers |
+
+  @test16 @sfd288
+  Scenario Outline: Verify relevant error message for various validation criteria on WhatIsYourBusinessEmailAddress page
+    When I click the "BusinessEmailAddress" link on the BusinessDetails page
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField            | TestData | ErrorMessage                                          | ValidationPage                 |
+      | BusinessEmailAddress |      255 | Business email address must be 254 characters or less | WhatIsYourBusinessEmailAddress |
+      | BusinessEmailAddress |          | Enter business email address                          | WhatIsYourBusinessEmailAddress |
+
+  @test20 @sfd383
+  Scenario Outline: Verify relevant error message for various validation criteria on WhatIsYourVATRegistrationNumber page
+    When I add the VAT Number
+    And I click "<Link>" link
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | Link   | TextField | TestData | ErrorMessage                                    | ValidationPage                  |
+      | Change | VATnumber |        8 | Enter a VAT registration number, like 123456789 | WhatIsYourVATRegistrationNumber |
+      | Change | VATnumber |          | Enter a VAT registration number                 | WhatIsYourVATRegistrationNumber |
+      | Change | VATnumber |       10 | Enter a VAT registration number, like 123456789 | WhatIsYourVATRegistrationNumber |

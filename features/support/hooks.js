@@ -3,7 +3,12 @@
 //   const { chromium } = require('playwright');
 //   const { allure } = require('allure-cucumberjs');
 
-import { Before, After, setWorldConstructor } from '@cucumber/cucumber'
+import {
+  Before,
+  After,
+  setWorldConstructor,
+  setDefaultTimeout
+} from '@cucumber/cucumber'
 import { chromium } from 'playwright'
 //  import { allure } from 'allure-cucumberjs';
 
@@ -15,6 +20,8 @@ class CustomWorld {
     this.phonenumber = null // optional for your scenario
   }
 }
+
+setDefaultTimeout(60 * 1000) // 60 seconds per step
 
 setWorldConstructor(CustomWorld)
 
