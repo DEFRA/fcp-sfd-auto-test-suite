@@ -29,11 +29,11 @@ Before(async function () {
   // Launch browser before each scenario
   // console.log('i am inside hooks')
   this.browser = await chromium.launch({
-    headless: true
+    headless: true,
     // Proxy for CDP
-    /*    proxy: {
+    proxy: {
       server: 'http://localhost:3128'
-    } */
+    }
   })
 
   this.context = await this.browser.newContext()
