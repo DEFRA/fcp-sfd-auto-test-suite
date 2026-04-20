@@ -28,13 +28,18 @@ setWorldConstructor(CustomWorld)
 Before(async function () {
   // Launch browser before each scenario
   // console.log('i am inside hooks')
-  this.browser = await chromium.launch({
+  const launchOptions = {
     headless: true
-    // Proxy for CDP
-    /*    proxy: {
+  }
+
+  // Proxy for CDP
+  if (process.env.CDP_PROXY === 'true') {
+    launchOptions.proxy = {
       server: 'http://localhost:3128'
-    } */
-  })
+    }
+  }
+
+  this.browser = await chromium.launch(launchOptions)
 
   this.context = await this.browser.newContext()
   this.page = await this.context.newPage()
