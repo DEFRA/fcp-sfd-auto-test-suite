@@ -3,7 +3,7 @@ Feature: Update personal details
   Background:
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
 
-  @test21 @sfd351
+  @test21 @sfd351 @browserstack
   Scenario: Verify personal phone number gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal phone number

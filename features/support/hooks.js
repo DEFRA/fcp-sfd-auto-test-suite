@@ -10,6 +10,8 @@ import {
   setDefaultTimeout
 } from '@cucumber/cucumber'
 import { chromium } from 'playwright'
+import { ProxyAgent, setGlobalDispatcher } from 'undici'
+import { bootstrap } from 'global-agent'
 //  import { allure } from 'allure-cucumberjs';
 
 class CustomWorld {
@@ -50,6 +52,13 @@ Before(async function () {
   this.context = await this.browser.newContext({ ignoreHTTPSErrors: true })
   this.page = await this.context.newPage()
 })
+
+if (process.env.BROWSERSTACK === 'true' && process.env.CDP_PROXY === 'true') {
+  const dispatcher = new ProxyAgent({ uri: 'http://localhost:3128' })
+  setGlobalDispatcher(dispatcher)
+  bootstrap()
+  global.GLOBAL_AGENT.HTTP_PROXY = 'http://localhost:3128'
+}
 
 After({ order: 1 }, async function (scenario) {
   // Capture screenshot for failed scenario
