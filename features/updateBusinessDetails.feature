@@ -179,3 +179,35 @@ Feature: Update business details
       | Change | VATnumber |        8 | Enter a VAT registration number, like 123456789 | WhatIsYourVATRegistrationNumber |
       | Change | VATnumber |          | Enter a VAT registration number                 | WhatIsYourVATRegistrationNumber |
       | Change | VATnumber |       10 | Enter a VAT registration number, like 123456789 | WhatIsYourVATRegistrationNumber |
+
+  @test45 @sfd2-809
+  Scenario Outline: Verify  Application is displaying relevant message whilist selecting Yes or No in AreYouSureYouWantToRemoveYourVATRegistrationNumber page
+    When I add the VAT Number
+    And I click "Remove" link
+    And I click VAT submit button
+    Then error message "Select yes if you want to remove your VAT registration number" on the page AreYouSureYouWantToRemoveYourVATRegistrationNumber page
+
+  @test48 @sfd2-806
+  Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatAreYourBusinessPhoneNumbers? page
+    When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
+    And I enter the test data on the field "<TextField>" with value as "<TestData>" on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField              | TestData | ErrorMessage                                                | ValidationPage                  |
+      | BusinessPhone          |       51 | Business telephone number must be 50 characters or less     | WhatAreYourBusinessPhoneNumbers |
+      | BusinessPhone          |        1 | Business telephone number must be 10 characters or more     | WhatAreYourBusinessPhoneNumbers |
+      | BusinessMobilePhone    |       51 | Business mobile phone number must be 50 characters or less  | WhatAreYourBusinessPhoneNumbers |
+      | BusinessMobilePhone    |        1 | Business mobile phone number must be 10 characters or more  | WhatAreYourBusinessPhoneNumbers |
+      | BusinessAndMobilePhone |          | Enter at least one phone number                             | WhatAreYourBusinessPhoneNumbers |
+
+  @test49 @sfd2-806
+  Scenario Outline: Verify relevant Error message displaying for invalid characters on WhatAreYourBusinessPhoneNumbers? page
+    When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
+    And I enter invalid characters "<InvalidChars>" on the "<TextField>" field on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TextField           | InvalidChars  | ErrorMessage                                                                                                        | ValidationPage                  |
+      | BusinessPhone       | abc!$%        | Business telephone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +    | WhatAreYourBusinessPhoneNumbers |
+      | BusinessMobilePhone | abc!$%        | Business mobile phone number must only include numbers 0 to 9 and special characters such as spaces, brackets and + | WhatAreYourBusinessPhoneNumbers |

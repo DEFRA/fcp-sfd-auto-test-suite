@@ -163,3 +163,13 @@ Feature: Update personal details
       | testemailaddress;@email.com | Enter an email address, like name@example.com | WhatIsYourPersonalEmailAddress |
       | testemailaddress[@email.com | Enter an email address, like name@example.com | WhatIsYourPersonalEmailAddress |
       | test emailaddress@email.com | Enter an email address, like name@example.com | WhatIsYourPersonalEmailAddress |
+
+  @test47 @sfd2-807
+  Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatAreYourPersonalPhoneNumbers? page
+    When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I enter invalid characters "<InvalidChars>" on the "<TextField>" field on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+    Examples:
+      | TextField               | InvalidChars | ErrorMessage                                                                                                         | ValidationPage                  |
+      | PersonalPhone           | abc!$%       | Personal telephone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +     | WhatAreYourPersonalPhoneNumbers |
+      | PersonalMobilePhone     | abc!$%       | Personal mobile phone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +  | WhatAreYourPersonalPhoneNumbers |

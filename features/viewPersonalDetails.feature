@@ -35,3 +35,10 @@ Feature: View personal details
       | Link   |
       | change |
       | back   |
+
+  @test46 @sfd2-808
+  Scenario: Verify error message displays when no address is selected on ChooseYourPersonalAddress page
+    When I click the "personaladdress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I enter a valid postcode and continue to the address selection page
+    And I continue without selecting an address on the ChooseYourPersonalAddress page
+    Then Verfiy relevant ErrorMessage "Choose an address" is displayed      

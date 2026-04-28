@@ -683,6 +683,14 @@ Given(
           .click()
         break
 
+      case 'businessmobilephone':
+        await this.page.locator('#businessMobile').clear()
+        await this.page.fill('#businessMobile', this.generateValue)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+
       case 'businessandmobilephone':
         await this.page.locator('[id="businessTelephone"]').clear()
         await this.page.fill('#businessTelephone', this.generateValue)
@@ -1560,6 +1568,83 @@ Then(
   }
 )
 
+When('I click VAT submit button', async function () {
+  await this.page
+    .locator('#main-content > div.govuk-grid-row > div > form > button')
+    .click()
+  await this.page.waitForLoadState('domcontentloaded')
+})
+
+Then(
+  'error message {string} on the page AreYouSureYouWantToRemoveYourVATRegistrationNumber page',
+  async function (errorMessage) {
+    await this.page
+      .locator('.govuk-error-summary')
+      .waitFor({ state: 'visible' })
+    const errorText = await this.page
+      .locator('.govuk-error-summary')
+      .textContent()
+    expect(errorText).toContain(errorMessage)
+  }
+)
+
+When(
+  'I enter invalid characters {string} on the {string} field on the {string} page',
+  async function (invalidChars, field, _page) {
+    switch (field.toLowerCase()) {
+      case 'personalphone':
+        await this.page.locator('//input[@id="personalTelephone"]').clear()
+        await this.page.fill('//input[@id="personalTelephone"]', invalidChars)
+        await this.page
+          .locator('//button[normalize-space()="Continue"]')
+          .click()
+        break
+
+      case 'personalmobilephone':
+        await this.page.locator('//input[@id="personalMobile"]').clear()
+        await this.page.fill('//input[@id="personalMobile"]', invalidChars)
+        await this.page
+          .locator('//button[normalize-space()="Continue"]')
+          .click()
+        break
+
+      case 'businessphone':
+        await this.page.locator('#businessTelephone').clear()
+        await this.page.fill('#businessTelephone', invalidChars)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+
+      case 'businessmobilephone':
+        await this.page.locator('#businessMobile').clear()
+        await this.page.fill('#businessMobile', invalidChars)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+
+      default:
+        throw new Error(`Unknown field: ${field}`)
+    }
+  }
+)
+
+When(
+  'I enter a valid postcode and continue to the address selection page',
+  async function () {
+    await this.page.locator("//input[@id='postcode']").fill('SW1A 1AA')
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+  }
+)
+
+When(
+  'I continue without selecting an address on the ChooseYourPersonalAddress page',
+  async function () {
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+  }
+)
+
 function generateRandomPhoneNumber() {
   let phone = '0'
   for (let i = 0; i < 10; i++) phone += Math.floor(Math.random() * 10)
@@ -1670,6 +1755,7 @@ function generateValidationTestData(field, length) {
         value += faker.person.lastName()
         break
       case 'businessphone':
+      case 'businessmobilephone':
       case 'personalphone':
       case 'personalmobilephone':
         value += generateRandomPhoneNumber()
