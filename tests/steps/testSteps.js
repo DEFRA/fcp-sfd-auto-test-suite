@@ -2,39 +2,28 @@
 import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
-
-const ENVIRONMENT = process.env.ENVIRONMENT || 'test'
-const BASE_URL = `https://fcp-sfd-frontend.${ENVIRONMENT}.cdp-int.defra.cloud`
+import {
+  loginAsStandardUser,
+  loginAsAmendPermissionUser,
+  loginAsViewPermissionUser,
+  goToLandingPage,
+  BASE_URL
+} from '../helpers/helpers.js'
 
 Given(
   'I am on SignIn page and enter the credentials for {string}',
   async function (detailsType) {
     switch (detailsType.toLowerCase()) {
       case 'businessdetails':
-        await this.page.goto(`${BASE_URL}/`)
-        await this.page
-          .locator('a[href="/auth/sign-in"]')
-          .waitFor({ state: 'visible' })
-        await this.page.locator('a[href="/auth/sign-in"]').click()
-        await this.page.locator("//input[@id='crn']").fill('1100381252')
-        await this.page.locator("//input[@id='password']").fill('Password456')
-        await this.page.locator("//button[@id='next']").click()
+        await loginAsStandardUser(this.page)
         await this.page
           .locator(
             "//a[normalize-space()='View and update your business details']"
           )
           .click()
         break
-
       case 'personaldetails':
-        await this.page.goto(`${BASE_URL}/`)
-        await this.page
-          .locator('a[href="/auth/sign-in"]')
-          .waitFor({ state: 'visible' })
-        await this.page.locator('a[href="/auth/sign-in"]').click()
-        await this.page.locator("//input[@id='crn']").fill('1100381252')
-        await this.page.locator("//input[@id='password']").fill('Password456')
-        await this.page.locator("//button[@id='next']").click()
+        await loginAsStandardUser(this.page)
         await this.page
           .locator(
             "//a[normalize-space()='View and update your personal details']"
@@ -46,7 +35,6 @@ Given(
           )
           .click()
         break
-
       default:
         throw new Error(`Unknown details type: ${detailsType}`)
     }
@@ -62,20 +50,7 @@ Given(
     switch (true) {
       case businessdetails === 'businessdetails' &&
         permission === 'amendpermission':
-        await this.page.goto(`${BASE_URL}/`)
-        await this.page
-          .locator('a[href="/auth/sign-in"]')
-          .waitFor({ state: 'visible' })
-        await this.page.locator('a[href="/auth/sign-in"]').click()
-        await this.page.locator("//input[@id='crn']").fill('1100774679')
-        await this.page.locator("//input[@id='password']").fill('Password456')
-        await this.page.locator("//button[@id='next']").click()
-        await this.page
-          .locator(
-            '//label[normalize-space()="Joseph Heap Property Limited - SBI 107176577"]'
-          )
-          .click()
-        await this.page.locator("//button[@id='continueReplacement']").click()
+        await loginAsAmendPermissionUser(this.page)
         await this.page
           .locator(
             "//a[normalize-space()='View and update your business details']"
@@ -86,18 +61,7 @@ Given(
 
       case businessdetails === 'businessdetails' &&
         permission === 'viewpermission':
-        await this.page.goto(`${BASE_URL}/`)
-        await this.page
-          .locator('a[href="/auth/sign-in"]')
-          .waitFor({ state: 'visible' })
-        await this.page.locator('a[href="/auth/sign-in"]').click()
-        await this.page.locator("//input[@id='crn']").fill('1100806911')
-        await this.page.locator("//input[@id='password']").fill('Password456')
-        await this.page.locator("//button[@id='next']").click()
-        await this.page
-          .locator("label:has-text('Chefnalls - SBI 113912887')")
-          .click()
-        await this.page.locator('#continueReplacement').click()
+        await loginAsViewPermissionUser(this.page)
         await this.page
           .locator("//a[normalize-space()='View your Business details']")
           .click()
@@ -133,7 +97,7 @@ When(
         await this.page.getByRole('link', { name: 'Business address' }).click()
         break
       case 'businessname':
-        await this.page.getByRole('link', { name: 'Business name' }).click()
+        await this.page.locator("//a[@href='/business-name-change']").click()
         break
       case 'businesslegalstatus':
         await this.page
@@ -377,7 +341,7 @@ When('I click signOut link on the {string} page', async function (signOutPage) {
       await this.page.locator("//a[normalize-space()='Sign out']").click()
       break
     case 'whatisyourbusinessname':
-      await this.page.getByRole('link', { name: 'Business name' }).click()
+      await this.page.locator("//a[@href='/business-name-change']").click()
       await this.page.locator("//a[normalize-space()='Sign out']").click()
       break
     case 'enteryourbusinessaddress':
@@ -413,14 +377,7 @@ Then('Application should Navigate to mp06 Signed Out page.', async function () {
 
 Given('I sign In on the first tab', async function () {
   this.page1 = await this.context.newPage()
-  await this.page1.goto(`${BASE_URL}/`)
-  await this.page1
-    .locator('a[href="/auth/sign-in"]')
-    .waitFor({ state: 'visible' })
-  await this.page1.locator('a[href="/auth/sign-in"]').click()
-  await this.page1.locator("//input[@id='crn']").fill('1100381252')
-  await this.page1.locator("//input[@id='password']").fill('Password456')
-  await this.page1.locator("//button[@id='next']").click()
+  await loginAsStandardUser(this.page1)
   await this.page1
     .locator("//a[normalize-space()='View and update your business details']")
     .click()
@@ -428,11 +385,7 @@ Given('I sign In on the first tab', async function () {
 
 When('I open another tab with the same session', async function () {
   this.page2 = await this.context.newPage()
-  await this.page2.goto(`${BASE_URL}/`)
-  await this.page2
-    .locator('a[href="/auth/sign-in"]')
-    .waitFor({ state: 'visible' })
-  await this.page2.locator('a[href="/auth/sign-in"]').click()
+  await goToLandingPage(this.page2)
   await this.page2
     .locator("//a[normalize-space()='View and update your business details']")
     .click()
