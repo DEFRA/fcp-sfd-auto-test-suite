@@ -39,7 +39,7 @@
     "@types/node": "24.1.0",
     "allure-commandline": "2.34.1",
     "allure-cucumberjs": "3.3.3",
-    "allure-playwright": "3.3.3",
+    "allure-playwright": "3.7.2",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",
