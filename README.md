@@ -19,14 +19,20 @@ The template to create a service that runs WDIO tests against an environment.
 
 #### Node.js
 
-Please install [Node.js](http://nodejs.org/) `>= v20` and [npm](https://nodejs.org/) `>= v9`. You will find it
-easier to use the Node Version Manager [nvm](https://github.com/creationix/nvm)
+This project requires Node.js >= 22.13.1 (see package.json "engines"). Use nvm to manage versions.
 
-To use the correct version of Node.js for this application, via nvm:
+To install dependencies and use the correct Node version:
 
 ```bash
-nvm use
+# install Node via nvm (if needed) and switch to the repo version
+nvm install 22.13.1
+nvm use 22.13.1
+
+# install dependencies
+npm ci
 ```
+
+A .nvmrc file is included at the repository root to make `nvm use` select the correct version automatically.
 
 ### Setup
 
