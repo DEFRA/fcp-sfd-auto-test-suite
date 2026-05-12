@@ -40,7 +40,7 @@
     "allure-commandline": "2.34.1",
     "allure-cucumberjs": "3.3.3",
     "allure-playwright": "3.3.3",
-    "eslint": "8.57.0",
+    "eslint": "10.3.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",
     "eslint-plugin-prettier": "5.5.5",
