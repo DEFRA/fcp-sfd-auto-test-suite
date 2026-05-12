@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "@cucumber/cucumber": "12.8.3",
-    "@faker-js/faker": "10.0.0",
+    "@faker-js/faker": "10.4.0",
     "@playwright/test": "1.59.1",
     "@types/node": "24.1.0",
     "allure-commandline": "2.34.1",
