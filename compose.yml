@@ -29,7 +29,7 @@ services:
 
 ################################################################################
   mongodb:
-    image: mongo:6
+    image: mongo:8
     volumes:
       - ./docker/scripts/mongodb:/docker-entrypoint-initdb.d
     healthcheck:
