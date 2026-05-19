@@ -32,17 +32,20 @@ Before(async function () {
     headless: true
   }
 
-  // Proxy for CDP - bypass for internal *.cdp-int.defra.cloud services
   if (process.env.CDP_PROXY === 'true') {
     launchOptions.proxy = {
-      server: 'http://localhost:3128',
-      bypass: '*.cdp-int.defra.cloud'
+      server: 'http://localhost:3128'
     }
+    launchOptions.args = [
+      '--ignore-certificate-errors',
+      '--disable-background-networking',
+      '--dns-prefetch-disable'
+    ]
   }
 
   this.browser = await chromium.launch(launchOptions)
 
-  this.context = await this.browser.newContext()
+  this.context = await this.browser.newContext({ ignoreHTTPSErrors: true })
   this.page = await this.context.newPage()
 })
 
