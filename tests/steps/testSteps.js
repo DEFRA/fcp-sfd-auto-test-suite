@@ -345,6 +345,7 @@ When('I click signOut link on the {string} page', async function (signOutPage) {
       await this.page.locator("//a[normalize-space()='Sign out']").click()
       break
     case 'enteryourbusinessaddress':
+    case 'whatisyourbusinessemailaddress':
       await this.page
         .getByRole('link', { name: 'Business email address' })
         .click()
@@ -353,12 +354,6 @@ When('I click signOut link on the {string} page', async function (signOutPage) {
     case 'whatareyourbusinessphonemembers':
       await this.page
         .getByRole('link', { name: 'Change Business telephone numbers' })
-        .click()
-      await this.page.locator("//a[normalize-space()='Sign out']").click()
-      break
-    case 'whatisyourbusinessemailaddress':
-      await this.page
-        .getByRole('link', { name: 'Business email address' })
         .click()
       await this.page.locator("//a[normalize-space()='Sign out']").click()
       break
@@ -649,9 +644,19 @@ Given(
 Then(
   'Verfiy relevant ErrorMessage {string} is displayed',
   async function (errMsg) {
-    const actErrMsg = await this.page
-      .locator("//ul[@class='govuk-list govuk-error-summary__list']//li")
-      .innerText()
+    const errorLocator = this.page.locator(
+      "//ul[@class='govuk-list govuk-error-summary__list']//li"
+    )
+    try {
+      await errorLocator.waitFor({ state: 'visible', timeout: 5000 })
+    } catch {
+      const pageTitle = await this.page.title()
+      const pageUrl = this.page.url()
+      throw new Error(
+        `Error summary not found. Expected: "${errMsg}". Page: "${pageTitle}" (${pageUrl})`
+      )
+    }
+    const actErrMsg = await errorLocator.innerText()
     expect(actErrMsg).toBe(errMsg)
   }
 )
