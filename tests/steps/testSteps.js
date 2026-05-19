@@ -12,9 +12,9 @@ Given(
       case 'businessdetails':
         await this.page.goto(`${BASE_URL}/`)
         await this.page
-          .locator("//a[normalize-space()='Sign in']")
+          .locator('a[href="/auth/sign-in"]')
           .waitFor({ state: 'visible' })
-        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        await this.page.locator('a[href="/auth/sign-in"]').click()
         await this.page.locator("//input[@id='crn']").fill('1100381252')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
@@ -28,9 +28,9 @@ Given(
       case 'personaldetails':
         await this.page.goto(`${BASE_URL}/`)
         await this.page
-          .locator("//a[normalize-space()='Sign in']")
+          .locator('a[href="/auth/sign-in"]')
           .waitFor({ state: 'visible' })
-        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        await this.page.locator('a[href="/auth/sign-in"]').click()
         await this.page.locator("//input[@id='crn']").fill('1100381252')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
@@ -62,8 +62,10 @@ Given(
       case businessdetails === 'businessdetails' &&
         permission === 'amendpermission':
         await this.page.goto(`${BASE_URL}/`)
-        await this.page.waitForTimeout(3000)
-        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        await this.page
+          .locator('a[href="/auth/sign-in"]')
+          .waitFor({ state: 'visible' })
+        await this.page.locator('a[href="/auth/sign-in"]').click()
         await this.page.locator("//input[@id='crn']").fill('1100774679')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
@@ -84,8 +86,10 @@ Given(
       case businessdetails === 'businessdetails' &&
         permission === 'viewpermission':
         await this.page.goto(`${BASE_URL}/`)
-        await this.page.waitForTimeout(3000)
-        await this.page.locator("//a[normalize-space()='Sign in']").click()
+        await this.page
+          .locator('a[href="/auth/sign-in"]')
+          .waitFor({ state: 'visible' })
+        await this.page.locator('a[href="/auth/sign-in"]').click()
         await this.page.locator("//input[@id='crn']").fill('1100806911')
         await this.page.locator("//input[@id='password']").fill('Password456')
         await this.page.locator("//button[@id='next']").click()
@@ -410,9 +414,9 @@ Given('I sign In on the first tab', async function () {
   this.page1 = await this.context.newPage()
   await this.page1.goto(`${BASE_URL}/`)
   await this.page1
-    .locator("//a[normalize-space()='Sign in']")
+    .locator('a[href="/auth/sign-in"]')
     .waitFor({ state: 'visible' })
-  await this.page1.locator("//a[normalize-space()='Sign in']").click()
+  await this.page1.locator('a[href="/auth/sign-in"]').click()
   await this.page1.locator("//input[@id='crn']").fill('1100381252')
   await this.page1.locator("//input[@id='password']").fill('Password456')
   await this.page1.locator("//button[@id='next']").click()
@@ -425,9 +429,9 @@ When('I open another tab with the same session', async function () {
   this.page2 = await this.context.newPage()
   await this.page2.goto(`${BASE_URL}/`)
   await this.page2
-    .locator("//a[normalize-space()='Sign in']")
+    .locator('a[href="/auth/sign-in"]')
     .waitFor({ state: 'visible' })
-  await this.page2.locator("//a[normalize-space()='Sign in']").click()
+  await this.page2.locator('a[href="/auth/sign-in"]').click()
   await this.page2
     .locator("//a[normalize-space()='View and update your business details']")
     .click()
