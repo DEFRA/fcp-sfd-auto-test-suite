@@ -132,7 +132,7 @@ Feature: Update personal details
       |     |       | 2000 | Date of birth must include a day and month  |
       |     |    03 |      | Date of birth must include a day and year   |
       |  11 |       |      | Date of birth must include a month and year |
-      |  29 |    03 | 2026 | Date of birth must be in the past           |
+      |  29 |    03 | 2029 | Date of birth must be in the past           |
       |   1 |     2 |   90 | Enter a year with 4 numbers, like 1975      |
       |  31 |    12 |  990 | Enter a year with 4 numbers, like 1975      |
 
