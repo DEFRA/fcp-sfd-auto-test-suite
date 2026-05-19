@@ -78,7 +78,7 @@ Feature: Update personal details
 
     Examples:
       | TextField    | TestData | ErrorMessage                                            |
-      | AddressLine1 |      101 | Enter address line 1, typically the building and street |
+      | AddressLine1 |      101 | Address line 1 must be 100 characters or less           |
       | AddressLine2 |      101 | Address line 2 must be 100 characters or less           |
       | County       |      101 | County must be 60 characters or less                    |
       | Country      |       61 | Country must be 60 characters or less                   |
