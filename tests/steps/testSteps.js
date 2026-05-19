@@ -3,7 +3,8 @@ import { Given, When, Then } from '@cucumber/cucumber'
 import { expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 
-const BASE_URL = 'https://fcp-sfd-frontend.test.cdp-int.defra.cloud'
+const BASE_URL =
+  process.env.BASE_URL || 'https://fcp-sfd-frontend.test.cdp-int.defra.cloud'
 
 Given(
   'I am on SignIn page and enter the credentials for {string}',
