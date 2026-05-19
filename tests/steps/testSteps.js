@@ -394,11 +394,12 @@ When('I open another tab with the same session', async function () {
 When('I signOut on the first tab', async function () {
   await this.page1.bringToFront()
   await this.page1.locator("//a[normalize-space()='Sign out']").click()
-  await this.page1.waitForURL(`${BASE_URL}/**`)
+  await this.page1.waitForURL(`${BASE_URL}/signed-out**`)
 })
 
 When('I switch to the second tab', async function () {
   await this.page2.bringToFront()
+  await this.page2.waitForLoadState('domcontentloaded')
 })
 
 When('I click on the link on the second tab', async function () {

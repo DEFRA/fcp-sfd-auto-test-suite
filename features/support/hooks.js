@@ -17,6 +17,8 @@ class CustomWorld {
     this.browser = null
     this.context = null
     this.page = null
+    this.page1 = null
+    this.page2 = null
     this.phonenumber = null // optional for your scenario
   }
 }
@@ -60,6 +62,8 @@ After({ order: 1 }, async function (scenario) {
 After({ order: 2 }, async function () {
   // Close page, context, browser
   if (this.page) await this.page.close()
+  if (this.page1) await this.page1.close()
+  if (this.page2) await this.page2.close()
   if (this.context) await this.context.close()
   if (this.browser) await this.browser.close()
 })

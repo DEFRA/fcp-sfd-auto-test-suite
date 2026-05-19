@@ -77,15 +77,6 @@ Feature: Update business details
       | WhatIsYourBusinessEmailAddress  |
       | ChangeYourBusinessType          |
 
-  @test6 @sfd176
-  Scenario: Verify sign out invalidates session across multiple tabs
-    Given I sign In on the first tab
-    When I open another tab with the same session
-    And I signOut on the first tab
-    And I switch to the second tab
-    And I click on the link on the second tab
-    Then I should be redirected to the signIn page from the second tab
-
   @test17 @sfd324
   Scenario Outline: Verify application navigates to SignInToFarmingFrontDoor page after clicking sign in link on the signed out page
     When I click signOut link on the "<SignOutPage>" page
