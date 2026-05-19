@@ -32,10 +32,11 @@ Before(async function () {
     headless: true
   }
 
-  // Proxy for CDP
+  // Proxy for CDP - bypass for internal *.cdp-int.defra.cloud services
   if (process.env.CDP_PROXY === 'true') {
     launchOptions.proxy = {
-      server: 'http://localhost:3128'
+      server: 'http://localhost:3128',
+      bypass: '*.cdp-int.defra.cloud'
     }
   }
 
