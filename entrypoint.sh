@@ -2,15 +2,17 @@
 
 echo "run_id: $RUN_ID"
 echo "CDP_PROXY: $CDP_PROXY"
-echo "BASE_URL: $BASE_URL"
+echo "TEST_SUITE_BASE_URL: $TEST_SUITE_BASE_URL"
 
 # Network diagnostics
 echo "--- Network diagnostics ---"
-echo "Proxy check (localhost:3128):"
-curl -s -o /dev/null -w "HTTP %{http_code}" --proxy http://localhost:3128 "${BASE_URL:-https://fcp-sfd-frontend.test.cdp-int.defra.cloud}/" || echo "FAILED"
+AUTH_URL="https://your-account.cpdev.cui.defra.gov.uk/registration/journey/check-js/check-js-enabled"
+
+echo "Request 1 to auth URL via proxy (headers):"
+curl -s -o /dev/null -D - --proxy http://localhost:3128 --insecure "$AUTH_URL" | grep -i "x-cache\|age:\|x-squid\|via:\|http/"
 echo ""
-echo "Direct check (no proxy):"
-curl -s -o /dev/null -w "HTTP %{http_code}" "${BASE_URL:-https://fcp-sfd-frontend.test.cdp-int.defra.cloud}/" || echo "FAILED"
+echo "Request 2 to auth URL via proxy (headers - check for HIT):"
+curl -s -o /dev/null -D - --proxy http://localhost:3128 --insecure "$AUTH_URL" | grep -i "x-cache\|age:\|x-squid\|via:\|http/"
 echo ""
 echo "--- End diagnostics ---"
 

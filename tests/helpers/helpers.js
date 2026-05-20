@@ -1,9 +1,10 @@
 // tests/helpers/helpers.js
 
-export const BASE_URL = process.env.BASE_URL
+const ENVIRONMENT = process.env.ENVIRONMENT || 'test'
+const TEST_SUITE_BASE_URL = `https://fcp-sfd-frontend.${ENVIRONMENT}.cdp-int.defra.cloud`
 
 export async function goToLandingPage(page) {
-  await page.goto(`${BASE_URL}/`)
+  await page.goto(`${TEST_SUITE_BASE_URL}/`)
   await page
     .locator('#main-content > div > div > a')
     .waitFor({ state: 'visible' })
