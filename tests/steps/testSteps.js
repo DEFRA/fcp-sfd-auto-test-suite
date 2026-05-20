@@ -7,7 +7,7 @@ import {
   loginAsAmendPermissionUser,
   loginAsViewPermissionUser,
   goToLandingPage,
-  BASE_URL
+  TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
 
 Given(
@@ -389,7 +389,7 @@ When('I open another tab with the same session', async function () {
 When('I signOut on the first tab', async function () {
   await this.page1.bringToFront()
   await this.page1.locator("//a[normalize-space()='Sign out']").click()
-  await this.page1.waitForURL(`${BASE_URL}/signed-out**`)
+  await this.page1.waitForURL(`${TEST_SUITE_BASE_URL}/signed-out**`)
 })
 
 When('I switch to the second tab', async function () {
@@ -1547,7 +1547,7 @@ Given(
 )
 
 Then('Navigate to {string}', async function (baseurl) {
-  await this.page.goto(`${BASE_URL}${baseurl}`)
+  await this.page.goto(`${TEST_SUITE_BASE_URL}${baseurl}`)
 })
 
 Then(

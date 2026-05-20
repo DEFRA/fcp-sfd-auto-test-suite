@@ -2,7 +2,7 @@
 
 echo "run_id: $RUN_ID"
 echo "CDP_PROXY: $CDP_PROXY"
-echo "BASE_URL: $BASE_URL"
+echo "TEST_SUITE_BASE_URL: $TEST_SUITE_BASE_URL"
 
 # Network diagnostics
 echo "--- Network diagnostics ---"
