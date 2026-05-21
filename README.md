@@ -136,7 +136,7 @@ Tests are run from the CDP Portal under the Test Suites section. Before changes 
 
 The results of the test run are made available in the portal.
 
-### Requirements of CDP Environment Tests
+## Requirements of CDP Environment Tests
 
 1. The service builds as a Docker container using `.github/workflows/publish.yml`. The workflow tags the Docker images so the CDP Portal can identify how the container should be run, and ensures it is published to the correct Docker repository.
 

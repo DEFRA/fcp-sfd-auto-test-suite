@@ -12,6 +12,7 @@ import {
 import { chromium } from 'playwright'
 import { ProxyAgent, setGlobalDispatcher } from 'undici'
 import { bootstrap } from 'global-agent'
+import 'dotenv/config'
 //  import { allure } from 'allure-cucumberjs';
 
 class CustomWorld {
