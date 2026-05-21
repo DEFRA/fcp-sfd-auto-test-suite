@@ -19,7 +19,7 @@ WORKDIR /app
 COPY . .
 RUN npm install
 # Install Playwright browsers after npm install to ensure version compatibility
-RUN npx playwright install --with-deps
+RUN npx playwright install --with-deps chromium
 
 ADD https://dnd2hcwqjlbad.cloudfront.net/binaries/release/latest_unzip/BrowserStackLocal-linux-x64 /root/.browserstack/BrowserStackLocal
 RUN chmod +x /root/.browserstack/BrowserStackLocal

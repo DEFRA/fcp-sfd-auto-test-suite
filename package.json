@@ -27,13 +27,9 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "git:pre-commit-hook": "npm run format:check && npm run lint",
-    "postinstall": "npm run setup:husky && npm update browserstack-node-sdk",
+    "postinstall": "npm run setup:husky",
     "setup:husky": "node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module",
-    "test:browserstack": "npm run clean && BROWSERSTACK=true browserstack-node-sdk cucumber-js --profile browserstack",
-    "test:smoke-browserstack": "npm run clean && browserstack-node-sdk cucumber-js --tags '@smoke'",
-    "test:tag-browserstack": "npm run clean && browserstack-node-sdk cucumber-js --tags \"%TAG%\"",
-    "test:cdp-browserstack": "npm run clean && browserstack-node-sdk cucumber-js --config playwright.cdp.config.js",
-    "setup:husky-browserstack": "browserstack-node-sdk node -e \"try { (await import('husky')).default() } catch (e) { if (e.code !== 'ERR_MODULE_NOT_FOUND') throw e }\" --input-type module"
+    "test:browserstack": "npm run clean && BROWSERSTACK=true browserstack-node-sdk cucumber-js --profile browserstack"
   },
   "dependencies": {
     "undici": "8.3.0"
