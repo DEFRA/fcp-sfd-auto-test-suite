@@ -20,7 +20,13 @@ Given(
           .locator(
             "//a[normalize-space()='View and update your business details']"
           )
+          .waitFor({ state: 'visible' })
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your business details']"
+          )
           .click()
+        await this.page.waitForURL('**/business-details')
         break
       case 'personaldetails':
         await loginAsStandardUser(this.page)
@@ -1642,6 +1648,113 @@ When(
   'I continue without selecting an address on the ChooseYourPersonalAddress page',
   async function () {
     await this.page.locator("//button[normalize-space()='Continue']").click()
+  }
+)
+
+Then(
+  'the business details page should display all sections and field labels',
+  async function () {
+    // Section headings
+    await expect(
+      this.page.getByText('Business contact details', { exact: true })
+    ).toBeVisible()
+    await expect(
+      this.page.getByText('Reference numbers', { exact: true })
+    ).toBeVisible()
+    await expect(
+      this.page.getByText('Additional details', { exact: true })
+    ).toBeVisible()
+
+    const expectedTerms = [
+      'Business name',
+      'Business address',
+      'Business phone numbers',
+      'Business email address',
+      'Single business identifier (SBI)',
+      'VAT registration number',
+      'Vendor registration number',
+      'Business legal status',
+      'Business type'
+    ]
+
+    for (const label of expectedTerms) {
+      await expect(
+        this.page.getByRole('term').filter({ hasText: label }).first()
+      ).toBeVisible()
+    }
+  }
+)
+
+When(
+  'I navigate to the CheckYourBusinessNameIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="business-name"]').clear()
+    this.businessName = faker.company.name()
+    await this.page.fill('//input[@id="business-name"]', this.businessName)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-name-check**')
+  }
+)
+
+Then(
+  'the following links should have the correct hrefs on the page:',
+  async function (dataTable) {
+    const rows = dataTable.hashes()
+    for (const { Text, ExpectedHref } of rows) {
+      const link = this.page.locator(`a[href="${ExpectedHref}"]`).filter({
+        hasText: new RegExp(`^\\s*${Text}`, 'i')
+      })
+      await expect(link.first()).toHaveAttribute('href', ExpectedHref)
+    }
+  }
+)
+
+Then('following texts should be visible:', async function (dataTable) {
+  const texts = dataTable.rawTable.slice(1).map((row) => row[0])
+  for (const text of texts) {
+    await expect(
+      this.page.getByText(text, { exact: false }).first()
+    ).toBeVisible()
+  }
+})
+
+When(
+  'I enter a valid postcode and continue to ChooseYourBusinessAddress page',
+  async function () {
+    this.postcode = getRandomUKPostcode()
+    await this.page.locator('//input[@id="postcode"]').fill(this.postcode)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-address-select**')
+  }
+)
+
+When('I select an address and submit', async function () {
+  const select = '#addresses'
+  await this.page.locator(select).waitFor({ state: 'visible' })
+  const options = await this.page.$$(select + '> option')
+  const randomIndex = Math.floor(Math.random() * (options.length - 1)) + 1
+  await this.page.selectOption(select, { index: randomIndex })
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
+
+When(
+  'I navigate to the CheckYourBusinessAddressIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page
+      .locator("//a[normalize-space()='Enter address manually']")
+      .click()
+    await this.page.locator('//input[@id="address-1"]').clear()
+    await this.page.fill(
+      '//input[@id="address-1"]',
+      faker.location.streetAddress()
+    )
+    await this.page.locator("//input[@id='city']").clear()
+    await this.page.fill("//input[@id='city']", faker.location.city())
+    await this.page.locator("//input[@id='country']").clear()
+    await this.page.fill("//input[@id='country']", 'United Kingdom')
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-address-check**')
   }
 )
 

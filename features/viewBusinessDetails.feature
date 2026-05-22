@@ -12,3 +12,7 @@ Feature: View business details
       | ExpectedLink        | ExpectedPage           |
       | BusinessType        | ChangeYourBusinessType |
       | BusinessLegalStatus | ChangeYourLegalStatus  |
+
+  @test50 @sfd2-811
+  Scenario: Verify the View and update your business details page displays all sections and field labels
+    Then the business details page should display all sections and field labels
