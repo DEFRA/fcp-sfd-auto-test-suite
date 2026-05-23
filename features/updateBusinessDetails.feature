@@ -292,3 +292,86 @@ Feature: Update business details
       | Text     | ExpectedHref      |
       | Back     | /business-details |
       | Sign out | /auth/sign-out    |    
+
+  @test58 @sfd2-819
+  Scenario: Verify elements and links are correct on CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting page
+    When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
+    And I navigate to the CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting page
+    Then following texts should be visible:
+      | Text                                                            |
+      | Single business identifier (SBI):                               |
+      | Check your business phone numbers are correct before submitting |
+      | Business phone numbers                                          |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref                    |
+      | Back     | /business-phone-numbers-change  |
+      | Sign out | /auth/sign-out                  |
+      | Change   | /business-phone-numbers-change  |    
+
+  @test59 @sfd2-820
+  Scenario: Verify elements and links are correct on WhatIsYourBusinessEmailAddress page
+    When I click the "BusinessEmailAddress" link on the BusinessDetails page
+    Then following texts should be visible:
+      | Text                                 |
+      | Single business identifier (SBI):    |
+      | What is your business email address? |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref      |
+      | Back     | /business-details |
+      | Sign out | /auth/sign-out    |    
+
+  @test60 @sfd2-821
+  Scenario: Verify elements and links are correct on CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting page
+    When I click the "BusinessEmailAddress" link on the BusinessDetails page
+    And I navigate to the CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting page
+    Then following texts should be visible:
+      | Text                                                           |
+      | Single business identifier (SBI):                              |
+      | Check your business email address is correct before submitting |
+      | Business email address                                         |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref           |
+      | Back     | /business-email-change |
+      | Sign out | /auth/sign-out         |
+      | Change   | /business-email-change |
+
+  @test61 @sfd2-822
+  Scenario: Verify elements and links are correct on AreYouSureYouWantToRemoveYourVATRegistrationNumber page
+    When I add the VAT Number
+    And I click "Remove" link
+    Then following texts should be visible:
+      | Text                                                         |
+      | Single business identifier (SBI):                            |
+      | Are you sure you want to remove your VAT registration number? |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref      |
+      | Back     | /business-details |
+      | Sign out | /auth/sign-out    |
+
+  @test62 @sfd2-823
+  Scenario: Verify elements and links are correct on WhatIsYourVATRegistrationNumber page
+    When I navigate to the WhatIsYourVATRegistrationNumber page
+    Then following texts should be visible:
+      | Text                                                                                                                                                                                            |
+      | Single business identifier (SBI):                                                                                                                                                               |
+      | What is your VAT registration number?                                                                                                                                                           |
+      | This is the 9 digit number on your VAT registration certification. You only need to enter the numbers. For example, if your VAT registration number is GB123456789, you should enter 123456789. |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref      |
+      | Back     | /business-details |
+      | Sign out | /auth/sign-out    |
+
+  @test63 @sfd2-824
+  Scenario: Verify elements and links are correct on CheckYourVATRegistrationNumberIsCorrectBeforeSubmitting page
+    When I navigate to the CheckYourVATRegistrationNumberIsCorrectBeforeSubmitting page
+    Then following texts should be visible:
+      | Text                                                            |
+      | Single business identifier (SBI):                               |
+      | Check your VAT registration number is correct before submitting |
+      | VAT registration number                                         |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref                            |
+      | Back     | /business-vat-registration-number-change |
+      | Sign out | /auth/sign-out                           |
+      | Change   | /business-vat-registration-number-change |    
+    

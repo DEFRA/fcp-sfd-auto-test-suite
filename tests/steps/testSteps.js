@@ -1651,40 +1651,6 @@ When(
   }
 )
 
-Then(
-  'the business details page should display all sections and field labels',
-  async function () {
-    // Section headings
-    await expect(
-      this.page.getByText('Business contact details', { exact: true })
-    ).toBeVisible()
-    await expect(
-      this.page.getByText('Reference numbers', { exact: true })
-    ).toBeVisible()
-    await expect(
-      this.page.getByText('Additional details', { exact: true })
-    ).toBeVisible()
-
-    const expectedTerms = [
-      'Business name',
-      'Business address',
-      'Business phone numbers',
-      'Business email address',
-      'Single business identifier (SBI)',
-      'VAT registration number',
-      'Vendor registration number',
-      'Business legal status',
-      'Business type'
-    ]
-
-    for (const label of expectedTerms) {
-      await expect(
-        this.page.getByRole('term').filter({ hasText: label }).first()
-      ).toBeVisible()
-    }
-  }
-)
-
 When(
   'I navigate to the CheckYourBusinessNameIsCorrectBeforeSubmitting page',
   async function () {
@@ -1755,6 +1721,53 @@ When(
     await this.page.fill("//input[@id='country']", 'United Kingdom')
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.waitForURL('**/business-address-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('[id="businessTelephone"]').clear()
+    await this.page.fill('#businessTelephone', generateRandomPhoneNumber())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    // ✅ does not click Submit
+    await this.page.waitForURL('**/business-phone-numbers-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="business-email"]').clear()
+    await this.page.fill('//input[@id="business-email"]', generateRandomEmail())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    // ✅ does not click Submit
+    await this.page.waitForURL('**/business-email-check**')
+  }
+)
+
+When(
+  'I navigate to the WhatIsYourVATRegistrationNumber page',
+  async function () {
+    await this.page
+      .locator('//a[@href="/business-vat-registration-number-change"]')
+      .click()
+    // ✅ stops here — does not fill or continue
+    await this.page.waitForURL('**/business-vat-registration-number-change**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourVATRegistrationNumberIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page
+      .locator('//a[@href="/business-vat-registration-number-change"]')
+      .click()
+    await this.page.locator('//input[@id="business-vat"]').clear()
+    await this.page.fill('//input[@id="business-vat"]', '123456789')
+    await this.page.locator('//button[normalize-space()="Continue"]').click()
+    // ✅ does not click Submit
+    await this.page.waitForURL('**/business-vat-registration-number-check**')
   }
 )
 

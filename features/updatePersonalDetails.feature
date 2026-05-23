@@ -173,3 +173,17 @@ Feature: Update personal details
       | TextField               | InvalidChars | ErrorMessage                                                                                                         | ValidationPage                  |
       | PersonalPhone           | abc!$%       | Personal telephone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +     | WhatAreYourPersonalPhoneNumbers |
       | PersonalMobilePhone     | abc!$%       | Personal mobile phone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +  | WhatAreYourPersonalPhoneNumbers |
+
+  @test65 @sfd2-826
+  Scenario: Verify elements and links are correct on WhatIsYourFullName page
+    When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
+    Then following texts should be visible:
+      | Text                    |
+      | What is your full name? |
+      | First name              |
+      | Middle names            |
+      | Last name               |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref      |
+      | Back     | /personal-details |
+      | Sign out | /auth/sign-out    |    

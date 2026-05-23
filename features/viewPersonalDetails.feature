@@ -41,4 +41,19 @@ Feature: View personal details
     When I click the "personaladdress" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I enter a valid postcode and continue to the address selection page
     And I continue without selecting an address on the ChooseYourPersonalAddress page
-    Then Verfiy relevant ErrorMessage "Choose an address" is displayed      
+    Then Verfiy relevant ErrorMessage "Choose an address" is displayed
+
+  @test64 @sfd2-825
+  Scenario: Verify all section headings and field labels are displayed on the View and update your personal details page
+    Then following texts should be visible:
+      | Text                                  |
+      | View and update your personal details |
+      | Full name                             |
+      | Date of birth                         |
+      | Customer reference number             |
+      | Personal address                      |
+      | Personal phone numbers                |
+      | Personal email address                |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref   |
+      | Sign out | /auth/sign-out |        
