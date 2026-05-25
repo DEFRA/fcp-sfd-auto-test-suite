@@ -1771,6 +1771,92 @@ When(
   }
 )
 
+When(
+  'I navigate to the CheckYourNameIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="first"]').clear()
+    await this.page.locator('//input[@id="middle"]').clear()
+    await this.page.locator('//input[@id="last"]').clear()
+    await this.page.fill('//input[@id="first"]', faker.person.firstName())
+    await this.page.fill('//input[@id="middle"]', faker.person.middleName())
+    await this.page.fill('//input[@id="last"]', faker.person.lastName())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    // ✅ does not click Submit
+    await this.page.waitForURL('**/account-name-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourDateOfBirthIsCorrectBeforeSubmitting page',
+  async function () {
+    const dob = faker.date.birthdate({ min: 18, max: 90, mode: 'age' })
+    const day = (dob.getDate() + 1).toString().padStart(2, '0')
+    const month = (dob.getMonth() + 1).toString().padStart(2, '0')
+    const year = (dob.getFullYear() + 1).toString()
+    await this.page.locator("//input[@id='day']").clear()
+    await this.page.fill("//input[@id='day']", day)
+    await this.page.locator("//input[@id='month']").clear()
+    await this.page.fill("//input[@id='month']", month)
+    await this.page.locator("//input[@id='year']").clear()
+    await this.page.fill("//input[@id='year']", year)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    // ✅ does not click Submit
+    await this.page.waitForURL('**/account-date-of-birth-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourPersonalAddressIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page
+      .locator("//a[normalize-space()='Enter address manually']")
+      .click()
+    await this.page.locator('//input[@id="address1"]').clear()
+    await this.page.fill(
+      '//input[@id="address1"]',
+      faker.location.streetAddress()
+    )
+    await this.page.locator("//input[@id='city']").clear()
+    await this.page.fill("//input[@id='city']", faker.location.city())
+    await this.page.locator("//input[@id='country']").clear()
+    await this.page.fill("//input[@id='country']", 'United Kingdom')
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    // ✅ does not click Submit or Change
+    await this.page.waitForURL('**/account-address-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourPersonalPhoneNumbersAreCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('[id="personalTelephone"]').clear()
+    await this.page.fill('#personalTelephone', generateRandomPhoneNumber())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    // ✅ does not click Submit
+    await this.page.waitForURL('**/account-phone-numbers-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="personal-email"]').clear()
+    await this.page.fill('//input[@id="personal-email"]', generateRandomEmail())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    // ✅ does not click Submit
+    await this.page.waitForURL('**/account-email-check**')
+  }
+)
+
+When(
+  'I enter the test data on with value as {string} on the WhatIsYourBusinessAddress page',
+  async function (testData) {
+    await this.page.locator("//input[@id='postcode']").clear()
+    await this.page.fill("//input[@id='postcode']", testData)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+  }
+)
+
 function generateRandomPhoneNumber() {
   let phone = '0'
   for (let i = 0; i < 10; i++) phone += Math.floor(Math.random() * 10)

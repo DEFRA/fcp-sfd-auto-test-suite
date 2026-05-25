@@ -374,4 +374,15 @@ Feature: Update business details
       | Back     | /business-vat-registration-number-change |
       | Sign out | /auth/sign-out                           |
       | Change   | /business-vat-registration-number-change |    
-    
+
+  @test75 @sfd2-716
+  Scenario Outline: Verify relevant error message for various validation criteria on WhatIsYourBusinessAddress page
+    When I click the "BusinessAddress" link on the BusinessDetails page
+    And I enter the test data on with value as "<TestData>" on the WhatIsYourBusinessAddress page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+
+    Examples:
+      | TestData | ErrorMessage                           |
+      |          | Enter a postcode                       |
+      | BG20 9X  | Enter a full UK postcode, like AA3 1AB |
+      | BG20 9XE | No addresses found for this postcode   |  
