@@ -163,3 +163,151 @@ Feature: Update personal details
       | testemailaddress;@email.com | Enter an email address, like name@example.com | WhatIsYourPersonalEmailAddress |
       | testemailaddress[@email.com | Enter an email address, like name@example.com | WhatIsYourPersonalEmailAddress |
       | test emailaddress@email.com | Enter an email address, like name@example.com | WhatIsYourPersonalEmailAddress |
+
+  @test47 @sfd2-807
+  Scenario Outline: Verify relevant Error message displaying for various validation criterias on WhatAreYourPersonalPhoneNumbers? page
+    When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I enter invalid characters "<InvalidChars>" on the "<TextField>" field on the "<ValidationPage>" page
+    Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
+    Examples:
+      | TextField               | InvalidChars | ErrorMessage                                                                                                         | ValidationPage                  |
+      | PersonalPhone           | abc!$%       | Personal telephone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +     | WhatAreYourPersonalPhoneNumbers |
+      | PersonalMobilePhone     | abc!$%       | Personal mobile phone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +  | WhatAreYourPersonalPhoneNumbers |
+
+  @test65 @sfd2-826
+  Scenario: Verify elements and links are correct on WhatIsYourFullName page
+    When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
+    Then following texts should be visible:
+      | Text                    |
+      | What is your full name? |
+      | First name              |
+      | Middle names            |
+      | Last name               |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref      |
+      | Back     | /personal-details |
+      | Sign out | /auth/sign-out    |
+
+  @test66 @sfd2-827
+  Scenario: Verify elements and links are correct on CheckYourNameIsCorrectBeforeSubmitting page
+    When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I navigate to the CheckYourNameIsCorrectBeforeSubmitting page
+    Then following texts should be visible:
+      | Text                                         |
+      | Check your name is correct before submitting |
+      | Full name                                    |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref         |
+      | Back     | /account-name-change |
+      | Sign out | /auth/sign-out       |
+      | Change   | /account-name-change |    
+
+  @test67 @sfd2-828
+  Scenario: Verify elements and links are correct on WhatIsYourDateOfBirth page
+    When I click the "PersonalDOB" link on the "ViewAndUpdateYourPersonalDetails"Page
+    Then following texts should be visible:
+      | Text                        |
+      | What is your date of birth? |
+      | For example, 31 3 1980      |
+      | Day                         |
+      | Month                       |
+      | Year                        |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref      |
+      | Back     | /personal-details |
+      | Sign out | /auth/sign-out    |
+
+  @test68 @sfd2-829
+  Scenario: Verify elements and links are correct on CheckYourDateOfBirthIsCorrectBeforeSubmitting page
+    When I click the "PersonalDOB" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I navigate to the CheckYourDateOfBirthIsCorrectBeforeSubmitting page
+    Then following texts should be visible:
+      | Text                                                  |
+      | Check your date of birth is correct before submitting |
+      | Date of birth                                         |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref                  |
+      | Back     | /account-date-of-birth-change |
+      | Sign out | /auth/sign-out                |
+      | Change   | /account-date-of-birth-change |
+
+  @test69 @sfd2-830
+  Scenario: Verify elements and links are correct on WhatIsYourPersonalAddress page
+    When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    Then following texts should be visible:
+      | Text                                                          |
+      | What is your personal address?                                |
+      | If you do not have a UK postcode, enter the address manually. |
+      | UK postcode                                                   |
+    And the following links should have the correct hrefs on the page:
+      | Text                   | ExpectedHref           |
+      | Back                   | /personal-details      |
+      | Sign out               | /auth/sign-out         |
+      | Enter address manually | /account-address-enter |                
+
+  @test70 @sfd2-832
+  Scenario: Verify elements and links are correct on CheckYourPersonalAddressIsCorrectBeforeSubmitting page
+    When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I navigate to the CheckYourPersonalAddressIsCorrectBeforeSubmitting page
+    Then following texts should be visible:
+      | Text                                                     |
+      | Check your personal address is correct before submitting |
+      | Personal address                                         |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref           |
+      | Back     | /account-address-enter |
+      | Sign out | /auth/sign-out         |
+      | Change   | /account-address-enter |
+
+  @test71 @sfd2-833
+  Scenario: Verify elements and links are correct on WhatAreYourPersonalPhoneNumbers page
+    When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
+    Then following texts should be visible:
+      | Text                                  |
+      | What are your personal phone numbers? |
+      | Enter at least one phone number       |
+      | Personal telephone number             |
+      | Personal mobile phone number          |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref      |
+      | Back     | /personal-details |
+      | Sign out | /auth/sign-out    |
+
+  @test72 @sfd2-834
+  Scenario: Verify elements and links are correct on CheckYourPersonalPhoneNumbersAreCorrectBeforeSubmitting page
+    When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I navigate to the CheckYourPersonalPhoneNumbersAreCorrectBeforeSubmitting page
+    Then following texts should be visible:
+      | Text                                                            |
+      | Check your personal phone numbers are correct before submitting |
+      | Personal phone numbers                                          |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref                   |
+      | Back     | /account-phone-numbers-change  |
+      | Sign out | /auth/sign-out                 |
+      | Change   | /account-phone-numbers-change  |            
+
+  @test73 @sfd2-835
+  Scenario: Verify elements and links are correct on WhatIsYourPersonalEmailAddress page
+    When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    Then following texts should be visible:
+      | Text                                 |
+      | What is your personal email address? |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref      |
+      | Back     | /personal-details |
+      | Sign out | /auth/sign-out    |
+
+  @test74 @sfd2-836
+  Scenario: Verify elements and links are correct on CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page
+    When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
+    And I navigate to the CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page
+    Then following texts should be visible:
+      | Text                                                           |
+      | Check your personal email address is correct before submitting |
+      | Personal email address                                         |
+    And the following links should have the correct hrefs on the page:
+      | Text     | ExpectedHref          |
+      | Back     | /account-email-change |
+      | Sign out | /auth/sign-out        |
+      | Change   | /account-email-change |        

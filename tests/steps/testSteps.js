@@ -20,7 +20,13 @@ Given(
           .locator(
             "//a[normalize-space()='View and update your business details']"
           )
+          .waitFor({ state: 'visible' })
+        await this.page
+          .locator(
+            "//a[normalize-space()='View and update your business details']"
+          )
           .click()
+        await this.page.waitForURL('**/business-details')
         break
       case 'personaldetails':
         await loginAsStandardUser(this.page)
@@ -683,6 +689,14 @@ Given(
           .click()
         break
 
+      case 'businessmobilephone':
+        await this.page.locator('#businessMobile').clear()
+        await this.page.fill('#businessMobile', this.generateValue)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+
       case 'businessandmobilephone':
         await this.page.locator('[id="businessTelephone"]').clear()
         await this.page.fill('#businessTelephone', this.generateValue)
@@ -1258,9 +1272,9 @@ Given(
 
 Given('I update the dob', async function () {
   const dob = faker.date.birthdate({ min: 18, max: 90, mode: 'age' })
-  const day = (dob.getDate() + 1).toString().padStart(2, '0')
-  const month = (dob.getMonth() + 1).toString().padStart(2, '0')
-  const year = (dob.getFullYear() + 1).toString()
+  const day = String(dob.getUTCDate()).padStart(2, '0')
+  const month = String(dob.getUTCMonth() + 1).padStart(2, '0')
+  const year = String(dob.getUTCFullYear())
 
   await this.page.locator("//input[@id='day']").clear()
   await this.page.fill("//input[@id='day']", day)
@@ -1560,6 +1574,278 @@ Then(
   }
 )
 
+When('I click VAT submit button', async function () {
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+  await this.page.waitForLoadState('domcontentloaded')
+})
+
+Then(
+  'error message {string} on the page AreYouSureYouWantToRemoveYourVATRegistrationNumber page',
+  async function (errorMessage) {
+    await this.page
+      .locator('.govuk-error-summary')
+      .waitFor({ state: 'visible' })
+    const errorText = await this.page
+      .locator('.govuk-error-summary')
+      .textContent()
+    expect(errorText).toContain(errorMessage)
+  }
+)
+
+When(
+  'I enter invalid characters {string} on the {string} field on the {string} page',
+  async function (invalidChars, field, _page) {
+    switch (field.toLowerCase()) {
+      case 'personalphone':
+        await this.page.locator('//input[@id="personalTelephone"]').clear()
+        await this.page.fill('//input[@id="personalTelephone"]', invalidChars)
+        await this.page
+          .locator('//button[normalize-space()="Continue"]')
+          .click()
+        break
+
+      case 'personalmobilephone':
+        await this.page.locator('//input[@id="personalMobile"]').clear()
+        await this.page.fill('//input[@id="personalMobile"]', invalidChars)
+        await this.page
+          .locator('//button[normalize-space()="Continue"]')
+          .click()
+        break
+
+      case 'businessphone':
+        await this.page.locator('#businessTelephone').clear()
+        await this.page.fill('#businessTelephone', invalidChars)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+
+      case 'businessmobilephone':
+        await this.page.locator('#businessMobile').clear()
+        await this.page.fill('#businessMobile', invalidChars)
+        await this.page
+          .locator("//button[normalize-space()='Continue']")
+          .click()
+        break
+
+      default:
+        throw new Error(`Unknown field: ${field}`)
+    }
+  }
+)
+
+When(
+  'I enter a valid postcode and continue to the address selection page',
+  async function () {
+    await this.page.locator("//input[@id='postcode']").fill('SW1A 1AA')
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+  }
+)
+
+When(
+  'I continue without selecting an address on the ChooseYourPersonalAddress page',
+  async function () {
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+  }
+)
+
+When(
+  'I navigate to the CheckYourBusinessNameIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="business-name"]').clear()
+    this.businessName = faker.company.name()
+    await this.page.fill('//input[@id="business-name"]', this.businessName)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-name-check**')
+  }
+)
+
+Then(
+  'the following links should have the correct hrefs on the page:',
+  async function (dataTable) {
+    const rows = dataTable.hashes()
+    for (const { Text, ExpectedHref } of rows) {
+      const link = this.page.locator(`a[href="${ExpectedHref}"]`).filter({
+        hasText: new RegExp(`^\\s*${Text}`, 'i')
+      })
+      await expect(link.first()).toHaveAttribute('href', ExpectedHref)
+    }
+  }
+)
+
+Then('following texts should be visible:', async function (dataTable) {
+  const texts = dataTable.rawTable.slice(1).map((row) => row[0])
+  for (const text of texts) {
+    await expect(
+      this.page.getByText(text, { exact: false }).first()
+    ).toBeVisible()
+  }
+})
+
+When(
+  'I enter a valid postcode and continue to ChooseYourBusinessAddress page',
+  async function () {
+    this.postcode = getRandomUKPostcode()
+    await this.page.locator('//input[@id="postcode"]').fill(this.postcode)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-address-select**')
+  }
+)
+
+When('I select an address and submit', async function () {
+  const select = '#addresses'
+  await this.page.locator(select).waitFor({ state: 'visible' })
+  const options = await this.page.$$(select + '> option')
+  const randomIndex = Math.floor(Math.random() * (options.length - 1)) + 1
+  await this.page.selectOption(select, { index: randomIndex })
+  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
+})
+
+When(
+  'I navigate to the CheckYourBusinessAddressIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page
+      .locator("//a[normalize-space()='Enter address manually']")
+      .click()
+    await this.page.locator('//input[@id="address-1"]').clear()
+    await this.page.fill(
+      '//input[@id="address-1"]',
+      faker.location.streetAddress()
+    )
+    await this.page.locator("//input[@id='city']").clear()
+    await this.page.fill("//input[@id='city']", faker.location.city())
+    await this.page.locator("//input[@id='country']").clear()
+    await this.page.fill("//input[@id='country']", 'United Kingdom')
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-address-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('[id="businessTelephone"]').clear()
+    await this.page.fill('#businessTelephone', generateRandomPhoneNumber())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-phone-numbers-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="business-email"]').clear()
+    await this.page.fill('//input[@id="business-email"]', generateRandomEmail())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-email-check**')
+  }
+)
+
+When(
+  'I navigate to the WhatIsYourVATRegistrationNumber page',
+  async function () {
+    await this.page
+      .locator('//a[@href="/business-vat-registration-number-change"]')
+      .click()
+    await this.page.waitForURL('**/business-vat-registration-number-change**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourVATRegistrationNumberIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page
+      .locator('//a[@href="/business-vat-registration-number-change"]')
+      .click()
+    await this.page.locator('//input[@id="business-vat"]').clear()
+    await this.page.fill('//input[@id="business-vat"]', '123456789')
+    await this.page.locator('//button[normalize-space()="Continue"]').click()
+    await this.page.waitForURL('**/business-vat-registration-number-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourNameIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="first"]').clear()
+    await this.page.locator('//input[@id="middle"]').clear()
+    await this.page.locator('//input[@id="last"]').clear()
+    await this.page.fill('//input[@id="first"]', faker.person.firstName())
+    await this.page.fill('//input[@id="middle"]', faker.person.middleName())
+    await this.page.fill('//input[@id="last"]', faker.person.lastName())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/account-name-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourDateOfBirthIsCorrectBeforeSubmitting page',
+  async function () {
+    const dob = faker.date.birthdate({ min: 18, max: 90, mode: 'age' })
+    const day = String(dob.getUTCDate()).padStart(2, '0')
+    const month = String(dob.getUTCMonth() + 1).padStart(2, '0')
+    const year = String(dob.getUTCFullYear())
+    await this.page.locator("//input[@id='day']").clear()
+    await this.page.fill("//input[@id='day']", day)
+    await this.page.locator("//input[@id='month']").clear()
+    await this.page.fill("//input[@id='month']", month)
+    await this.page.locator("//input[@id='year']").clear()
+    await this.page.fill("//input[@id='year']", year)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/account-date-of-birth-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourPersonalAddressIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page
+      .locator("//a[normalize-space()='Enter address manually']")
+      .click()
+    await this.page.locator('//input[@id="address1"]').clear()
+    await this.page.fill(
+      '//input[@id="address1"]',
+      faker.location.streetAddress()
+    )
+    await this.page.locator("//input[@id='city']").clear()
+    await this.page.fill("//input[@id='city']", faker.location.city())
+    await this.page.locator("//input[@id='country']").clear()
+    await this.page.fill("//input[@id='country']", 'United Kingdom')
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/account-address-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourPersonalPhoneNumbersAreCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('[id="personalTelephone"]').clear()
+    await this.page.fill('#personalTelephone', generateRandomPhoneNumber())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/account-phone-numbers-check**')
+  }
+)
+
+When(
+  'I navigate to the CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page',
+  async function () {
+    await this.page.locator('//input[@id="personal-email"]').clear()
+    await this.page.fill('//input[@id="personal-email"]', generateRandomEmail())
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/account-email-check**')
+  }
+)
+
+When(
+  'I enter the test data on with value as {string} on the WhatIsYourBusinessAddress page',
+  async function (testData) {
+    await this.page.locator("//input[@id='postcode']").clear()
+    await this.page.fill("//input[@id='postcode']", testData)
+    await this.page.locator("//button[normalize-space()='Continue']").click()
+  }
+)
+
 function generateRandomPhoneNumber() {
   let phone = '0'
   for (let i = 0; i < 10; i++) phone += Math.floor(Math.random() * 10)
@@ -1670,6 +1956,7 @@ function generateValidationTestData(field, length) {
         value += faker.person.lastName()
         break
       case 'businessphone':
+      case 'businessmobilephone':
       case 'personalphone':
       case 'personalmobilephone':
         value += generateRandomPhoneNumber()

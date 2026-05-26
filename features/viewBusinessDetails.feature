@@ -12,3 +12,20 @@ Feature: View business details
       | ExpectedLink        | ExpectedPage           |
       | BusinessType        | ChangeYourBusinessType |
       | BusinessLegalStatus | ChangeYourLegalStatus  |
+
+  @test50 @sfd2-811
+  Scenario: Verify all section headings and field labels are displayed on the View and update your business details page
+    Then following texts should be visible:
+      | Text                             |
+      | Business contact details         |
+      | Reference numbers                |
+      | Additional details               |
+      | Business name                    |
+      | Business address                 |
+      | Business phone numbers           |
+      | Business email address           |
+      | Single business identifier (SBI) |
+      | VAT registration number          |
+      | Vendor registration number       |
+      | Business legal status            |
+      | Business type                    |
