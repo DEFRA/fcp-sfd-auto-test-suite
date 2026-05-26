@@ -18,26 +18,26 @@
 #
 ################################################################################
 services:
-
-################################################################################
-# Headless browser, used by the test suite to actually run the tests against the
-# containers.
+  ################################################################################
+  # Headless browser, used by the test suite to actually run the tests against the
+  # containers.
   selenium-chrome:
     image: selenium/standalone-chrome:147.0
+    platform: linux/amd64
     ports:
       - 4444:4444
 
-################################################################################
+  ################################################################################
   mongodb:
     image: mongo:8
     volumes:
       - ./docker/scripts/mongodb:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.hello().ok"]
+      test: ['CMD', 'mongosh', '--eval', 'db.hello().ok']
       interval: 5s
       start_period: 5s
       retries: 3
-################################################################################
+  ################################################################################
   localstack:
     image: localstack/localstack:3.2.0
     environment:
@@ -49,21 +49,20 @@ services:
     volumes:
       - ./docker/scripts/localstack:/etc/localstack/init/ready.d
     healthcheck:
-      test: ["CMD", "curl", "localhost:4566"]
+      test: ['CMD', 'curl', 'localhost:4566']
       interval: 5s
       start_period: 5s
       retries: 3
 
-################################################################################
+  ################################################################################
   redis:
     image: redis:8
     restart: always
     healthcheck:
-      test: [ "CMD", "redis-cli", "PING" ]
+      test: ['CMD', 'redis-cli', 'PING']
       interval: 5s
       start_period: 2s
       retries: 5
-
 
 ################################################################################
 #

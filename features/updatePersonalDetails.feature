@@ -10,14 +10,14 @@ Feature: Update personal details
     Then Verfiy updated phone details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "PersonalPhoneNumbers" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test22 @sfd347
+  @test22 @sfd347 @serial
   Scenario: Verify personal name gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal Name
     Then Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "FullName" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test23 @sfd347
+  @test23 @sfd347 @serial
   Scenario: Verify personal name gets updated again by clicking change link on CheckYourNameIsCorrectBeforeSubmitting page
     When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal Name and click the Change link in CheckYourNameIsCorrectBeforeSubmitting page
