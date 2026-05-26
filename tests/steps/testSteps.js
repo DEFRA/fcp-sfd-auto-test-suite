@@ -1272,9 +1272,9 @@ Given(
 
 Given('I update the dob', async function () {
   const dob = faker.date.birthdate({ min: 18, max: 90, mode: 'age' })
-  const day = (dob.getDate() + 1).toString().padStart(2, '0')
-  const month = (dob.getMonth() + 1).toString().padStart(2, '0')
-  const year = (dob.getFullYear() + 1).toString()
+  const day = String(dob.getUTCDate()).padStart(2, '0')
+  const month = String(dob.getUTCMonth() + 1).padStart(2, '0')
+  const year = String(dob.getUTCFullYear())
 
   await this.page.locator("//input[@id='day']").clear()
   await this.page.fill("//input[@id='day']", day)
