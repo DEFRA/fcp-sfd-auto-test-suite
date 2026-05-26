@@ -1575,9 +1575,7 @@ Then(
 )
 
 When('I click VAT submit button', async function () {
-  await this.page
-    .locator('#main-content > div.govuk-grid-row > div > form > button')
-    .click()
+  await this.page.locator("//button[normalize-space()='Submit']").click()
   await this.page.waitForLoadState('domcontentloaded')
 })
 
@@ -1730,7 +1728,6 @@ When(
     await this.page.locator('[id="businessTelephone"]').clear()
     await this.page.fill('#businessTelephone', generateRandomPhoneNumber())
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // ✅ does not click Submit
     await this.page.waitForURL('**/business-phone-numbers-check**')
   }
 )
@@ -1741,7 +1738,6 @@ When(
     await this.page.locator('//input[@id="business-email"]').clear()
     await this.page.fill('//input[@id="business-email"]', generateRandomEmail())
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // ✅ does not click Submit
     await this.page.waitForURL('**/business-email-check**')
   }
 )
@@ -1752,7 +1748,6 @@ When(
     await this.page
       .locator('//a[@href="/business-vat-registration-number-change"]')
       .click()
-    // ✅ stops here — does not fill or continue
     await this.page.waitForURL('**/business-vat-registration-number-change**')
   }
 )
@@ -1766,7 +1761,6 @@ When(
     await this.page.locator('//input[@id="business-vat"]').clear()
     await this.page.fill('//input[@id="business-vat"]', '123456789')
     await this.page.locator('//button[normalize-space()="Continue"]').click()
-    // ✅ does not click Submit
     await this.page.waitForURL('**/business-vat-registration-number-check**')
   }
 )
@@ -1781,7 +1775,6 @@ When(
     await this.page.fill('//input[@id="middle"]', faker.person.middleName())
     await this.page.fill('//input[@id="last"]', faker.person.lastName())
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // ✅ does not click Submit
     await this.page.waitForURL('**/account-name-check**')
   }
 )
@@ -1790,9 +1783,9 @@ When(
   'I navigate to the CheckYourDateOfBirthIsCorrectBeforeSubmitting page',
   async function () {
     const dob = faker.date.birthdate({ min: 18, max: 90, mode: 'age' })
-    const day = (dob.getDate() + 1).toString().padStart(2, '0')
-    const month = (dob.getMonth() + 1).toString().padStart(2, '0')
-    const year = (dob.getFullYear() + 1).toString()
+    const day = String(dob.getUTCDate()).padStart(2, '0')
+    const month = String(dob.getUTCMonth() + 1).padStart(2, '0')
+    const year = String(dob.getUTCFullYear())
     await this.page.locator("//input[@id='day']").clear()
     await this.page.fill("//input[@id='day']", day)
     await this.page.locator("//input[@id='month']").clear()
@@ -1800,7 +1793,6 @@ When(
     await this.page.locator("//input[@id='year']").clear()
     await this.page.fill("//input[@id='year']", year)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // ✅ does not click Submit
     await this.page.waitForURL('**/account-date-of-birth-check**')
   }
 )
@@ -1821,7 +1813,6 @@ When(
     await this.page.locator("//input[@id='country']").clear()
     await this.page.fill("//input[@id='country']", 'United Kingdom')
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // ✅ does not click Submit or Change
     await this.page.waitForURL('**/account-address-check**')
   }
 )
@@ -1832,7 +1823,6 @@ When(
     await this.page.locator('[id="personalTelephone"]').clear()
     await this.page.fill('#personalTelephone', generateRandomPhoneNumber())
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // ✅ does not click Submit
     await this.page.waitForURL('**/account-phone-numbers-check**')
   }
 )
@@ -1843,7 +1833,6 @@ When(
     await this.page.locator('//input[@id="personal-email"]').clear()
     await this.page.fill('//input[@id="personal-email"]', generateRandomEmail())
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    // ✅ does not click Submit
     await this.page.waitForURL('**/account-email-check**')
   }
 )

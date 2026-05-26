@@ -181,7 +181,7 @@ Feature: Update business details
       | Change | VATnumber |       10 | Enter a VAT registration number, like 123456789 | WhatIsYourVATRegistrationNumber |
 
   @test45 @sfd2-809
-  Scenario Outline: Verify  Application is displaying relevant message whilist selecting Yes or No in AreYouSureYouWantToRemoveYourVATRegistrationNumber page
+  Scenario: Verify  Application is displaying relevant message whilist selecting Yes or No in AreYouSureYouWantToRemoveYourVATRegistrationNumber page
     When I add the VAT Number
     And I click "Remove" link
     And I click VAT submit button
