@@ -3,35 +3,35 @@ Feature: Update business details
   Background:
     Given I am on SignIn page and enter the credentials for "BusinessDetails"
 
-  @test1 @sfd175
+  @test1 @sfd175 @serial
   Scenario: Verify phone number gets updated on ViewAndUpdateYourBusinessType page
     When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
     And I update phone number
     Then Verfiy updated phone details on the ViewAndUpdateYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessPhoneNumbers" on the page ViewAndUpdateYourBusinessType
 
-  @test2 @sfd175
+  @test2 @sfd175 @serial
   Scenario: Verify email gets updated on ViewAndUpdateYourBusinessType page
     When I click the "BusinessEmailAddress" link on the BusinessDetails page
     And I update Email
     Then Verfiy Updated email details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessEmailAddress" on the page ViewAndUpdateYourBusinessType
 
-  @test3 @sfd174
+  @test3 @sfd174 @serial
   Scenario: Verify postal address gets updated on ViewAndUpdateYourBusinessType page
     When I click the "BusinessAddress" link on the BusinessDetails page
     And I update Business Address
     Then Verfiy Updated Business Address details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessAddress" on the page ViewAndUpdateYourBusinessType
 
-  @test4 @sfd174
+  @test4 @sfd174 @serial
   Scenario: Verify business name gets updated on ViewAndUpdateYourBusinessType page
     When I click the "BusinessName" link on the BusinessDetails page
     And I update Business Name
     Then Verfiy Updated Business Name details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessName" on the page ViewAndUpdateYourBusinessType
 
-  @test9 @sfd285
+  @test9 @sfd285 @serial
   Scenario: Verify business name gets updated again by clicking change link on CheckYourBusinessNameIsCorrectBeforeSubmitting page
     When I click the "BusinessName" link on the BusinessDetails page
     And I update Business Name and click the Change link in CheckYourBusinessNameIsCorrectBeforeSubmitting Page
@@ -39,7 +39,7 @@ Feature: Update business details
     Then Verfiy Updated Business Name details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessName" on the page ViewAndUpdateYourBusinessType
 
-  @test10 @sfd285
+  @test10 @sfd285 @serial
   Scenario: Verify postal address gets updated again by clicking change link on EnterYourBusinessAddress page
     When I click the "BusinessAddress" link on the BusinessDetails page
     And I update Business Address and click the Change link in CheckYourBusinessAddressIsCorrectBeforeSubmitting Page
@@ -47,7 +47,7 @@ Feature: Update business details
     Then Verfiy Updated Business Address details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessAddress" on the page ViewAndUpdateYourBusinessType
 
-  @test11 @sfd287
+  @test11 @sfd287 @serial
   Scenario: Verify phone number gets updated again by clicking change link on CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting page
     When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
     And I update Business PhoneNumber and click the Change link in CheckYourBusinessPhoneNumbersAreCorrectBeforeSubmitting Page
@@ -55,7 +55,7 @@ Feature: Update business details
     Then Verfiy Updated Business PhoneNumber details on the ViewAndUpdateYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessPhonenumbers" on the page ViewAndUpdateYourBusinessType
 
-  @test12 @sfd287
+  @test12 @sfd287 @serial
   Scenario: Verify business email address gets updated again by clicking change link on CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting page
     When I click the "BusinessEmailAddress" link on the BusinessDetails page
     And I update Business EmailAddress and click the Change link in CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting Page
@@ -92,7 +92,7 @@ Feature: Update business details
       | WhatIsYourBusinessEmailAddress  |
       | ChangeYourBusinessType          |
 
-  @test18 @sfd325
+  @test18 @sfd325 @serial
   Scenario Outline: Verify application displays relevant message when selecting Yes or No on AreYouSureYouWantToRemoveYourVATRegistrationNumber page
     When I add the VAT Number
     And I click "<Link>" link
@@ -104,7 +104,7 @@ Feature: Update business details
       | Yes                   | Remove |
       | No                    | Remove |
 
-  @test19 @sfd383
+  @test19 @sfd383 @serial
   Scenario Outline: Verify updated VAT number is displayed on ViewAndUpdateYourBusinessType page
     When I add the VAT Number
     And I click "<Link>" link
@@ -180,7 +180,7 @@ Feature: Update business details
       | Change | VATnumber |          | Enter a VAT registration number                 | WhatIsYourVATRegistrationNumber |
       | Change | VATnumber |       10 | Enter a VAT registration number, like 123456789 | WhatIsYourVATRegistrationNumber |
 
-  @test45 @sfd2-809
+  @test45 @sfd2-809 @serial
   Scenario: Verify  Application is displaying relevant message whilist selecting Yes or No in AreYouSureYouWantToRemoveYourVATRegistrationNumber page
     When I add the VAT Number
     And I click "Remove" link
@@ -261,7 +261,7 @@ Feature: Update business details
       | Enter address manually | /business-address-enter  |
       | Change                 | /business-address-change |        
 
-  @test55 @sfd2-815
+  @test55 @sfd2-815 @serial
   Scenario: Verify business address can be updated using postcode lookup
     When I click the "BusinessAddress" link on the BusinessDetails page
     And I enter a valid postcode and continue to ChooseYourBusinessAddress page
