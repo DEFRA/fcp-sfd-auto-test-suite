@@ -202,15 +202,15 @@ Feature: Update business details
       | BusinessAndMobilePhone |          | Enter at least one phone number                             | WhatAreYourBusinessPhoneNumbers |
 
   @test49 @sfd2-806
-  Scenario Outline: Verify relevant Error message displaying for invalid characters on WhatAreYourBusinessPhoneNumbers? page
+  Scenario Outline: Verify format error displays for invalid characters (over 10 chars) on WhatAreYourBusinessPhoneNumbers? page
     When I click the "BusinessPhoneNumbers" link on the BusinessDetails page
     And I enter invalid characters "<InvalidChars>" on the "<TextField>" field on the "<ValidationPage>" page
     Then Verfiy relevant ErrorMessage "<ErrorMessage>" is displayed
 
     Examples:
-      | TextField           | InvalidChars  | ErrorMessage                                                                                                        | ValidationPage                  |
-      | BusinessPhone       | abc!$%        | Business telephone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +    | WhatAreYourBusinessPhoneNumbers |
-      | BusinessMobilePhone | abc!$%        | Business mobile phone number must only include numbers 0 to 9 and special characters such as spaces, brackets and + | WhatAreYourBusinessPhoneNumbers |
+      | TextField           | InvalidChars | ErrorMessage                                                                                                        | ValidationPage                  |
+      | BusinessPhone       | abc!$%abc!$% | Business telephone number must only include numbers 0 to 9 and special characters such as spaces, brackets and +    | WhatAreYourBusinessPhoneNumbers |
+      | BusinessMobilePhone | abc!$%abc!$% | Business mobile phone number must only include numbers 0 to 9 and special characters such as spaces, brackets and + | WhatAreYourBusinessPhoneNumbers |
 
   @test51 @sfd2-812
   Scenario: Verify Back and Sign out links are correct on WhatIsYourBusinessName page
