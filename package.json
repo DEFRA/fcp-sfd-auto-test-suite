@@ -34,19 +34,19 @@
     "undici": "7.24.7"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "12.8.3",
-    "@faker-js/faker": "10.0.0",
-    "@playwright/test": "1.59.1",
+    "@cucumber/cucumber": "12.9.0",
+    "@faker-js/faker": "10.4.0",
+    "@playwright/test": "1.60.0",
     "@types/node": "24.1.0",
-    "allure-commandline": "2.34.1",
-    "allure-cucumberjs": "3.3.3",
-    "allure-playwright": "3.3.3",
+    "allure-commandline": "2.42.0",
+    "allure-cucumberjs": "3.9.0",
+    "allure-playwright": "3.9.0",
     "eslint": "8.57.0",
     "eslint-config-prettier": "9.1.0",
     "eslint-config-standard": "17.1.0",
     "eslint-plugin-prettier": "5.5.5",
     "husky": "9.1.7",
-    "playwright": "1.59.1",
+    "playwright": "1.60.0",
     "prettier": "3.8.3"
   }
 }
