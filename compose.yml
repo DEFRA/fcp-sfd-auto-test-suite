@@ -3,9 +3,9 @@
 # This template provides comparable infrastructure to the real environment.
 #   - mongodb
 #   - redis
-#   - localstack (s3, sqs, sns)
+#   - floci (s3, sqs, sns)
 #
-# Both mongo and localstack have init scripts included for setting up resources
+# Both mongo and floci have init scripts included for setting up resources
 # on startup. These scripts are in docker/scripts.
 #
 # It also includes a selenium-chrome container for running the browser headless.
@@ -38,21 +38,35 @@ services:
       start_period: 5s
       retries: 3
   ################################################################################
-  localstack:
-    image: localstack/localstack:3.2.0
+  floci:
+    image: floci/floci:1.5.22
     environment:
-      - LOCALSTACK_HOST=127.0.0.1
-      - SERVICES=s3,sqs,sns,dynamodb
-      - LS_LOG=WARN
-    env_file:
-      - ./docker/config/defaults.env
+      FLOCI_HOSTNAME: floci
+      FLOCI_DEFAULT_REGION: ${AWS_REGION:-eu-west-2}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-test}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-test}
     volumes:
-      - ./docker/scripts/localstack:/etc/localstack/init/ready.d
+      - floci-data:/app/data
     healthcheck:
       test: ['CMD', 'curl', 'localhost:4566']
       interval: 5s
       start_period: 5s
       retries: 3
+
+  floci-init:
+    image: amazon/aws-cli:latest
+    entrypoint: /bin/sh
+    command: /setup/init.sh
+    depends_on:
+      floci:
+        condition: service_started
+    environment:
+      AWS_ENDPOINT_URL: http://floci:4566
+      AWS_REGION: ${AWS_REGION:-eu-west-2}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-test}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-test}
+    volumes:
+      - ./docker/scripts/floci/init.sh:/setup/init.sh
 
   ################################################################################
   redis:
@@ -88,6 +102,9 @@ services:
 #      interval: 3s
 #      start_period: 2s
 #      retries: 3
+
+volumes:
+  floci-data:
 
 ################################################################################
 # cdp-example-node-backend:
