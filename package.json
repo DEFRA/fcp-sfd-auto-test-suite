@@ -34,11 +34,11 @@
     "undici": "8.3.0"
   },
   "devDependencies": {
-    "@cucumber/cucumber": "12.9.0",
+    "@cucumber/cucumber": "13.0.0",
     "@faker-js/faker": "10.4.0",
     "@playwright/test": "1.60.0",
     "@types/node": "24.1.0",
-    "allure-commandline": "2.42.0",
+    "allure-commandline": "2.42.1",
     "allure-cucumberjs": "3.9.0",
     "allure-playwright": "3.9.0",
     "eslint": "8.57.0",
