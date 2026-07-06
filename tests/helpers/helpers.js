@@ -29,7 +29,7 @@ export async function loginAsAmendPermissionUser(page) {
   await page.locator("//button[@id='next']").click()
   await page
     .locator(
-      '//label[normalize-space()="Joseph Heap Property Limited - SBI 107176577"]'
+      `//label[contains(normalize-space(), "SBI ${process.env.USER_AMEND_SBI}")]`
     )
     .click()
   await page.locator("//button[@id='continueReplacement']").click()
@@ -42,6 +42,10 @@ export async function loginAsViewPermissionUser(page) {
     .locator("//input[@id='password']")
     .fill(process.env.USER_VIEW_PASSWORD)
   await page.locator("//button[@id='next']").click()
-  await page.locator("label:has-text('Chefnalls - SBI 113912887')").click()
+  await page
+    .locator(
+      `//label[contains(normalize-space(), "SBI ${process.env.USER_VIEW_SBI}")]`
+    )
+    .click()
   await page.locator('#continueReplacement').click()
 }
