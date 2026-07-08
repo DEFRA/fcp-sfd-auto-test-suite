@@ -30,6 +30,7 @@ Given(
         break
       case 'personaldetails':
         await loginAsStandardUser(this.page)
+        await this.page.waitForLoadState('networkidle')
         await this.page
           .locator(
             "//a[normalize-space()='View and update your personal details']"
