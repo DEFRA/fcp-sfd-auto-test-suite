@@ -16,6 +16,7 @@ Given(
     switch (detailsType.toLowerCase()) {
       case 'businessdetails':
         await loginAsStandardUser(this.page)
+        await this.page.waitForLoadState('domcontentloaded')
         await this.page
           .locator(
             "//a[normalize-space()='View and update your business details']"
@@ -30,7 +31,7 @@ Given(
         break
       case 'personaldetails':
         await loginAsStandardUser(this.page)
-        await this.page.waitForLoadState('networkidle')
+        await this.page.waitForLoadState('domcontentloaded')
         await this.page
           .locator(
             "//a[normalize-space()='View and update your personal details']"
@@ -58,6 +59,7 @@ Given(
       case businessdetails === 'businessdetails' &&
         permission === 'amendpermission':
         await loginAsAmendPermissionUser(this.page)
+        await this.page.waitForLoadState('domcontentloaded')
         await this.page
           .locator(
             "//a[normalize-space()='View and update your business details']"
@@ -69,6 +71,7 @@ Given(
       case businessdetails === 'businessdetails' &&
         permission === 'viewpermission':
         await loginAsViewPermissionUser(this.page)
+        await this.page.waitForLoadState('domcontentloaded')
         await this.page
           .locator("//a[normalize-space()='View your Business details']")
           .click()
@@ -380,6 +383,7 @@ Then('Application should Navigate to mp06 Signed Out page.', async function () {
 Given('I sign In on the first tab', async function () {
   this.page1 = await this.context.newPage()
   await loginAsStandardUser(this.page1)
+  await this.page1.waitForLoadState('domcontentloaded')
   await this.page1
     .locator("//a[normalize-space()='View and update your business details']")
     .click()
@@ -1291,9 +1295,9 @@ Given(
   'I update Personal DateOfBirth and click the {string} in the CheckYourDateOfBirthIsCorrectBeforeSubmitting page',
   async function (linkType) {
     const dob = faker.date.birthdate({ min: 18, max: 90, mode: 'age' })
-    this.day = (dob.getDate() + 1).toString().padStart(2, '0')
-    this.month = (dob.getMonth() + 1).toString().padStart(2, '0')
-    this.year = (dob.getFullYear() + 1).toString()
+    this.day = String(dob.getUTCDate()).padStart(2, '0')
+    this.month = String(dob.getUTCMonth() + 1).padStart(2, '0')
+    this.year = String(dob.getUTCFullYear())
 
     await this.page.locator("//input[@id='day']").clear()
     await this.page.fill("//input[@id='day']", this.day)

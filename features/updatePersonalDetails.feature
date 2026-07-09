@@ -3,21 +3,21 @@ Feature: Update personal details
   Background:
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
 
-  @test21 @sfd351 @serial
+  @test21 @sfd351
   Scenario: Verify personal phone number gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal phone number
     Then Verfiy updated phone details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "PersonalPhoneNumbers" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test22 @sfd347 @serial
+  @test22 @sfd347
   Scenario: Verify personal name gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal Name
     Then Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "FullName" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test23 @sfd347 @serial
+  @test23 @sfd347
   Scenario: Verify personal name gets updated again by clicking change link on CheckYourNameIsCorrectBeforeSubmitting page
     When I click the "FullName" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal Name and click the Change link in CheckYourNameIsCorrectBeforeSubmitting page
@@ -25,7 +25,7 @@ Feature: Update personal details
     Then Verfiy Updated Personal Full Name details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "FullName" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test26 @sfd349 @serial
+  @test26 @sfd349
   Scenario Outline: Verify personal postal address gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I Update the Personal address "<AddressType>"
@@ -36,20 +36,20 @@ Feature: Update personal details
       | Manually       |
       | PostcodeLookup |
 
-  @test27 @sfd349 @serial
+  @test27 @sfd349
   Scenario: Verify personal postal address gets updated again by clicking change link on CheckYourPersonalAddressIsCorrectBeforeSubmitting page
     When I click the "PersonalAddress" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal Address Manually and click the Change link in CheckYourPersonalAddressIsCorrectBeforeSubmitting Page
     And Change the Personal Address Manually again in EnterYourPersonalAddress Page
     Then Verfiy updated Personal Address Manually changed details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
 
-  @test30 @sfd350 @serial
+  @test30 @sfd350
   Scenario: Verify personal date of birth gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "PersonalDOB" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update the dob
     And Verify Success Updated message is displayed for "DOB" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test34 @sfd348 @serial
+  @test34 @sfd348
   Scenario: Verify personal email address gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal Email
