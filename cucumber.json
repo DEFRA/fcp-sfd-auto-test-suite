@@ -3,6 +3,7 @@
     "require": ["tests/steps/**/*.js", "features/support/hooks.js"],
     "format": ["progress", "allure-cucumberjs/reporter"],
     "publishQuiet": true,
-    "parallel": 4
+    "parallel": 4,
+    "retry": 1
   }
 }

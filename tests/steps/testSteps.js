@@ -294,6 +294,7 @@ When('I update phone number', async function () {
   this.phonenumber = generateRandomPhoneNumber()
   await this.page.fill('#businessTelephone', this.phonenumber)
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/business-phone-numbers-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -302,6 +303,7 @@ When('I update Email', async function () {
   this.email = generateRandomEmail()
   await this.page.fill('//input[@id="business-email"]', this.email)
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/business-email-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -310,6 +312,7 @@ When('I update Business Name', async function () {
   this.businessName = faker.company.name()
   await this.page.fill('//input[@id="business-name"]', this.businessName)
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/business-name-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -342,6 +345,7 @@ When('I update Business Address', async function () {
   await this.page.fill("//input[@id='country']", 'United Kingdom')
 
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/business-address-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -440,6 +444,7 @@ Given(
     this.businessName = faker.company.name()
     await this.page.fill('//input[@id="business-name"]', this.businessName)
     await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-name-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -506,6 +511,7 @@ Given(
     await this.page.fill("//input[@id='country']", 'United Kingdom')
 
     await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-address-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -530,6 +536,7 @@ Given(
     this.phonenumber = generateRandomPhoneNumber()
     await this.page.fill('#businessTelephone', this.phonenumber)
     await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-phone-numbers-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -564,6 +571,7 @@ Given(
     this.email = generateRandomEmail()
     await this.page.fill('//input[@id="business-email"]', this.email)
     await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/business-email-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -804,6 +812,7 @@ When('I add the VAT Number', async function () {
   await this.page.locator('//input[@id="business-vat"]').clear()
   await this.page.fill('//input[@id="business-vat"]', '123456789')
   await this.page.locator('//button[normalize-space()="Continue"]').click()
+  await this.page.waitForURL('**/business-vat-registration-number-check**')
   await this.page.locator('//button[normalize-space()="Submit"]').click()
 })
 
@@ -844,6 +853,7 @@ Given(
     await this.page.locator('//input[@id="business-vat"]').clear()
     await this.page.fill('//input[@id="business-vat"]', '987654321')
     await this.page.locator('//button[normalize-space()="Continue"]').click()
+    await this.page.waitForURL('**/business-vat-registration-number-check**')
     await this.page.locator('//button[normalize-space()="Submit"]').click()
   }
 )
@@ -894,6 +904,7 @@ When('I update Personal phone number', async function () {
   this.personalPhonenumber = generateRandomPhoneNumber()
   await this.page.fill('#personalTelephone', this.personalPhonenumber)
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/account-phone-numbers-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -964,6 +975,7 @@ Given('I update Personal Name', async function () {
   await this.page.fill('//input[@id="middle"]', this.middleName)
   await this.page.fill('//input[@id="last"]', this.lastName)
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/account-name-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -1013,6 +1025,7 @@ Given(
     await this.page.fill('//input[@id="middle"]', this.middleName)
     await this.page.fill('//input[@id="last"]', this.lastName)
     await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/account-name-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -1078,6 +1091,7 @@ When('I Update the Personal address {string}', async function (addressType) {
       await this.page.locator("//input[@id='country']").clear()
       await this.page.fill("//input[@id='country']", 'United Kingdom')
       await this.page.locator("//button[normalize-space()='Continue']").click()
+      await this.page.waitForURL('**/account-address-check**')
       await this.page.locator("//button[normalize-space()='Submit']").click()
       break
 
@@ -1094,6 +1108,7 @@ When('I Update the Personal address {string}', async function (addressType) {
       await this.page.selectOption(se, { index: randomIndex })
 
       await this.page.locator("//button[normalize-space()='Continue']").click()
+      await this.page.waitForURL('**/account-address-check**')
       await this.page.locator("//button[normalize-space()='Submit']").click()
       break
     }
@@ -1160,6 +1175,7 @@ Given(
     await this.page.locator("//input[@id='country']").clear()
     await this.page.fill("//input[@id='country']", 'United Kingdom')
     await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page.waitForURL('**/account-address-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -1288,6 +1304,7 @@ Given('I update the dob', async function () {
   await this.page.locator("//input[@id='year']").clear()
   await this.page.fill("//input[@id='year']", year)
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/account-date-of-birth-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -1384,6 +1401,7 @@ When('I update Personal Email', async function () {
   this.personalEmail = generateRandomEmail()
   await this.page.fill('//input[@id="personal-email"]', this.personalEmail)
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/account-email-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -1704,6 +1722,7 @@ When('I select an address and submit', async function () {
   const randomIndex = Math.floor(Math.random() * (options.length - 1)) + 1
   await this.page.selectOption(select, { index: randomIndex })
   await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page.waitForURL('**/business-address-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
