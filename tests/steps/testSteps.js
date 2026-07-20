@@ -6,6 +6,8 @@ import {
   loginAsStandardUser,
   loginAsAmendPermissionUser,
   loginAsViewPermissionUser,
+  loginAsWMPuser,
+  loginAsNonWMPuser,
   goToLandingPage,
   TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
@@ -1995,3 +1997,46 @@ function generateValidationTestData(field, length) {
   }
   return value.substring(0, length)
 }
+//wmp
+Given('I Enter {string} credentials on SignIn page and navigate to YourBusiness page',
+  async function (linkType) {
+    switch (linkType.toLowerCase()) {
+      case 'wmp':
+        await this.page
+        await loginAsWMPuser(this.page)
+        await this.page.waitForLoadState('domcontentloaded')
+        await this.page
+          .locator(
+            "//a[normalize-space()='Go to application']"
+          )
+          .waitFor({ state: 'visible' })
+        break
+      case 'nonwmp':
+        await loginAsNonWMPuser(this.page)
+        await this.page.waitForLoadState('domcontentloaded')
+        await this.page.waitForURL('**/home')
+        break
+
+      default:
+        throw new Error(`Unknown link type: ${linkType}`)
+    }
+  })
+
+Given('Click {string} link on YourBusiness page', async function (string) {
+  await this.page.locator("//a[normalize-space()='Go to application']")
+    .click()
+  await this.page.waitForURL('**/woodland/confirmation')
+});
+
+
+Then('Application should Navigate to WMP page', async function () {
+  await expect(this.page.locator('a[href="/woodland"]')).toBeVisible()
+});
+
+Given('Application should not display {string} link on YourBusiness page', async function (string) {
+  const wmpLink = this.page.locator(
+    "//a[normalize-space()='Go to application']"
+  )
+  await expect(wmpLink).not.toBeVisible()
+  await expect(wmpLink).not.toBeAttached()
+});    
