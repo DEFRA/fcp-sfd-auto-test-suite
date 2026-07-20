@@ -6,6 +6,7 @@ import {
   loginAsStandardUser,
   loginAsAmendPermissionUser,
   loginAsViewPermissionUser,
+  loginAsWMPuser,
   goToLandingPage,
   TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
@@ -1995,3 +1996,26 @@ function generateValidationTestData(field, length) {
   }
   return value.substring(0, length)
 }
+//wmp
+Given('I Enter {string} credentials on SignIn page and navigate to YourBusiness page',
+  async function (string) {
+    await loginAsWMPuser(this.page)
+    await this.page.waitForLoadState('domcontentloaded')
+    await this.page
+      .locator(
+        "//a[normalize-space()='Go to application']"
+      )
+      .waitFor({ state: 'visible' })
+  })
+
+Given('Click {string} link on YourBusiness page', async function (string) {
+  await this.page.locator("//a[normalize-space()='Go to application']")
+    .click()
+
+  await this.page.waitForURL('**/woodland/confirmation')
+});
+
+
+Then('Application should Navigate to WMP page', async function () {
+  await expect(this.page.locator('a[href="/woodland"]')).toBeVisible()
+});

@@ -125,3 +125,22 @@ export async function loginAsViewPermissionUser(page) {
     .click()
   await page.locator('#continueReplacement').click()
 }
+//wmp
+export async function loginAsWMPuser(page) {
+  // worker-specific user
+  const { crn, password } = getWMPuserCredentials()
+  await goToLandingPage(page)
+  await page.locator("//input[@id='crn']").fill(crn)
+  await page.locator("//input[@id='password']").fill(password)
+  await page.locator("//button[@id='next']").click()
+}
+function getWMPuserCredentials() {
+  const workerId = parseInt(process.env.CUCUMBER_WORKER_ID || '0')
+  const users = [
+    {
+      crn: process.env.USER_WMP_1_CRN,
+      password: process.env.USER_STANDARD_PASSWORD
+    }
+  ]
+  return users[workerId] || users[0]
+}
