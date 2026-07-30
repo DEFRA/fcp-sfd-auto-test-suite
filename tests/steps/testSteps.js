@@ -1442,7 +1442,7 @@ Given(
     switch (linkType.toLowerCase()) {
       case 'change':
         await this.page
-          .getByRole('link', { name: 'Personal email', exact: true })
+          .getByRole('link', { name: 'Change personal email', exact: true })
           .click()
         break
       case 'back':
