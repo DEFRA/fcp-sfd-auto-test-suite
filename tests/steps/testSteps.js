@@ -779,12 +779,14 @@ Given(
         break
 
       case 'personalemailaddress':
-        await this.page.locator('//input[@id="personal-email"]').clear()
-        this.email = generateDiffLengthRandomEmail(length)
-        await this.page.fill('//input[@id="personal-email"]', this.email)
         await this.page
-          .locator("//button[normalize-space()='Continue']")
-          .click()
+          .getByRole('textbox', { name: /personal email address/i })
+          .clear()
+        this.email = generateDiffLengthRandomEmail(length)
+        await this.page
+          .getByRole('textbox', { name: /personal email address/i })
+          .fill(this.email)
+        await this.page.getByRole('button', { name: 'Continue' }).click()
         break
     }
   }
@@ -1397,12 +1399,16 @@ Given(
 )
 
 When('I update Personal Email', async function () {
-  await this.page.locator('//input[@id="personal-email"]').clear()
+  await this.page
+    .getByRole('textbox', { name: /personal email address/i })
+    .clear()
   this.personalEmail = generateRandomEmail()
-  await this.page.fill('//input[@id="personal-email"]', this.personalEmail)
-  await this.page.locator("//button[normalize-space()='Continue']").click()
+  await this.page
+    .getByRole('textbox', { name: /personal email address/i })
+    .fill(this.personalEmail)
+  await this.page.getByRole('button', { name: 'Continue' }).click()
   await this.page.waitForURL('**/account-email-check**')
-  await this.page.locator("//button[normalize-space()='Submit']").click()
+  await this.page.getByRole('button', { name: 'Submit' }).click()
 })
 
 Then(
@@ -1420,17 +1426,21 @@ Then(
 Given(
   'I update Personal email address and click the {string} in the CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page',
   async function (linkType) {
-    await this.page.locator('//input[@id="personal-email"]').clear()
+    await this.page
+      .getByRole('textbox', { name: /personal email address/i })
+      .clear()
     this.personalEmail = generateRandomEmail()
-    await this.page.fill('//input[@id="personal-email"]', this.personalEmail)
-    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page
+      .getByRole('textbox', { name: /personal email address/i })
+      .fill(this.personalEmail)
+    await this.page.getByRole('button', { name: 'Continue' }).click()
 
     switch (linkType.toLowerCase()) {
       case 'change':
         await this.page.getByRole('link', { name: 'Personal email' }).click()
         break
       case 'back':
-        await this.page.locator('//a[normalize-space()="Back"]').click()
+        await this.page.getByRole('link', { name: 'Back' }).click()
         break
     }
   }
@@ -1440,7 +1450,7 @@ Then(
   'Verify the previously entered details are still displayed in WhatIsYourPersonalEmailAddress? page',
   async function () {
     const actPersonalEmail = await this.page
-      .locator("//input[@id='personal-email']")
+      .getByRole('textbox', { name: /personal email address/i })
       .inputValue()
     expect(actPersonalEmail).toBe(this.personalEmail)
   }
@@ -1565,9 +1575,13 @@ Then(
 Given(
   'I enter the test data on the Emailformat as {string} on the {string} page',
   async function (emailFormat, _page) {
-    await this.page.locator('//input[@id="personal-email"]').clear()
-    await this.page.fill('//input[@id="personal-email"]', emailFormat)
-    await this.page.locator('//button[normalize-space()="Continue"]').click()
+    await this.page
+      .getByRole('textbox', { name: /personal email address/i })
+      .clear()
+    await this.page
+      .getByRole('textbox', { name: /personal email address/i })
+      .fill(emailFormat)
+    await this.page.getByRole('button', { name: 'Continue' }).click()
   }
 )
 
@@ -1854,9 +1868,13 @@ When(
 When(
   'I navigate to the CheckYourPersonalEmailAddressIsCorrectBeforeSubmitting page',
   async function () {
-    await this.page.locator('//input[@id="personal-email"]').clear()
-    await this.page.fill('//input[@id="personal-email"]', generateRandomEmail())
-    await this.page.locator("//button[normalize-space()='Continue']").click()
+    await this.page
+      .getByRole('textbox', { name: /personal email address/i })
+      .clear()
+    await this.page
+      .getByRole('textbox', { name: /personal email address/i })
+      .fill(generateRandomEmail())
+    await this.page.getByRole('button', { name: 'Continue' }).click()
     await this.page.waitForURL('**/account-email-check**')
   }
 )
