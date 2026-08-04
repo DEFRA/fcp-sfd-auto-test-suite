@@ -3,7 +3,7 @@ Feature: Update personal details
   Background:
     Given I am on SignIn page and enter the credentials for "PersonalDetails"
 
-  @test21 @sfd351
+  @test21 @sfd351 @browserstack
   Scenario: Verify personal phone number gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal phone number
@@ -49,14 +49,14 @@ Feature: Update personal details
     And I update the dob
     And Verify Success Updated message is displayed for "DOB" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test34 @sfd348
+  @test34 @sfd348 @browserstack
   Scenario: Verify personal email address gets updated on ViewAndUpdateYourPersonalDetails page
     When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I update Personal Email
     Then Verfiy Updated Personal Email Address details on the ViewAndUpdateYourPersonalDetails page are been displayed correctly
     And Verify Success Updated message is displayed for "personalemailaddress" on the page ViewAndUpdateYourPersonalDetails page
 
-  @test24 @sfd385
+  @test24 @sfd385 @browserstack
   Scenario Outline: Verify relevant error message for various validation criteria on WhatAreYourPersonalPhoneNumbers page
     When I click the "PersonalPhoneNumbers" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I enter the test data on the field "<TextField>" with value as "<TestData>" on the "<ValidationPage>" page
@@ -136,7 +136,7 @@ Feature: Update personal details
       |   1 |     2 |   90 | Enter a year with 4 numbers, like 1975      |
       |  31 |    12 |  990 | Enter a year with 4 numbers, like 1975      |
 
-  @test37 @sfd456
+  @test37 @sfd456 @browserstack
   Scenario Outline: Verify relevant error message for empty personal email address on WhatIsYourPersonalEmailAddress page
     When I click the "personalemailaddress" link on the "ViewAndUpdateYourPersonalDetails"Page
     And I enter the test data on the field "<TextField>" with value as "<TestData>" on the "<ValidationPage>" page
