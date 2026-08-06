@@ -7,6 +7,7 @@ import {
   loginAsAmendPermissionUser,
   loginAsViewPermissionUser,
   goToLandingPage,
+  clickAndWait,
   TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
 
@@ -42,6 +43,7 @@ Given(
             "//a[normalize-space()='View and update your personal details']"
           )
           .click()
+        await this.page.waitForURL('**/personal-details')
         break
       default:
         throw new Error(`Unknown details type: ${detailsType}`)
@@ -879,23 +881,48 @@ When(
   async function (linkType) {
     switch (linkType.toLowerCase()) {
       case 'personalphonenumbers':
-        await this.page
-          .getByRole('link', { name: 'Personal phone numbers' })
-          .click()
+        await clickAndWait(
+          this.page,
+          this.page.getByRole('link', {
+            name: 'Personal phone numbers',
+            exact: true
+          }),
+          '**/account-phone-numbers-change'
+        )
         break
       case 'fullname':
-        await this.page.getByRole('link', { name: 'Full name' }).click()
+        await clickAndWait(
+          this.page,
+          this.page.getByRole('link', { name: 'Full name', exact: true }),
+          '**/account-name-change'
+        )
         break
       case 'personaladdress':
-        await this.page.getByRole('link', { name: 'Personal address' }).click()
+        await clickAndWait(
+          this.page,
+          this.page.getByRole('link', {
+            name: 'Personal address',
+            exact: true
+          }),
+          '**/account-address-change'
+        )
         break
       case 'personaldob':
-        await this.page.getByRole('link', { name: 'Date of birth' }).click()
+        await clickAndWait(
+          this.page,
+          this.page.getByRole('link', { name: 'Date of birth', exact: true }),
+          '**/account-date-of-birth-change'
+        )
         break
       case 'personalemailaddress':
-        await this.page
-          .getByRole('link', { name: 'Personal email address' })
-          .click()
+        await clickAndWait(
+          this.page,
+          this.page.getByRole('link', {
+            name: 'Personal email address',
+            exact: true
+          }),
+          '**/account-email-change'
+        )
         break
       default:
         throw new Error(`Unknown link type: ${linkType}`)
@@ -967,17 +994,19 @@ Then(
 )
 
 Given('I update Personal Name', async function () {
-  await this.page.locator('//input[@id="first"]').clear()
-  await this.page.locator('//input[@id="middle"]').clear()
-  await this.page.locator('//input[@id="last"]').clear()
-
   this.firstName = faker.person.firstName()
   this.middleName = faker.person.middleName()
   this.lastName = faker.person.lastName()
 
-  await this.page.fill('//input[@id="first"]', this.firstName)
-  await this.page.fill('//input[@id="middle"]', this.middleName)
-  await this.page.fill('//input[@id="last"]', this.lastName)
+  await this.page
+    .getByRole('textbox', { name: 'First name', exact: true })
+    .fill(this.firstName)
+  await this.page
+    .getByRole('textbox', { name: 'Middle names', exact: true })
+    .fill(this.middleName)
+  await this.page
+    .getByRole('textbox', { name: 'Last name', exact: true })
+    .fill(this.lastName)
   await this.page.locator("//button[normalize-space()='Continue']").click()
   await this.page.waitForURL('**/account-name-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
@@ -998,36 +1027,49 @@ Then(
 Given(
   'I update Personal Name and click the Change link in CheckYourNameIsCorrectBeforeSubmitting page',
   async function () {
-    await this.page.locator('//input[@id="first"]').clear()
-    await this.page.locator('//input[@id="middle"]').clear()
-    await this.page.locator('//input[@id="last"]').clear()
-
     this.firstName = faker.person.firstName()
     this.middleName = faker.person.middleName()
     this.lastName = faker.person.lastName()
 
-    await this.page.fill('//input[@id="first"]', this.firstName)
-    await this.page.fill('//input[@id="middle"]', this.middleName)
-    await this.page.fill('//input[@id="last"]', this.lastName)
+    await this.page.waitForURL('**/account-name-change')
+    await this.page
+      .getByRole('textbox', { name: 'First name', exact: true })
+      .waitFor({ state: 'visible' })
+    await this.page
+      .getByRole('textbox', { name: 'First name', exact: true })
+      .fill(this.firstName)
+    await this.page
+      .getByRole('textbox', { name: 'Middle names', exact: true })
+      .fill(this.middleName)
+    await this.page
+      .getByRole('textbox', { name: 'Last name', exact: true })
+      .fill(this.lastName)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.getByRole('link', { name: 'Full name' }).click()
+    await this.page.waitForURL('**/account-name-check')
+    await clickAndWait(
+      this.page,
+      this.page.getByRole('link', { name: 'Change full name', exact: true }),
+      '**/account-name-change'
+    )
   }
 )
 
 Given(
   'Change the Personal Name again in WhatIsYourFullName? Page',
   async function () {
-    await this.page.locator('//input[@id="first"]').clear()
-    await this.page.locator('//input[@id="middle"]').clear()
-    await this.page.locator('//input[@id="last"]').clear()
-
     this.firstName = faker.person.firstName()
     this.middleName = faker.person.middleName()
     this.lastName = faker.person.lastName()
 
-    await this.page.fill('//input[@id="first"]', this.firstName)
-    await this.page.fill('//input[@id="middle"]', this.middleName)
-    await this.page.fill('//input[@id="last"]', this.lastName)
+    await this.page
+      .getByRole('textbox', { name: 'First name', exact: true })
+      .fill(this.firstName)
+    await this.page
+      .getByRole('textbox', { name: 'Middle names', exact: true })
+      .fill(this.middleName)
+    await this.page
+      .getByRole('textbox', { name: 'Last name', exact: true })
+      .fill(this.lastName)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.waitForURL('**/account-name-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
@@ -1361,37 +1403,43 @@ Given(
   'I enter the test data on the field {string} with value as {string} on the WhatIsYourFullName? page',
   async function (field, length) {
     this.firstName = faker.person.firstName()
-    await this.page.locator('//input[@id="first"]').clear()
-    await this.page.fill('//input[@id="first"]', this.firstName)
+    await this.page
+      .getByRole('textbox', { name: 'First name', exact: true })
+      .fill(this.firstName)
 
     this.middleName = faker.person.middleName()
-    await this.page.locator('//input[@id="middle"]').clear()
-    await this.page.fill('//input[@id="middle"]', this.middleName)
+    await this.page
+      .getByRole('textbox', { name: 'Middle names', exact: true })
+      .fill(this.middleName)
 
     this.lastName = faker.person.lastName()
-    await this.page.locator('//input[@id="last"]').clear()
-    await this.page.fill('//input[@id="last"]', this.lastName)
+    await this.page
+      .getByRole('textbox', { name: 'Last name', exact: true })
+      .fill(this.lastName)
 
     this.generateValue = generateValidationTestData(field, length)
 
     switch (field.toLowerCase()) {
       case 'personalfirstname':
-        await this.page.locator('//input[@id="first"]').clear()
-        await this.page.fill('//input[@id="first"]', this.generateValue)
+        await this.page
+          .getByRole('textbox', { name: 'First name', exact: true })
+          .fill(this.generateValue)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
         break
       case 'personalmiddlename':
-        await this.page.locator('//input[@id="middle"]').clear()
-        await this.page.fill('//input[@id="middle"]', this.generateValue)
+        await this.page
+          .getByRole('textbox', { name: 'Middle names', exact: true })
+          .fill(this.generateValue)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
         break
       case 'personallastname':
-        await this.page.locator('//input[@id="last"]').clear()
-        await this.page.fill('//input[@id="last"]', this.generateValue)
+        await this.page
+          .getByRole('textbox', { name: 'Last name', exact: true })
+          .fill(this.generateValue)
         await this.page
           .locator("//button[normalize-space()='Continue']")
           .click()
@@ -1584,6 +1632,7 @@ Then(
 Given(
   'I enter the test data on the Emailformat as {string} on the {string} page',
   async function (emailFormat, _page) {
+    await this.page.waitForURL('**/account-email-change')
     await this.page
       .getByRole('textbox', {
         name: 'What is your personal email address?',
@@ -1817,12 +1866,15 @@ When(
 When(
   'I navigate to the CheckYourNameIsCorrectBeforeSubmitting page',
   async function () {
-    await this.page.locator('//input[@id="first"]').clear()
-    await this.page.locator('//input[@id="middle"]').clear()
-    await this.page.locator('//input[@id="last"]').clear()
-    await this.page.fill('//input[@id="first"]', faker.person.firstName())
-    await this.page.fill('//input[@id="middle"]', faker.person.middleName())
-    await this.page.fill('//input[@id="last"]', faker.person.lastName())
+    await this.page
+      .getByRole('textbox', { name: 'First name', exact: true })
+      .fill(faker.person.firstName())
+    await this.page
+      .getByRole('textbox', { name: 'Middle names', exact: true })
+      .fill(faker.person.middleName())
+    await this.page
+      .getByRole('textbox', { name: 'Last name', exact: true })
+      .fill(faker.person.lastName())
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.waitForURL('**/account-name-check**')
   }

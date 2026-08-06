@@ -125,3 +125,9 @@ export async function loginAsViewPermissionUser(page) {
     .click()
   await page.locator('#continueReplacement').click()
 }
+
+// Clicks a locator and waits for the resulting navigation, so a click on a
+// page that is still mid-navigation cannot be silently discarded.
+export async function clickAndWait(page, locator, urlGlob) {
+  await Promise.all([page.waitForURL(urlGlob), locator.click()])
+}
