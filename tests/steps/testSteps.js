@@ -879,54 +879,29 @@ Then(
 When(
   'I click the {string} link on the "ViewAndUpdateYourPersonalDetails"Page',
   async function (linkType) {
-    switch (linkType.toLowerCase()) {
-      case 'personalphonenumbers':
-        await clickAndWait(
-          this.page,
-          this.page.getByRole('link', {
-            name: 'Personal phone numbers',
-            exact: true
-          }),
-          '**/account-phone-numbers-change'
-        )
-        break
-      case 'fullname':
-        await clickAndWait(
-          this.page,
-          this.page.getByRole('link', { name: 'Full name', exact: true }),
-          '**/account-name-change'
-        )
-        break
-      case 'personaladdress':
-        await clickAndWait(
-          this.page,
-          this.page.getByRole('link', {
-            name: 'Personal address',
-            exact: true
-          }),
-          '**/account-address-change'
-        )
-        break
-      case 'personaldob':
-        await clickAndWait(
-          this.page,
-          this.page.getByRole('link', { name: 'Date of birth', exact: true }),
-          '**/account-date-of-birth-change'
-        )
-        break
-      case 'personalemailaddress':
-        await clickAndWait(
-          this.page,
-          this.page.getByRole('link', {
-            name: 'Personal email address',
-            exact: true
-          }),
-          '**/account-email-change'
-        )
-        break
-      default:
-        throw new Error(`Unknown link type: ${linkType}`)
+    // The GOV.UK visually hidden pattern used on this page's change links
+    // (e.g. "Change<span class='govuk-visually-hidden'> Full name</span>")
+    // means the accessible name is "Change Full name" etc, not just the row
+    // label. The href is unique per row, so match on that instead.
+    const hrefsByLinkType = {
+      personalphonenumbers: '/account-phone-numbers-change',
+      fullname: '/account-name-change',
+      personaladdress: '/account-address-change',
+      personaldob: '/account-date-of-birth-change',
+      personalemailaddress: '/account-email-change'
     }
+
+    const href = hrefsByLinkType[linkType.toLowerCase()]
+
+    if (!href) {
+      throw new Error(`Unknown link type: ${linkType}`)
+    }
+
+    await clickAndWait(
+      this.page,
+      this.page.locator(`a[href="${href}"]`),
+      `**${href}`
+    )
   }
 )
 
