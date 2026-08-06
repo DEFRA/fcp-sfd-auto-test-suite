@@ -1021,9 +1021,11 @@ Given(
       .fill(this.lastName)
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.waitForURL('**/account-name-check')
+    // Same visually hidden "Change" prefix issue as the personal details
+    // page link clicks, so match on href rather than accessible name.
     await clickAndWait(
       this.page,
-      this.page.getByRole('link', { name: 'Change full name', exact: true }),
+      this.page.locator('a[href="/account-name-change"]'),
       '**/account-name-change'
     )
   }
