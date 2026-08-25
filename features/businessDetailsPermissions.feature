@@ -56,13 +56,26 @@ Feature: Business details permissions
     And Application should display with Message as "<Message>"
 
     Examples:
-      | URL                            | Message                                                        |
-      | /business-address-change       | What is your business address?                                 |
-      | /business-address-enter        | Enter your business address                                    |
-      | /business-address-check        | Check your business address is correct before submitting       |
-      | /business-phone-numbers-change | What are your business phone numbers?                          |
-      | /business-email-change         | What is your business email address?                           |
-      | /business-email-check          | Check your business email address is correct before submitting |
+      | URL                            | Message                                |
+      | /business-address-change       | What is your business address?         |
+      | /business-address-enter        | Enter your business address            |
+      | /business-phone-numbers-change | What are your business phone numbers?  |
+      | /business-email-change         | What is your business email address?   |
+
+  @test40 @sfd572
+  Scenario: Verify AmendPermission level reaches CheckYourBusinessAddressIsCorrectBeforeSubmitting page via the address change journey
+    Given I am on SignIn page and enter the credentials for "BusinessDetails" with "AmendPermission"
+    Then Navigate to "/business-address-change"
+    And I enter a valid postcode and continue to ChooseYourBusinessAddress page
+    And I navigate to the CheckYourBusinessAddressIsCorrectBeforeSubmitting page
+    Then Application should display with Message as "Check your business address is correct before submitting"
+
+  @test40 @sfd572
+  Scenario: Verify AmendPermission level reaches CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting page via the email change journey
+    Given I am on SignIn page and enter the credentials for "BusinessDetails" with "AmendPermission"
+    Then Navigate to "/business-email-change"
+    And I navigate to the CheckYourBusinessEmailAddressIsCorrectBeforeSubmitting page
+    Then Application should display with Message as "Check your business email address is correct before submitting"
 
   @test44 @sfd573
   Scenario Outline: Verify ViewPermission level redirects to unauthorised page for all change journeys
