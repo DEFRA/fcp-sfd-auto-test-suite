@@ -91,9 +91,7 @@ When(
   async function (linkType) {
     switch (linkType.toLowerCase()) {
       case 'businessphonenumbers':
-        await this.page
-          .locator("//a[@href='/business-phone-numbers-change']")
-          .click()
+        await this.page.locator("//a[@href='/phone-numbers-change']").click()
         break
       case 'businesstype':
         await this.page.getByRole('link', { name: 'Business type' }).click()
@@ -107,7 +105,7 @@ When(
         await this.page.getByRole('link', { name: 'Business address' }).click()
         break
       case 'businessname':
-        await this.page.locator("//a[@href='/business-name-change']").click()
+        await this.page.locator("//a[@href='/name-change']").click()
         break
       case 'businesslegalstatus':
         await this.page
@@ -294,7 +292,7 @@ When('I update phone number', async function () {
   this.phonenumber = generateRandomPhoneNumber()
   await this.page.fill('#businessTelephone', this.phonenumber)
   await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.waitForURL('**/business-phone-numbers-check**')
+  await this.page.waitForURL('**/phone-numbers-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -303,7 +301,7 @@ When('I update Email', async function () {
   this.email = generateRandomEmail()
   await this.page.fill('//input[@id="business-email"]', this.email)
   await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.waitForURL('**/business-email-check**')
+  await this.page.waitForURL('**/email-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -312,7 +310,7 @@ When('I update Business Name', async function () {
   this.businessName = faker.company.name()
   await this.page.fill('//input[@id="business-name"]', this.businessName)
   await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.waitForURL('**/business-name-check**')
+  await this.page.waitForURL('**/name-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -345,7 +343,7 @@ When('I update Business Address', async function () {
   await this.page.fill("//input[@id='country']", 'United Kingdom')
 
   await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.waitForURL('**/business-address-check**')
+  await this.page.waitForURL('**/address-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -355,7 +353,7 @@ When('I click signOut link on the {string} page', async function (signOutPage) {
       await this.page.locator("//a[normalize-space()='Sign out']").click()
       break
     case 'whatisyourbusinessname':
-      await this.page.locator("//a[@href='/business-name-change']").click()
+      await this.page.locator("//a[@href='/name-change']").click()
       await this.page.locator("//a[normalize-space()='Sign out']").click()
       break
     case 'enteryourbusinessaddress':
@@ -444,7 +442,7 @@ Given(
     this.businessName = faker.company.name()
     await this.page.fill('//input[@id="business-name"]', this.businessName)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-name-check**')
+    await this.page.waitForURL('**/name-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -511,7 +509,7 @@ Given(
     await this.page.fill("//input[@id='country']", 'United Kingdom')
 
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-address-check**')
+    await this.page.waitForURL('**/address-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -536,7 +534,7 @@ Given(
     this.phonenumber = generateRandomPhoneNumber()
     await this.page.fill('#businessTelephone', this.phonenumber)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-phone-numbers-check**')
+    await this.page.waitForURL('**/phone-numbers-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -571,7 +569,7 @@ Given(
     this.email = generateRandomEmail()
     await this.page.fill('//input[@id="business-email"]', this.email)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-email-check**')
+    await this.page.waitForURL('**/email-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
   }
 )
@@ -811,25 +809,23 @@ Then(
 
 When('I add the VAT Number', async function () {
   await this.page
-    .locator('//a[@href="/business-vat-registration-number-change"]')
+    .locator('//a[@href="/vat-registration-number-change"]')
     .click()
   await this.page.locator('//input[@id="business-vat"]').clear()
   await this.page.fill('//input[@id="business-vat"]', '123456789')
   await this.page.locator('//button[normalize-space()="Continue"]').click()
-  await this.page.waitForURL('**/business-vat-registration-number-check**')
+  await this.page.waitForURL('**/vat-registration-number-check**')
   await this.page.locator('//button[normalize-space()="Submit"]').click()
 })
 
 When('I click {string} link', async function (link) {
   switch (link.toLowerCase()) {
     case 'remove':
-      await this.page
-        .locator('//a[@href="/business-vat-registration-remove"]')
-        .click()
+      await this.page.locator('//a[@href="/vat-registration-remove"]').click()
       break
     case 'change':
       await this.page
-        .locator('//a[@href="/business-vat-registration-number-change"]')
+        .locator('//a[@href="/vat-registration-number-change"]')
         .click()
       break
   }
@@ -857,7 +853,7 @@ Given(
     await this.page.locator('//input[@id="business-vat"]').clear()
     await this.page.fill('//input[@id="business-vat"]', '987654321')
     await this.page.locator('//button[normalize-space()="Continue"]').click()
-    await this.page.waitForURL('**/business-vat-registration-number-check**')
+    await this.page.waitForURL('**/vat-registration-number-check**')
     await this.page.locator('//button[normalize-space()="Submit"]').click()
   }
 )
@@ -1704,7 +1700,7 @@ When(
     this.businessName = faker.company.name()
     await this.page.fill('//input[@id="business-name"]', this.businessName)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-name-check**')
+    await this.page.waitForURL('**/name-check**')
   }
 )
 
@@ -1736,7 +1732,7 @@ When(
     this.postcode = getRandomUKPostcode()
     await this.page.locator('//input[@id="postcode"]').fill(this.postcode)
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-address-select**')
+    await this.page.waitForURL('**/address-select**')
   }
 )
 
@@ -1747,7 +1743,7 @@ When('I select an address and submit', async function () {
   const randomIndex = Math.floor(Math.random() * (options.length - 1)) + 1
   await this.page.selectOption(select, { index: randomIndex })
   await this.page.locator("//button[normalize-space()='Continue']").click()
-  await this.page.waitForURL('**/business-address-check**')
+  await this.page.waitForURL('**/address-check**')
   await this.page.locator("//button[normalize-space()='Submit']").click()
 })
 
@@ -1767,7 +1763,7 @@ When(
     await this.page.locator("//input[@id='country']").clear()
     await this.page.fill("//input[@id='country']", 'United Kingdom')
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-address-check**')
+    await this.page.waitForURL('**/address-check**')
   }
 )
 
@@ -1777,7 +1773,7 @@ When(
     await this.page.locator('[id="businessTelephone"]').clear()
     await this.page.fill('#businessTelephone', generateRandomPhoneNumber())
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-phone-numbers-check**')
+    await this.page.waitForURL('**/phone-numbers-check**')
   }
 )
 
@@ -1787,7 +1783,7 @@ When(
     await this.page.locator('//input[@id="business-email"]').clear()
     await this.page.fill('//input[@id="business-email"]', generateRandomEmail())
     await this.page.locator("//button[normalize-space()='Continue']").click()
-    await this.page.waitForURL('**/business-email-check**')
+    await this.page.waitForURL('**/email-check**')
   }
 )
 
@@ -1795,9 +1791,9 @@ When(
   'I navigate to the WhatIsYourVATRegistrationNumber page',
   async function () {
     await this.page
-      .locator('//a[@href="/business-vat-registration-number-change"]')
+      .locator('//a[@href="/vat-registration-number-change"]')
       .click()
-    await this.page.waitForURL('**/business-vat-registration-number-change**')
+    await this.page.waitForURL('**/vat-registration-number-change**')
   }
 )
 
@@ -1805,12 +1801,12 @@ When(
   'I navigate to the CheckYourVATRegistrationNumberIsCorrectBeforeSubmitting page',
   async function () {
     await this.page
-      .locator('//a[@href="/business-vat-registration-number-change"]')
+      .locator('//a[@href="/vat-registration-number-change"]')
       .click()
     await this.page.locator('//input[@id="business-vat"]').clear()
     await this.page.fill('//input[@id="business-vat"]', '123456789')
     await this.page.locator('//button[normalize-space()="Continue"]').click()
-    await this.page.waitForURL('**/business-vat-registration-number-check**')
+    await this.page.waitForURL('**/vat-registration-number-check**')
   }
 )
 

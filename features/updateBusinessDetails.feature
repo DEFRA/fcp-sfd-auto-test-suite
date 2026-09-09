@@ -225,9 +225,9 @@ Feature: Update business details
     When I click the "BusinessName" link on the BusinessDetails page
     And I navigate to the CheckYourBusinessNameIsCorrectBeforeSubmitting page
     Then the following links should have the correct hrefs on the page:
-      | Text     | ExpectedHref          |
-      | Back     | /business-name-change |
-      | Sign out | /auth/sign-out        |    
+      | Text     | ExpectedHref   |
+      | Back     | /name-change   |
+      | Sign out | /auth/sign-out |
 
   @test53 @sfd2-814
   Scenario: Verify elements and links are correct on WhatIsYourBusinessAddress page
@@ -239,10 +239,10 @@ Feature: Update business details
       | If you do not have a UK postcode, enter the address manually. |
       | UK postcode                                                   |
     And the following links should have the correct hrefs on the page:
-      | Text                   | ExpectedHref            |
-      | Back                   | /business-details       |
-      | Sign out               | /auth/sign-out          |
-      | Enter address manually | /business-address-enter |
+      | Text                   | ExpectedHref      |
+      | Back                   | /business-details |
+      | Sign out               | /auth/sign-out    |
+      | Enter address manually | /address-enter    |
 
   @test54 @sfd2-815
   Scenario: Verify elements and links are correct on ChooseYourBusinessAddress page
@@ -255,11 +255,11 @@ Feature: Update business details
       | Select an address                 |
       | UK postcode                       |
     And the following links should have the correct hrefs on the page:
-      | Text                   | ExpectedHref             |
-      | Back                   | /business-address-change |
-      | Sign out               | /auth/sign-out           |
-      | Enter address manually | /business-address-enter  |
-      | Change                 | /business-address-change |        
+      | Text                   | ExpectedHref    |
+      | Back                   | /address-change |
+      | Sign out               | /auth/sign-out  |
+      | Enter address manually | /address-enter  |
+      | Change                 | /address-change |
 
   @test55 @sfd2-815
   Scenario: Verify business address can be updated using postcode lookup
@@ -273,10 +273,10 @@ Feature: Update business details
     When I click the "BusinessAddress" link on the BusinessDetails page
     And I navigate to the CheckYourBusinessAddressIsCorrectBeforeSubmitting page
     Then the following links should have the correct hrefs on the page:
-      | Text     | ExpectedHref            |
-      | Back     | /business-address-enter |
-      | Sign out | /auth/sign-out          |
-      | Change   | /business-address-enter |  
+      | Text     | ExpectedHref   |
+      | Back     | /address-enter |
+      | Sign out | /auth/sign-out |
+      | Change   | /address-enter |
 
   @test57 @sfd2-818
   Scenario: Verify elements and links are correct on WhatAreYourBusinessPhoneNumbers page
@@ -303,10 +303,10 @@ Feature: Update business details
       | Check your business phone numbers are correct before submitting |
       | Business phone numbers                                          |
     And the following links should have the correct hrefs on the page:
-      | Text     | ExpectedHref                    |
-      | Back     | /business-phone-numbers-change  |
-      | Sign out | /auth/sign-out                  |
-      | Change   | /business-phone-numbers-change  |    
+      | Text     | ExpectedHref          |
+      | Back     | /phone-numbers-change |
+      | Sign out | /auth/sign-out        |
+      | Change   | /phone-numbers-change |
 
   @test59 @sfd2-820
   Scenario: Verify elements and links are correct on WhatIsYourBusinessEmailAddress page
@@ -330,10 +330,10 @@ Feature: Update business details
       | Check your business email address is correct before submitting |
       | Business email address                                         |
     And the following links should have the correct hrefs on the page:
-      | Text     | ExpectedHref           |
-      | Back     | /business-email-change |
-      | Sign out | /auth/sign-out         |
-      | Change   | /business-email-change |
+      | Text     | ExpectedHref   |
+      | Back     | /email-change  |
+      | Sign out | /auth/sign-out |
+      | Change   | /email-change  |
 
   @test61 @sfd2-822
   Scenario: Verify elements and links are correct on AreYouSureYouWantToRemoveYourVATRegistrationNumber page
@@ -370,10 +370,10 @@ Feature: Update business details
       | Check your VAT registration number is correct before submitting |
       | VAT registration number                                         |
     And the following links should have the correct hrefs on the page:
-      | Text     | ExpectedHref                            |
-      | Back     | /business-vat-registration-number-change |
-      | Sign out | /auth/sign-out                           |
-      | Change   | /business-vat-registration-number-change |    
+      | Text     | ExpectedHref                    |
+      | Back     | /vat-registration-number-change |
+      | Sign out | /auth/sign-out                  |
+      | Change   | /vat-registration-number-change |
 
   @test75 @sfd2-716
   Scenario Outline: Verify relevant error message for various validation criteria on WhatIsYourBusinessAddress page
