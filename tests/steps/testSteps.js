@@ -130,9 +130,11 @@ Then(
             'If your business type is incorrect, contact the Rural Payments Agency to update it.'
           )
         ).toBeVisible()
-        await expect(this.page.locator('.govuk-heading-m')).toContainText(
-          'Contact the Rural Payments Agency'
-        )
+        await expect(
+          this.page.getByRole('heading', {
+            name: 'Contact the Rural Payments Agency'
+          })
+        ).toBeVisible()
         await expect(this.page.getByText('Phone: 03000 200 301')).toBeVisible()
         await expect(
           this.page.getByText(
@@ -147,9 +149,11 @@ Then(
             'If your legal status is incorrect, contact the Rural Payments Agency to update it.'
           )
         ).toBeVisible()
-        await expect(this.page.locator('.govuk-heading-m')).toContainText(
-          'Contact the Rural Payments Agency'
-        )
+        await expect(
+          this.page.getByRole('heading', {
+            name: 'Contact the Rural Payments Agency'
+          })
+        ).toBeVisible()
         await expect(this.page.getByText('Phone: 03000 200 301')).toBeVisible()
         await expect(
           this.page.getByText(
