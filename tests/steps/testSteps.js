@@ -1559,7 +1559,7 @@ Then(
     switch (linkType.toLowerCase()) {
       case 'amendpermission': {
         const actMsg = await this.page
-          .locator("//p[@class='govuk-body']")
+          .locator("//*[@id='main-content']//p[@class='govuk-body']")
           .innerText()
         expect(actMsg).toBe(
           'You only have permission to update contact details for this business. You can ask the business to raise your permission level.'
@@ -1568,7 +1568,7 @@ Then(
       }
       case 'viewpermission': {
         const actMsg = await this.page
-          .locator("//p[@class='govuk-body']")
+          .locator("//*[@id='main-content']//p[@class='govuk-body']")
           .innerText()
         expect(actMsg).toBe(
           'You do not have permission to update details for this business. You can ask the business to raise your permission level.'
