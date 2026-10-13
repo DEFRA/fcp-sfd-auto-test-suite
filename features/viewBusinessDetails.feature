@@ -26,6 +26,6 @@ Feature: View business details
       | Business email address           |
       | Single business identifier (SBI) |
       | VAT registration number          |
-      | Vendor registration number       |
+      | Vendor number                    |
       | Business legal status            |
       | Business type                    |
