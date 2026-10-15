@@ -48,6 +48,14 @@ Running a single test or scenario
 - Use `npx cucumber-js path/to/feature` or `npx cucumber-js path/to/feature:LINE` for narrow runs rather than full `npm test` when debugging.
 - If editing test code, be mindful of Playwright/browser dependencies and the need for headless browsers in CI (selenium-chrome is provided in compose.yml).
 
+## Test user data and interrupter failures
+
+- The suite runs four workers. Each logs in as its own test user, chosen by `CUCUMBER_WORKER_ID` in `tests/helpers/helpers.js`. A problem with one user's data fails only the scenarios on that worker, so failures look random.
+- A step failing after about 30 seconds with `Timeout 30000ms exceeded` while waiting for a form field usually means the browser is on another page. Establish which page before changing selectors. Failure screenshots are disabled in `features/support/hooks.js`.
+- If the personal details links point to `/personal-fix?source=...`, the user's personal details fail validation and the frontend's personal details interrupter is routing them to the fix journey.
+- `bin/fix-test-users.js` detects and repairs such users. Run `npm run fix:test-users -- --dry-run` to list them. Running it without `--dry-run` overwrites shared test data, so agree it with the team first. See "Repairing test user data" in the README.
+- The suite does not load `.env` itself. Export it first with `set -a && source .env && set +a`.
+
 ---
 
 (Automatically generated — review and add project-specific edge cases if needed.)

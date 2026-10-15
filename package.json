@@ -22,6 +22,7 @@
     "test:cdp": "npm run clean && cucumber-js --config playwright.cdp.config.js",
     "report": "allure generate allure-results --single-file --clean",
     "report:publish": "npm run report && ./bin/publish-tests.sh",
+    "fix:test-users": "node bin/fix-test-users.js",
     "format": "prettier --write '**/*.{js,md,json}'",
     "format:check": "prettier --check '**/*.{js,md,json}'",
     "lint": "eslint .",

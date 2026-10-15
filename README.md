@@ -119,6 +119,42 @@ Run a single feature file:
 npm run clean && npx cucumber-js features/businessDetailsPermissions.feature
 ```
 
+### Repairing test user data
+
+When the personal details interrupter is enabled, a test user whose personal details fail validation is sent to the `/personal-fix` journey instead of the individual change pages. Every personal details scenario on that user's worker then times out waiting for a form field, for example:
+
+```
+locator.clear: Timeout 30000ms exceeded.
+  - waiting for locator('//input[@id="first"]')
+```
+
+Because scenarios are spread across four workers, the failures look random. Only the scenarios that ran on the affected worker fail.
+
+`bin/fix-test-users.js` logs in as each configured test user and checks where the "Full name" link on `/personal-details` points. If it points to `/personal-fix`, the script completes the fix journey, filling only the fields the form shows with fixed valid values, and checks the link again.
+
+Check which users are affected without changing anything:
+
+```bash
+set -a && source .env && set +a
+npm run fix:test-users -- --dry-run
+```
+
+Repair all affected users:
+
+```bash
+npm run fix:test-users
+```
+
+Limit the run to named users:
+
+```bash
+npm run fix:test-users -- STANDARD_2 VIEW_4
+```
+
+Each user is reported as `OK`, `NEEDS FIX`, `FIXED`, `FAILED` or `ERROR`. The script exits with a non-zero code if any user is not valid at the end. Users whose credentials are not set are skipped.
+
+The script overwrites the affected users' personal details in the shared environment. Check with the team before running it, in case a user's data has been made invalid on purpose to test the interrupter.
+
 ### Viewing reports
 
 The suite uses Allure for reporting. Generate and open a report from the results of the last run:
