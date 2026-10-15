@@ -1560,28 +1560,19 @@ Then(
 Then(
   'Verify relevant Permission message type for {string} is displayed on the page ViewAndUpdateYourBusinessType',
   async function (linkType) {
-    switch (linkType.toLowerCase()) {
-      case 'amendpermission': {
-        const actMsg = await this.page
-          .locator("//p[@class='govuk-body']")
-          .innerText()
-        expect(actMsg).toBe(
-          'You only have permission to update contact details for this business. You can ask the business to raise your permission level.'
-        )
-        break
-      }
-      case 'viewpermission': {
-        const actMsg = await this.page
-          .locator("//p[@class='govuk-body']")
-          .innerText()
-        expect(actMsg).toBe(
-          'You do not have permission to update details for this business. You can ask the business to raise your permission level.'
-        )
-        break
-      }
-      default:
-        throw new Error(`Unknown permission type: ${linkType}`)
+    const permissionMessages = {
+      amendpermission:
+        'You only have permission to update contact details for this business. You can ask the business to raise your permission level.',
+      viewpermission:
+        'You do not have permission to update details for this business. You can ask the business to raise your permission level.'
     }
+
+    const expected = permissionMessages[linkType.toLowerCase()]
+    if (!expected) throw new Error(`Unknown permission type: ${linkType}`)
+
+    await expect(
+      this.page.getByRole('main').getByText(expected, { exact: true })
+    ).toBeVisible()
   }
 )
 
