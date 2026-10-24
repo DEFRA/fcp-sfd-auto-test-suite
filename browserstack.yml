@@ -1,0 +1,48 @@
+userName: ${BROWSERSTACK_USERNAME}
+accessKey: ${BROWSERSTACK_ACCESS_KEY}
+framework: playwright
+
+projectName: FCP SFD Auto Test Suite
+buildName: fcp-sfd-auto-test-suite
+buildIdentifier: '#${BUILD_NUMBER}'
+
+platforms:
+  - os: Windows
+    osVersion: 11
+    browserName: chrome
+    browserVersion: latest
+  - os: Windows
+    osVersion: 11
+    browserName: edge
+    browserVersion: latest
+  - os: Windows
+    osVersion: 11
+    browserName: playwright-firefox
+    browserVersion: latest
+  - os: OS X
+    osVersion: Sequoia
+    browserName: playwright-webkit
+    browserVersion: latest
+  - os: OS X
+    osVersion: Sequoia
+    browserName: chrome
+    browserVersion: latest
+  - os: OS X
+    osVersion: Sequoia
+    browserName: playwright-firefox
+    browserVersion: latest
+  - deviceName: iPhone 15
+    browserName: playwright-webkit
+    osVersion: 17
+  - deviceName: Samsung Galaxy S24
+    browserName: chrome
+    osVersion: 14
+
+parallelsPerPlatform: 1
+
+browserstackLocal: true
+
+debug: false
+networkLogs: false
+consoleLogs: errors
+testReporting: true

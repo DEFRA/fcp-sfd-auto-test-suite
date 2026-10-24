@@ -10,7 +10,7 @@ Feature: Update business details
     Then Verfiy updated phone details on the ViewAndUpdateYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessPhoneNumbers" on the page ViewAndUpdateYourBusinessType
 
-  @test2 @sfd175
+  @test2 @sfd175 @browserstack
   Scenario: Verify email gets updated on ViewAndUpdateYourBusinessType page
     When I click the "BusinessEmailAddress" link on the BusinessDetails page
     And I update Email
@@ -24,7 +24,7 @@ Feature: Update business details
     Then Verfiy Updated Business Address details on the ChangeYourBusinessType page are been displayed correctly
     And Verify Success Updated message is displayed for "BusinessAddress" on the page ViewAndUpdateYourBusinessType
 
-  @test4 @sfd174
+  @test4 @sfd174 @browserstack
   Scenario: Verify business name gets updated on ViewAndUpdateYourBusinessType page
     When I click the "BusinessName" link on the BusinessDetails page
     And I update Business Name
@@ -92,7 +92,7 @@ Feature: Update business details
       | WhatIsYourBusinessEmailAddress  |
       | ChangeYourBusinessType          |
 
-  @test18 @sfd325
+  @test18 @sfd325 @browserstack
   Scenario Outline: Verify application displays relevant message when selecting Yes or No on AreYouSureYouWantToRemoveYourVATRegistrationNumber page
     When I add the VAT Number
     And I click "<Link>" link
