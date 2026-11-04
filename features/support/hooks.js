@@ -18,7 +18,6 @@ let browser
 
 class CustomWorld {
   constructor() {
-    this.browser = null
     this.context = null
     this.page = null
     this.page1 = null
@@ -31,8 +30,7 @@ setDefaultTimeout(60 * 1000) // 60 seconds per step
 
 setWorldConstructor(CustomWorld)
 
-// Reuse one browser per worker to avoid launching Chromium for every scenario.
-BeforeAll(async function () {
+async function launchBrowser() {
   const launchOptions = {
     headless: true
   }
@@ -48,12 +46,20 @@ BeforeAll(async function () {
     ]
   }
 
-  browser = await chromium.launch(launchOptions)
+  return chromium.launch(launchOptions)
+}
+
+// Reuse one browser per worker to avoid launching Chromium for every scenario.
+BeforeAll(async function () {
+  browser = await launchBrowser()
 })
 
 // Keep cookies and session state isolated between scenarios.
 Before(async function () {
-  this.browser = browser
+  if (!browser?.isConnected()) {
+    browser = await launchBrowser()
+  }
+
   this.context = await browser.newContext({ ignoreHTTPSErrors: true })
   this.page = await this.context.newPage()
 })
@@ -71,6 +77,6 @@ After({ order: 2 }, async function () {
 })
 
 AfterAll(async function () {
-  if (browser) await browser.close()
+  if (browser?.isConnected()) await browser.close()
   browser = null
 })
