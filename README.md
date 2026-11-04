@@ -121,13 +121,6 @@ Run a single feature file:
 npm run clean && npx cucumber-js features/businessDetailsPermissions.feature
 ```
 
-By default, the browser runs headlessly. To watch a feature run in a visible Chromium window from PowerShell:
-
-```powershell
-$env:HEADLESS = 'false'
-npx cucumber-js features/businessDetailsPermissions.feature
-```
-
 ### Repairing test user data
 
 When the personal details interrupter is enabled, a test user whose personal details fail validation is sent to the `/personal-fix` journey instead of the individual change pages. Every personal details scenario on that user's worker then times out waiting for a form field, for example:

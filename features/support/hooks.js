@@ -33,7 +33,7 @@ setWorldConstructor(CustomWorld)
 
 BeforeAll(async function () {
   const launchOptions = {
-    headless: process.env.HEADLESS !== 'false'
+    headless: true
   }
 
   if (process.env.CDP_PROXY === 'true') {
