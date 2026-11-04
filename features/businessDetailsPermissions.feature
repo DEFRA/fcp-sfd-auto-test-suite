@@ -3,7 +3,8 @@ Feature: Business details permissions
   @test36 @sfd569
   Scenario Outline: Verify relevant change links are shown for AmendPermission level type
     Given I am on SignIn page and enter the credentials for "BusinessDetails" with "AmendPermission"
-    Then The "<Element>" change link should be "<Visible>"
+    Then the business details page heading should be "View and update your business details"
+    And The "<Element>" change link should be "<Visible>"
     And Verify relevant Permission message type for "AmendPermission" is displayed on the page ViewAndUpdateYourBusinessType
 
     Examples:
@@ -19,9 +20,9 @@ Feature: Business details permissions
   @test41 @sfd571
   Scenario Outline: Verify relevant change links are shown for ViewPermission level type
     Given I am on SignIn page and enter the credentials for "BusinessDetails" with "ViewPermission"
-    Then The "<Element>" change link should be "<Visible>"
+    Then the business details page heading should be "View business details"
+    And The "<Element>" change link should be "<Visible>"
     And Verify relevant Permission message type for "ViewPermission" is displayed on the page ViewAndUpdateYourBusinessType
-    And Verify relevant Header for "ViewPermission" is displayed on the ViewAndUpdateYourBusinessType Page
 
     Examples:
       | Element              | Visible |

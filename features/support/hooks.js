@@ -6,15 +6,18 @@
 import {
   Before,
   After,
+  BeforeAll,
+  AfterAll,
   setWorldConstructor,
   setDefaultTimeout
 } from '@cucumber/cucumber'
 import { chromium } from 'playwright'
 //  import { allure } from 'allure-cucumberjs';
 
+let browser
+
 class CustomWorld {
   constructor() {
-    this.browser = null
     this.context = null
     this.page = null
     this.page1 = null
@@ -27,9 +30,7 @@ setDefaultTimeout(60 * 1000) // 60 seconds per step
 
 setWorldConstructor(CustomWorld)
 
-Before(async function () {
-  // Launch browser before each scenario
-  // console.log('i am inside hooks')
+async function launchBrowser() {
   const launchOptions = {
     headless: true
   }
@@ -45,9 +46,21 @@ Before(async function () {
     ]
   }
 
-  this.browser = await chromium.launch(launchOptions)
+  return chromium.launch(launchOptions)
+}
 
-  this.context = await this.browser.newContext({ ignoreHTTPSErrors: true })
+// Reuse one browser per worker to avoid launching Chromium for every scenario.
+BeforeAll(async function () {
+  browser = await launchBrowser()
+})
+
+// Keep cookies and session state isolated between scenarios.
+Before(async function () {
+  if (!browser?.isConnected()) {
+    browser = await launchBrowser()
+  }
+
+  this.context = await browser.newContext({ ignoreHTTPSErrors: true })
   this.page = await this.context.newPage()
 })
 
@@ -60,10 +73,10 @@ After({ order: 1 }, async function (scenario) {
 })
 
 After({ order: 2 }, async function () {
-  // Close page, context, browser
-  if (this.page) await this.page.close()
-  if (this.page1) await this.page1.close()
-  if (this.page2) await this.page2.close()
   if (this.context) await this.context.close()
-  if (this.browser) await this.browser.close()
+})
+
+AfterAll(async function () {
+  if (browser?.isConnected()) await browser.close()
+  browser = null
 })
