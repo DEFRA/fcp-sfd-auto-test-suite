@@ -65,7 +65,7 @@ Given(
             "//a[normalize-space()='View and update your business details']"
           )
           .click()
-        await this.page.waitForTimeout(3000)
+        await this.page.waitForURL('**/business-details')
         break
 
       case businessdetails === 'businessdetails' &&
@@ -75,7 +75,7 @@ Given(
         await this.page
           .locator("//a[normalize-space()='View your Business details']")
           .click()
-        await this.page.waitForTimeout(3000)
+        await this.page.waitForURL('**/business-details')
         break
 
       default:

@@ -99,6 +99,8 @@ Test user permission levels are managed via CHS.
 
 `CUCUMBER_WORKER_ID` is set automatically by Cucumber-JS for each parallel worker. The login helpers in `tests/helpers/helpers.js` read this value and index directly into an array of four users per type, so worker N always uses its own dedicated user. When running serially or as a single test (no worker ID set), it falls back to worker 0.
 
+Chromium is launched once per worker. Each scenario gets a new browser context and page, which keeps cookies and session state isolated while avoiding a browser launch for every scenario.
+
 ### Running tests
 
 Run the full suite (parallel, 4 workers):
@@ -117,6 +119,13 @@ Run a single feature file:
 
 ```bash
 npm run clean && npx cucumber-js features/businessDetailsPermissions.feature
+```
+
+By default, the browser runs headlessly. To watch a feature run in a visible Chromium window from PowerShell:
+
+```powershell
+$env:HEADLESS = 'false'
+npx cucumber-js features/businessDetailsPermissions.feature
 ```
 
 ### Repairing test user data

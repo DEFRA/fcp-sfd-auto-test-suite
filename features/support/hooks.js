@@ -6,11 +6,15 @@
 import {
   Before,
   After,
+  BeforeAll,
+  AfterAll,
   setWorldConstructor,
   setDefaultTimeout
 } from '@cucumber/cucumber'
 import { chromium } from 'playwright'
 //  import { allure } from 'allure-cucumberjs';
+
+let browser
 
 class CustomWorld {
   constructor() {
@@ -27,11 +31,9 @@ setDefaultTimeout(60 * 1000) // 60 seconds per step
 
 setWorldConstructor(CustomWorld)
 
-Before(async function () {
-  // Launch browser before each scenario
-  // console.log('i am inside hooks')
+BeforeAll(async function () {
   const launchOptions = {
-    headless: true
+    headless: process.env.HEADLESS !== 'false'
   }
 
   if (process.env.CDP_PROXY === 'true') {
@@ -45,9 +47,12 @@ Before(async function () {
     ]
   }
 
-  this.browser = await chromium.launch(launchOptions)
+  browser = await chromium.launch(launchOptions)
+})
 
-  this.context = await this.browser.newContext({ ignoreHTTPSErrors: true })
+Before(async function () {
+  this.browser = browser
+  this.context = await browser.newContext({ ignoreHTTPSErrors: true })
   this.page = await this.context.newPage()
 })
 
@@ -60,10 +65,10 @@ After({ order: 1 }, async function (scenario) {
 })
 
 After({ order: 2 }, async function () {
-  // Close page, context, browser
-  if (this.page) await this.page.close()
-  if (this.page1) await this.page1.close()
-  if (this.page2) await this.page2.close()
   if (this.context) await this.context.close()
-  if (this.browser) await this.browser.close()
+})
+
+AfterAll(async function () {
+  if (browser) await browser.close()
+  browser = null
 })
