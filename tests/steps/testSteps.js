@@ -10,6 +10,20 @@ import {
   TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
 
+async function waitForBusinessDetailsPage(page) {
+  await page.waitForURL('**/business-details')
+}
+
+async function assertBusinessDetailsHeading(page, expectedHeading) {
+  await expect(
+    page.getByRole('heading', {
+      name: expectedHeading,
+      exact: true,
+      level: 1
+    })
+  ).toBeVisible()
+}
+
 Given(
   'I am on SignIn page and enter the credentials for {string}',
   async function (detailsType) {
@@ -18,16 +32,16 @@ Given(
         await loginAsStandardUser(this.page)
         await this.page.waitForLoadState('domcontentloaded')
         await this.page
-          .locator(
-            "//a[normalize-space()='View and update your business details']"
-          )
-          .waitFor({ state: 'visible' })
-        await this.page
-          .locator(
-            "//a[normalize-space()='View and update your business details']"
-          )
+          .getByRole('link', {
+            name: 'View and update your business details',
+            exact: true
+          })
           .click()
-        await this.page.waitForURL('**/business-details')
+        await waitForBusinessDetailsPage(this.page)
+        await assertBusinessDetailsHeading(
+          this.page,
+          'View and update your business details'
+        )
         break
       case 'personaldetails':
         await loginAsStandardUser(this.page)
@@ -61,11 +75,12 @@ Given(
         await loginAsAmendPermissionUser(this.page)
         await this.page.waitForLoadState('domcontentloaded')
         await this.page
-          .locator(
-            "//a[normalize-space()='View and update your business details']"
-          )
+          .getByRole('link', {
+            name: 'View and update your business details',
+            exact: true
+          })
           .click()
-        await this.page.waitForURL('**/business-details')
+        await waitForBusinessDetailsPage(this.page)
         break
 
       case businessdetails === 'businessdetails' &&
@@ -73,9 +88,12 @@ Given(
         await loginAsViewPermissionUser(this.page)
         await this.page.waitForLoadState('domcontentloaded')
         await this.page
-          .locator("//a[normalize-space()='View your Business details']")
+          .getByRole('link', {
+            name: 'View your Business details',
+            exact: true
+          })
           .click()
-        await this.page.waitForURL('**/business-details')
+        await waitForBusinessDetailsPage(this.page)
         break
 
       default:
@@ -1486,73 +1504,23 @@ Then(
   'The {string} change link should be {string}',
   async function (linkType, visible) {
     const shouldBeVisible = visible.toLowerCase() === 'yes'
+    const changeLinkNames = {
+      businessaddress: 'Change Business address',
+      businessphonenumbers: 'Change Business telephone numbers',
+      businessemailaddress: 'Change Business email address',
+      businessname: 'Change business name',
+      businesslegalstatus: 'Change business legal status',
+      businesstype: 'Change business type',
+      vatnumber: 'Change VAT registration number'
+    }
+    const linkName = changeLinkNames[linkType.toLowerCase()]
+    if (!linkName) throw new Error(`Unknown link type: ${linkType}`)
 
-    switch (linkType.toLowerCase()) {
-      case 'businessaddress': {
-        const count = await this.page
-          .getByRole('link', { name: 'Change Business address' })
-          .count()
-        shouldBeVisible
-          ? expect(count).toBeGreaterThan(0)
-          : expect(count).toBe(0)
-        break
-      }
-      case 'businessphonenumbers': {
-        const count = await this.page
-          .getByRole('link', { name: 'Change Business telephone numbers' })
-          .count()
-        shouldBeVisible
-          ? expect(count).toBeGreaterThan(0)
-          : expect(count).toBe(0)
-        break
-      }
-      case 'businessemailaddress': {
-        const count = await this.page
-          .getByRole('link', { name: 'Change Business email address' })
-          .count()
-        shouldBeVisible
-          ? expect(count).toBeGreaterThan(0)
-          : expect(count).toBe(0)
-        break
-      }
-      case 'businessname': {
-        const count = await this.page
-          .getByRole('link', { name: 'Change business name' })
-          .count()
-        shouldBeVisible
-          ? expect(count).toBeGreaterThan(0)
-          : expect(count).toBe(0)
-        break
-      }
-      case 'businesslegalstatus': {
-        const count = await this.page
-          .getByRole('link', { name: 'Change business legal status' })
-          .count()
-        shouldBeVisible
-          ? expect(count).toBeGreaterThan(0)
-          : expect(count).toBe(0)
-        break
-      }
-      case 'businesstype': {
-        const count = await this.page
-          .getByRole('link', { name: 'Change business type' })
-          .count()
-        shouldBeVisible
-          ? expect(count).toBeGreaterThan(0)
-          : expect(count).toBe(0)
-        break
-      }
-      case 'vatnumber': {
-        const count = await this.page
-          .getByRole('link', { name: 'Change VAT registration number' })
-          .count()
-        shouldBeVisible
-          ? expect(count).toBeGreaterThan(0)
-          : expect(count).toBe(0)
-        break
-      }
-      default:
-        throw new Error(`Unknown link type: ${linkType}`)
+    const changeLink = this.page.getByRole('link', { name: linkName })
+    if (shouldBeVisible) {
+      await expect(changeLink).toBeVisible()
+    } else {
+      await expect(changeLink).toHaveCount(0)
     }
   }
 )
@@ -1591,15 +1559,10 @@ Given(
   }
 )
 
-Given(
-  'Verify relevant Header for {string} is displayed on the ViewAndUpdateYourBusinessType Page',
-  async function (linkType) {
-    if (linkType.toLowerCase() === 'viewpermission') {
-      const actMsg = await this.page
-        .locator("//*[@id='main-content']//h1")
-        .innerText()
-      expect(actMsg).toBe('View business details')
-    }
+Then(
+  'the business details page heading should be {string}',
+  async function (expectedHeading) {
+    await assertBusinessDetailsHeading(this.page, expectedHeading)
   }
 )
 
