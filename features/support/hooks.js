@@ -31,6 +31,7 @@ setDefaultTimeout(60 * 1000) // 60 seconds per step
 
 setWorldConstructor(CustomWorld)
 
+// Reuse one browser per worker to avoid launching Chromium for every scenario.
 BeforeAll(async function () {
   const launchOptions = {
     headless: true
@@ -50,6 +51,7 @@ BeforeAll(async function () {
   browser = await chromium.launch(launchOptions)
 })
 
+// Keep cookies and session state isolated between scenarios.
 Before(async function () {
   this.browser = browser
   this.context = await browser.newContext({ ignoreHTTPSErrors: true })
