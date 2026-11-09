@@ -9,15 +9,17 @@ import {
   BeforeAll,
   AfterAll,
   setWorldConstructor,
-  setDefaultTimeout
+  setDefaultTimeout,
+  World
 } from '@cucumber/cucumber'
 import { chromium } from 'playwright'
 //  import { allure } from 'allure-cucumberjs';
 
 let browser
 
-class CustomWorld {
-  constructor() {
+class CustomWorld extends World {
+  constructor(options) {
+    super(options)
     this.context = null
     this.page = null
     this.page1 = null
@@ -32,7 +34,8 @@ setWorldConstructor(CustomWorld)
 
 async function launchBrowser() {
   const launchOptions = {
-    headless: true
+    headless: process.env.HEADLESS !== 'false',
+    slowMo: Number(process.env.SLOWMO || 0)
   }
 
   if (process.env.CDP_PROXY === 'true') {
