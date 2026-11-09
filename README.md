@@ -121,6 +121,39 @@ Run a single feature file:
 npm run clean && npx cucumber-js features/businessDetailsPermissions.feature
 ```
 
+### Accessibility tests
+
+[axe-core](https://github.com/dequelabs/axe-core) scans run inside the existing journeys through `@axe-core/playwright`. They check WCAG 2.2 A and AA plus axe's `best-practice` rules.
+
+Run only the accessibility scenarios:
+
+```bash
+npm run test:a11y
+```
+
+The scenarios in `features/accessibility.feature` cover the personal and business details journeys, including a validation error state. They are tagged `@accessibility` and are excluded from `npm test` (which the CDP entrypoint runs) until the known frontend defects are fixed or agreed as known issues. Run them with `npm run test:a11y`.
+
+To scan a page in any scenario, add this step after navigating to it:
+
+```gherkin
+Then the page should have no accessibility violations
+```
+
+Each scan attaches a JSON report to the Allure report. It lists the violations (rule, impact, selectors and help link), known issues and incomplete checks. A scenario fails if any violation is not a known issue.
+
+#### Known issues
+
+Accepted violations are listed in `tests/helpers/accessibility-known-issues.js`. Each entry needs a `justification` and a `ticket`, and can be limited to certain pages with `pathPattern`. Known issues still appear in the Allure report but do not fail the scenario.
+
+`features/accessibilityResponsiveKeyboard.feature` (tagged `@accessibility @responsive-keyboard`) adds two more checks:
+
+- `Then the page should have no accessibility violations on narrow screens` scans at 320x568 and 568x320 (WCAG 1.4.10 Reflow and 1.3.4 Orientation) and fails if the page scrolls horizontally.
+- `Then the page should be fully operable with the keyboard` tabs through the page and checks that the skip link is the first stop after the cookie banner and works, focus is never trapped, every visible control is reachable and every focused control shows a focus indicator.
+
+To watch a scenario run in a visible browser, set `HEADLESS=false` (and optionally `SLOWMO=1200` to slow each action down).
+
+Automated checks find only some accessibility problems. They do not replace manual testing with assistive technology: screen readers, speech recognition, 400% zoom and judging whether link text and error messages make sense still need a person.
+
 ### Repairing test user data
 
 When the personal details interrupter is enabled, a test user whose personal details fail validation is sent to the `/personal-fix` journey instead of the individual change pages. Every personal details scenario on that user's worker then times out waiting for a form field, for example:
