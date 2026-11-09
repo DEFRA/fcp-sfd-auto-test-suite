@@ -7,6 +7,7 @@ This file gives repository-specific guidance for Copilot CLI sessions and other 
 - Install: `npm ci` (or `npm install`)
 - Full test suite: `npm test` (runs `cucumber-js`)
 - Smoke tests: `npm run test:smoke`
+- Accessibility (axe-core) tests: `npm run test:a11y`; known accepted violations live in `tests/helpers/accessibility-known-issues.js` and need a justification and ticket
 - Run tagged tests: `npm run test:tag` (set TAG env var)
 - Playwright CDP run: `npm run test:cdp`
 - Generate report: `npm run report` and publish: `npm run report:publish`
