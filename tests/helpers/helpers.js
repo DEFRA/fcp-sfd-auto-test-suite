@@ -100,6 +100,17 @@ export async function loginAsStandardUser(page) {
   await page.locator("//button[@id='next']").click()
 }
 
+export async function loginAsStandardUserNumber(page, number) {
+  const crn = process.env[`USER_STANDARD_${number}_CRN`]
+  const password = process.env.USER_STANDARD_PASSWORD
+  if (!crn || !password) {
+    throw new Error(`USER_STANDARD_${number}_CRN or the password is not set`)
+  }
+  await goToLandingPage(page)
+  await page.locator("//input[@id='crn']").fill(crn)
+  await page.locator("//input[@id='password']").fill(password)
+  await page.locator("//button[@id='next']").click()
+}
 export async function loginAsAmendPermissionUser(page) {
   // worker-specific user + SBI-based selection
   const { crn, password, sbi } = getAmendUserCredentials()
