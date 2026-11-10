@@ -131,7 +131,7 @@ Run only the accessibility scenarios:
 npm run test:a11y
 ```
 
-The scenarios in `features/accessibility.feature` cover the personal and business details journeys, including a validation error state. They are tagged `@accessibility` and are excluded from `npm test` (which the CDP entrypoint runs) until the known frontend defects are fixed or agreed as known issues. Run them with `npm run test:a11y`.
+The scenarios in `features/accessibility.feature` cover the personal and business details journeys, including a validation error state. They sign in as a named user (`I sign in as standard user {n} and open the "PersonalDetails" page`) instead of the worker-based user, so each scenario always gets the same user: STANDARD_2 for the normal change pages, and STANDARD_1 for the personal fix journey pages (`/personal-fix`, `/personal-fix-list`), which it is sent to because its personal details fail validation. The fix journey scenarios only read pages and never submit. The business fix journey is not covered because no Test user with invalid business data is known. They are tagged `@accessibility` and are excluded from `npm test` (which the CDP entrypoint runs) until the known frontend defects are fixed or agreed as known issues. Run them with `npm run test:a11y`.
 
 To scan a page in any scenario, add this step after navigating to it:
 
