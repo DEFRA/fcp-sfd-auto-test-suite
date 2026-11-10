@@ -4,6 +4,7 @@ import { checkAccessibility, checkReflow } from '../helpers/accessibility.js'
 import { checkKeyboardOperability } from '../helpers/keyboard.js'
 import {
   loginAsStandardUserNumber,
+  loginAsNamedUser,
   TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
 
@@ -52,6 +53,37 @@ When('I open the personal fix journey for {string}', async function (source) {
   await expect(this.page).toHaveURL(/\/personal-fix\?source=/)
 })
 
+When('I open the business fix journey for {string}', async function (source) {
+  await this.page.goto(`${TEST_SUITE_BASE_URL}/business-fix?source=${source}`)
+  // The page sends users with valid business data back to /business-details
+  if (!/\/business-fix\?source=/.test(this.page.url())) {
+    throw new Error(
+      'This user no longer has invalid business data, so /business-fix redirected. Run "npm run find:test-users" to pick another user.'
+    )
+  }
+})
+
+When('I continue to the business fix list page', async function () {
+  await this.page.getByRole('button', { name: 'Continue' }).click()
+  await expect(this.page).toHaveURL(/\/business-fix-list$/)
+})
+
+Given(
+  'I sign in as test user {string} and open the {string} page',
+  async function (key, pageName) {
+    const paths = {
+      PersonalDetails: '/personal-details',
+      BusinessDetails: '/business-details'
+    }
+    const path = paths[pageName]
+    if (!path) throw new Error(`Unknown page: ${pageName}`)
+    await loginAsNamedUser(this.page, key)
+    await this.page.waitForURL('**/home')
+    await this.page.goto(`${TEST_SUITE_BASE_URL}${path}`)
+    await this.page.waitForLoadState('domcontentloaded')
+    await expect(this.page).toHaveURL(new RegExp(`${path}$`))
+  }
+)
 When('I continue to the personal fix list page', async function () {
   await this.page.getByRole('button', { name: 'Continue' }).click()
   await expect(this.page).toHaveURL(/\/personal-fix-list$/)

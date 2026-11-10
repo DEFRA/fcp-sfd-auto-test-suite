@@ -55,3 +55,21 @@ Feature: Accessibility - reflow and keyboard operation (WCAG 2.2 AA)
     And I continue to the personal fix list page
     Then the page should be fully operable with the keyboard
     And the page should have no accessibility violations on narrow screens
+
+  Scenario Outline: Business fix journey page "<Source>" works on narrow screens and with the keyboard
+    Given I sign in as test user "BUSINESS_FIX_1" and open the "BusinessDetails" page
+    When I open the business fix journey for "<Source>"
+    Then the page should be fully operable with the keyboard
+    And the page should have no accessibility violations on narrow screens
+
+    Examples:
+      | Source  |
+      | name    |
+      | address |
+
+  Scenario: Business fix list page works on narrow screens and with the keyboard
+    Given I sign in as test user "BUSINESS_FIX_1" and open the "BusinessDetails" page
+    When I open the business fix journey for "name"
+    And I continue to the business fix list page
+    Then the page should be fully operable with the keyboard
+    And the page should have no accessibility violations on narrow screens
