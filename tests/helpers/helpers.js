@@ -101,10 +101,16 @@ export async function loginAsStandardUser(page) {
 }
 
 export async function loginAsStandardUserNumber(page, number) {
-  const crn = process.env[`USER_STANDARD_${number}_CRN`]
+  await loginAsNamedUser(page, `STANDARD_${number}`)
+}
+
+// Signs in as the user set in USER_<KEY>_CRN, for example BUSINESS_FIX_1.
+// All named users share USER_STANDARD_PASSWORD.
+export async function loginAsNamedUser(page, key) {
+  const crn = process.env[`USER_${key}_CRN`]
   const password = process.env.USER_STANDARD_PASSWORD
   if (!crn || !password) {
-    throw new Error(`USER_STANDARD_${number}_CRN or the password is not set`)
+    throw new Error(`USER_${key}_CRN or USER_STANDARD_PASSWORD is not set`)
   }
   await goToLandingPage(page)
   await page.locator("//input[@id='crn']").fill(crn)
