@@ -71,3 +71,21 @@ Feature: Accessibility (WCAG 2.2 AA)
     When I open the personal fix journey for "name"
     And I continue to the personal fix list page
     Then the page should have no accessibility violations
+
+  Scenario Outline: Business fix journey start page for "<Source>" has no accessibility violations
+    Given I sign in as test user "BUSINESS_FIX_1" and open the "BusinessDetails" page
+    When I open the business fix journey for "<Source>"
+    Then the page should have no accessibility violations
+
+    Examples:
+      | Source  |
+      | name    |
+      | address |
+      | phone   |
+      | vat     |
+
+  Scenario: Business fix list page has no accessibility violations
+    Given I sign in as test user "BUSINESS_FIX_1" and open the "BusinessDetails" page
+    When I open the business fix journey for "name"
+    And I continue to the business fix list page
+    Then the page should have no accessibility violations

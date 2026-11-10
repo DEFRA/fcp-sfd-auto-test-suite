@@ -24,6 +24,7 @@
     "report": "allure generate allure-results --single-file --clean",
     "report:publish": "npm run report && ./bin/publish-tests.sh",
     "fix:test-users": "node bin/fix-test-users.js",
+    "find:test-users": "node bin/find-test-users.js",
     "format": "prettier --write '**/*.{js,md,json}'",
     "format:check": "prettier --check '**/*.{js,md,json}'",
     "lint": "eslint .",
