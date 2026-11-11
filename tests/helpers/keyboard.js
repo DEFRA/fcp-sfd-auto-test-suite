@@ -1,6 +1,7 @@
 import { reportName, waitForPageReady } from './accessibility.js'
 
 const MAX_TAB_STOPS = 200
+const MAX_COOKIE_BANNER_STOPS = 6
 const TRAP_REPEATS = 3
 
 // Puts sequential focus navigation back at the top of the page.
@@ -14,38 +15,71 @@ async function resetFocus(page) {
   })
 }
 
-async function describeFocus(page) {
-  return page.evaluate(() => {
+// Bookkeeping lives in a handle held by the test, so nothing is written into
+// the page under test (no attributes, no globals).
+function createFocusState(page) {
+  return page.evaluateHandle(() => ({
+    ids: new WeakMap(),
+    visited: new WeakSet(),
+    count: 0
+  }))
+}
+
+async function describeFocus(page, state) {
+  return page.evaluate((state) => {
     const el = document.activeElement
     if (!el || el === document.body || el === document.documentElement) {
       return null
     }
-    el.dataset.a11yFocused = 'true'
-    if (!el.dataset.a11yId) {
-      window.__a11yCount = (window.__a11yCount || 0) + 1
-      el.dataset.a11yId = String(window.__a11yCount)
+    state.visited.add(el)
+    if (!state.ids.has(el)) state.ids.set(el, String(++state.count))
+
+    const look = (node, pseudo) => {
+      const s = window.getComputedStyle(node, pseudo)
+      return [
+        s.outlineStyle,
+        s.outlineWidth,
+        s.outlineColor,
+        s.boxShadow,
+        s.borderTopWidth,
+        s.borderTopColor,
+        s.backgroundColor,
+        s.color,
+        s.textDecorationLine
+      ].join('|')
     }
 
-    const style = window.getComputedStyle(el)
-    const outlineVisible =
-      style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) > 0
-    const shadowVisible = style.boxShadow !== 'none'
     // GOV.UK radios and checkboxes hide the input (opacity 0) and draw the
-    // focus ring on the label, so the input itself has no indicator to read.
-    const customControl = style.opacity === '0'
+    // focus ring on the label's ::before, so that is what has to change.
+    const isHiddenChoice =
+      el.tagName === 'INPUT' &&
+      ['radio', 'checkbox'].includes(el.type) &&
+      window.getComputedStyle(el).opacity === '0'
+    const target = isHiddenChoice ? el.labels?.[0] : el
+    const pseudo = isHiddenChoice ? '::before' : null
+
+    // An indicator is whatever changes when the element loses focus
+    let hasFocusIndicator = false
+    if (target) {
+      const focused = look(target, pseudo)
+      el.blur()
+      const unfocused = look(target, pseudo)
+      el.focus({ preventScroll: true })
+      hasFocusIndicator = focused !== unfocused
+    }
 
     return {
-      id: el.dataset.a11yId,
+      id: state.ids.get(el),
       description: `${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''} "${(el.innerText || el.value || el.getAttribute('aria-label') || '').trim().slice(0, 40)}"`,
-      hasFocusIndicator: outlineVisible || shadowVisible || customControl,
+      hasFocusIndicator,
       isSkipLink: el.classList.contains('govuk-skip-link'),
       inCookieBanner: !!el.closest('.govuk-cookie-banner')
     }
-  })
+  }, state)
 }
 
-async function findUnreachable(page) {
-  return page.evaluate(() => {
+async function findUnreachable(page, state) {
+  return page.evaluate((state) => {
     const selector =
       'a[href], button, input:not([type="hidden"]), select, textarea, summary, [tabindex]:not([tabindex="-1"])'
     return [...document.querySelectorAll(selector)]
@@ -55,23 +89,23 @@ async function findUnreachable(page) {
           !el.disabled &&
           style.visibility !== 'hidden' &&
           el.getClientRects().length > 0 &&
-          el.dataset.a11yFocused !== 'true'
+          !state.visited.has(el)
         )
       })
       .map(
         (el) =>
           `${el.tagName.toLowerCase()}${el.id ? `#${el.id}` : ''} "${(el.innerText || el.value || '').trim().slice(0, 40)}"`
       )
-  })
+  }, state)
 }
 
-async function checkSkipLink(page) {
+async function checkSkipLink(page, state) {
   await resetFocus(page)
   // The GOV.UK cookie banner sits before the skip link, so Tab past it
   let first = null
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < MAX_COOKIE_BANNER_STOPS; i++) {
     await page.keyboard.press('Tab')
-    first = await describeFocus(page)
+    first = await describeFocus(page, state)
     if (!first?.inCookieBanner) break
   }
   if (!first?.isSkipLink) return 'Skip link could not be reached with Tab'
@@ -107,22 +141,30 @@ export async function checkKeyboardOperability(world) {
 
   await resetFocus(page)
 
+  const state = await createFocusState(page)
   const seen = new Set()
   let previousId = null
   let repeats = 0
   let firstStopChecked = false
+  let firstId = null
+  // Why the walk ended: left-document and wrapped are normal, the rest mean
+  // the unreachable check below can't be trusted
+  let endReason = 'limit'
 
   for (let i = 0; i < MAX_TAB_STOPS; i++) {
     await page.keyboard.press('Tab')
-    const focus = await describeFocus(page)
+    const focus = await describeFocus(page, state)
 
-    // Focus left the document, so the whole tab order has been walked
-    if (!focus) break
+    if (!focus) {
+      endReason = 'left-document'
+      break
+    }
 
     if (focus.id === previousId) {
       repeats++
       if (repeats >= TRAP_REPEATS) {
         problems.push(`Keyboard trap: focus stuck on ${focus.description}`)
+        endReason = 'trap'
         break
       }
       continue
@@ -130,8 +172,19 @@ export async function checkKeyboardOperability(world) {
     repeats = 1
     previousId = focus.id
 
-    if (seen.has(focus.id)) break
+    if (seen.has(focus.id)) {
+      if (focus.id === firstId) {
+        endReason = 'wrapped'
+      } else {
+        problems.push(
+          `Focus went back to ${focus.description} before the end of the page`
+        )
+        endReason = 'revisit'
+      }
+      break
+    }
     seen.add(focus.id)
+    if (firstId === null) firstId = focus.id
     stops.push(focus.description)
 
     if (!focus.inCookieBanner && !firstStopChecked) {
@@ -151,11 +204,17 @@ export async function checkKeyboardOperability(world) {
     problems.push('Tab did not move focus to any element')
   }
 
-  for (const description of await findUnreachable(page)) {
-    problems.push(`Not reachable with the keyboard: ${description}`)
+  if (endReason === 'limit') {
+    problems.push(
+      `Stopped after ${MAX_TAB_STOPS} Tab stops, so the result may be incomplete`
+    )
+  } else if (endReason === 'left-document' || endReason === 'wrapped') {
+    for (const description of await findUnreachable(page, state)) {
+      problems.push(`Not reachable with the keyboard: ${description}`)
+    }
   }
 
-  const skipLinkProblem = await checkSkipLink(page)
+  const skipLinkProblem = await checkSkipLink(page, state)
   if (skipLinkProblem) problems.push(skipLinkProblem)
 
   await world.attach(
