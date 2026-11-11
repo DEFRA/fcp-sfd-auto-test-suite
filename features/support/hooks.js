@@ -34,8 +34,7 @@ setWorldConstructor(CustomWorld)
 
 async function launchBrowser() {
   const launchOptions = {
-    headless: process.env.HEADLESS !== 'false',
-    slowMo: Number(process.env.SLOWMO || 0)
+    headless: true
   }
 
   if (process.env.CDP_PROXY === 'true') {

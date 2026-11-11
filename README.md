@@ -152,8 +152,6 @@ Accepted violations are listed in `tests/helpers/accessibility-known-issues.js`.
 - `Then the page should have no accessibility violations on narrow screens` scans at 320x568 and 568x320 (WCAG 1.4.10 Reflow and 1.3.4 Orientation) and fails if the page scrolls horizontally.
 - `Then the page should be fully operable with the keyboard` tabs through the page and checks that the skip link is the first stop after the cookie banner and works, focus is never trapped, every visible control is reachable and every focused control shows a focus indicator.
 
-To watch a scenario run in a visible browser, set `HEADLESS=false` (and optionally `SLOWMO=1200` to slow each action down).
-
 Automated checks find only some accessibility problems. They do not replace manual testing with assistive technology: screen readers, speech recognition, 400% zoom and judging whether link text and error messages make sense still need a person.
 
 ### Repairing test user data
