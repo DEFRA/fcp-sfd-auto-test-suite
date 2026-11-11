@@ -9,7 +9,12 @@ module.exports = {
     after: true
   },
   extends: ['standard', 'prettier', 'eslint:recommended'],
-  overrides: [],
+  overrides: [
+    {
+      files: ['bin/**/*.js'],
+      rules: { 'no-console': 'off' }
+    }
+  ],
   parserOptions: {
     ecmaVersion: 'latest'
   },
