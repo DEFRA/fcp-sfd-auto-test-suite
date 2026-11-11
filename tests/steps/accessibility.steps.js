@@ -17,8 +17,13 @@ async function openDetailsPage(world, pageName) {
   const path = PAGE_PATHS[pageName]
   if (!path) throw new Error(`Unknown page: ${pageName}`)
   await world.page.waitForURL('**/home')
-  await world.page.goto(`${TEST_SUITE_BASE_URL}${path}`)
-  await world.page.waitForLoadState('domcontentloaded')
+  const response = await world.page.goto(`${TEST_SUITE_BASE_URL}${path}`)
+  // Error pages keep the URL they were requested at, so check the status too
+  if (!response?.ok()) {
+    throw new Error(
+      `${path} returned ${response?.status() ?? 'no response'}, not a normal page`
+    )
+  }
   await expect(world.page).toHaveURL(new RegExp(`${path}$`))
 }
 
@@ -30,20 +35,17 @@ async function expectPersonalFixLinks(page) {
 }
 
 Then('the page should have no accessibility violations', async function () {
-  await this.page.waitForLoadState('domcontentloaded')
   await checkAccessibility(this)
 })
 
 Then(
   'the page should have no accessibility violations on narrow screens',
   async function () {
-    await this.page.waitForLoadState('domcontentloaded')
     await checkReflow(this)
   }
 )
 
 Then('the page should be fully operable with the keyboard', async function () {
-  await this.page.waitForLoadState('domcontentloaded')
   await checkKeyboardOperability(this)
 })
 
