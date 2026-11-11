@@ -62,6 +62,11 @@ async function changeLinks(page, path) {
   return links.filter((href) => /change|fix/.test(href))
 }
 
+function fixSources(links, journey) {
+  const pattern = new RegExp(`/${journey}\\?source=(\\w+)`)
+  return links.map((href) => href.match(pattern)?.[1]).filter(Boolean)
+}
+
 async function classify(browser, crn) {
   const context = await browser.newContext({ ignoreHTTPSErrors: true })
   const page = await context.newPage()
@@ -81,6 +86,8 @@ async function classify(browser, crn) {
     result.status = 'ok'
     result.personalFix = personal.some((href) => href.includes('/personal-fix'))
     result.businessFix = business.some((href) => href.includes('/business-fix'))
+    result.personalFixSources = fixSources(personal, 'personal-fix')
+    result.businessFixSources = fixSources(business, 'business-fix')
     result.legalChanges = business.some((href) =>
       href.includes('/business-name-change')
     )
@@ -116,8 +123,12 @@ if (asJson) {
   const ok = results.filter((r) => r.status === 'ok')
   const label = (r) =>
     [
-      r.personalFix ? 'personal-fix' : 'personal-valid',
-      r.businessFix ? 'business-fix' : 'business-valid',
+      r.personalFix
+        ? `personal-fix(${r.personalFixSources.join(',') || '-'})`
+        : 'personal-valid',
+      r.businessFix
+        ? `business-fix(${r.businessFixSources.join(',') || '-'})`
+        : 'business-valid',
       r.legalChanges ? 'legal-changes' : 'no-legal-changes'
     ].join(' ')
   for (const r of results) {

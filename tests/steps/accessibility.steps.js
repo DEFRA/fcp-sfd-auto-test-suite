@@ -3,10 +3,31 @@ import { expect } from '@playwright/test'
 import { checkAccessibility, checkReflow } from '../helpers/accessibility.js'
 import { checkKeyboardOperability } from '../helpers/keyboard.js'
 import {
-  loginAsStandardUserNumber,
+  loginAsStandardUser,
   loginAsNamedUser,
   TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
+
+const PAGE_PATHS = {
+  PersonalDetails: '/personal-details',
+  BusinessDetails: '/business-details'
+}
+
+async function openDetailsPage(world, pageName) {
+  const path = PAGE_PATHS[pageName]
+  if (!path) throw new Error(`Unknown page: ${pageName}`)
+  await world.page.waitForURL('**/home')
+  await world.page.goto(`${TEST_SUITE_BASE_URL}${path}`)
+  await world.page.waitForLoadState('domcontentloaded')
+  await expect(world.page).toHaveURL(new RegExp(`${path}$`))
+}
+
+// A repaired user still loads /personal-fix, so check the fix links are really there
+async function expectPersonalFixLinks(page) {
+  await expect(
+    page.locator('main a[href^="/personal-fix?source="]').first()
+  ).toBeVisible()
+}
 
 Then('the page should have no accessibility violations', async function () {
   await this.page.waitForLoadState('domcontentloaded')
@@ -32,23 +53,19 @@ Then('the page should declare a language and a skip link', async function () {
 })
 
 Given(
-  'I sign in as standard user {int} and open the {string} page',
-  async function (number, pageName) {
-    const paths = {
-      PersonalDetails: '/personal-details',
-      BusinessDetails: '/business-details'
-    }
-    const path = paths[pageName]
-    if (!path) throw new Error(`Unknown page: ${pageName}`)
-    await loginAsStandardUserNumber(this.page, number)
-    await this.page.waitForURL('**/home')
-    await this.page.goto(`${TEST_SUITE_BASE_URL}${path}`)
-    await this.page.waitForLoadState('domcontentloaded')
-    await expect(this.page).toHaveURL(new RegExp(`${path}$`))
+  'I sign in as a standard user and open the {string} page',
+  async function (pageName) {
+    await loginAsStandardUser(this.page)
+    await openDetailsPage(this, pageName)
   }
 )
 
+Then('the page should link to the personal fix journey', async function () {
+  await expectPersonalFixLinks(this.page)
+})
+
 When('I open the personal fix journey for {string}', async function (source) {
+  await expectPersonalFixLinks(this.page)
   await this.page.goto(`${TEST_SUITE_BASE_URL}/personal-fix?source=${source}`)
   await expect(this.page).toHaveURL(/\/personal-fix\?source=/)
 })
@@ -71,17 +88,8 @@ When('I continue to the business fix list page', async function () {
 Given(
   'I sign in as test user {string} and open the {string} page',
   async function (key, pageName) {
-    const paths = {
-      PersonalDetails: '/personal-details',
-      BusinessDetails: '/business-details'
-    }
-    const path = paths[pageName]
-    if (!path) throw new Error(`Unknown page: ${pageName}`)
     await loginAsNamedUser(this.page, key)
-    await this.page.waitForURL('**/home')
-    await this.page.goto(`${TEST_SUITE_BASE_URL}${path}`)
-    await this.page.waitForLoadState('domcontentloaded')
-    await expect(this.page).toHaveURL(new RegExp(`${path}$`))
+    await openDetailsPage(this, pageName)
   }
 )
 When('I continue to the personal fix list page', async function () {

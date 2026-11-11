@@ -100,10 +100,6 @@ export async function loginAsStandardUser(page) {
   await page.locator("//button[@id='next']").click()
 }
 
-export async function loginAsStandardUserNumber(page, number) {
-  await loginAsNamedUser(page, `STANDARD_${number}`)
-}
-
 // Signs in as the user set in USER_<KEY>_CRN, for example BUSINESS_FIX_1.
 // All named users share USER_STANDARD_PASSWORD.
 export async function loginAsNamedUser(page, key) {
