@@ -13,7 +13,20 @@ export const AXE_TAGS = [
   'best-practice'
 ]
 
-function findKnownIssue(violation, pagePath) {
+// Allure uses the attachment name as a file name, so keep ":" and "/" out of it
+export function reportName(prefix, pageUrl) {
+  const path = new URL(pageUrl).pathname.replace(/[:/\\]+/g, ' ').trim()
+  return `${prefix} ${path || 'home'}`
+}
+
+// Pages are server rendered, but wait for load (images, stylesheets, third
+// party scripts) and the main landmark so a scan never runs on a half-built page
+export async function waitForPageReady(page) {
+  await page.waitForLoadState('load')
+  await page.locator('main').first().waitFor({ state: 'visible' })
+}
+
+export function findKnownIssue(violation, pagePath) {
   return KNOWN_ACCESSIBILITY_ISSUES.find(
     (issue) =>
       issue.ruleId === violation.id &&
@@ -46,9 +59,11 @@ function summarise(violations, pageUrl) {
  * report and throws if any violation is not a documented known issue.
  *
  * @param {import('@cucumber/cucumber').World} world Cucumber world, needs `page` and `attach`
+ * @param {string} [label] Added to the report name, for example " at narrow portrait 320x568"
  */
 export async function checkAccessibility(world, label = '') {
   const { page } = world
+  await waitForPageReady(page)
   const results = await new AxeBuilder({ page }).withTags(AXE_TAGS).analyze()
 
   // A scan that evaluated nothing must not pass silently
@@ -80,7 +95,7 @@ export async function checkAccessibility(world, label = '') {
       fileName: name
     })
 
-  await report(`Accessibility scan${label}: ${pagePath}`, {
+  await report(reportName(`Accessibility scan${label}`, pageUrl), {
     url: pageUrl,
     tags: AXE_TAGS,
     violations: failing,
@@ -95,46 +110,56 @@ export async function checkAccessibility(world, label = '') {
 }
 
 const NARROW_VIEWPORTS = [
-  { name: 'narrow portrait', width: 320, height: 568 },
-  { name: 'narrow landscape', width: 568, height: 320 }
+  { name: 'narrow portrait', width: 320, height: 568, runAxe: true },
+  // Axe rules mostly don't change with width, so landscape only checks overflow
+  { name: 'narrow landscape', width: 568, height: 320, runAxe: false }
 ]
 
 /**
- * WCAG 1.4.10 Reflow and 1.3.4 Orientation: scans the page at the two narrow
- * sizes GOV.UK services are tested at, and fails if the page needs horizontal
- * scrolling. The original viewport is restored afterwards.
+ * WCAG 1.4.10 Reflow and 1.3.4 Orientation: fails if the page needs
+ * horizontal scrolling at the two narrow sizes GOV.UK services are tested at,
+ * and runs axe once at 320x568. Overflow problems are listed first. The
+ * original viewport is restored afterwards.
  *
  * @param {import('@cucumber/cucumber').World} world Cucumber world, needs `page` and `attach`
  */
 export async function checkReflow(world) {
   const { page } = world
+  await waitForPageReady(page)
   const original = page.viewportSize()
-  const failures = []
+  const overflowFailures = []
+  const axeFailures = []
 
   try {
-    for (const { name, width, height } of NARROW_VIEWPORTS) {
+    for (const { name, width, height, runAxe } of NARROW_VIEWPORTS) {
       await page.setViewportSize({ width, height })
 
+      // WCAG 1.4.10 exempts content that needs two dimensions, such as data
+      // tables and maps, so only page-level horizontal scrolling counts here.
+      // The 1px allows for rounding.
       const overflow = await page.evaluate(() => ({
         scrollWidth: document.documentElement.scrollWidth,
         innerWidth: window.innerWidth
       }))
       if (overflow.scrollWidth > overflow.innerWidth + 1) {
-        failures.push(
+        overflowFailures.push(
           `${name} (${width}x${height}): page scrolls horizontally (content ${overflow.scrollWidth}px wide in a ${overflow.innerWidth}px viewport)`
         )
       }
 
-      try {
-        await checkAccessibility(world, ` at ${name} ${width}x${height}`)
-      } catch (error) {
-        failures.push(`${name} (${width}x${height}): ${error.message}`)
+      if (runAxe) {
+        try {
+          await checkAccessibility(world, ` at ${name} ${width}x${height}`)
+        } catch (error) {
+          axeFailures.push(`${name} (${width}x${height}): ${error.message}`)
+        }
       }
     }
   } finally {
     if (original) await page.setViewportSize(original)
   }
 
+  const failures = [...overflowFailures, ...axeFailures]
   if (failures.length > 0) {
     throw new Error(failures.join('\n\n'))
   }

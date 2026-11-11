@@ -1,3 +1,5 @@
+import { reportName, waitForPageReady } from './accessibility.js'
+
 const MAX_TAB_STOPS = 200
 const TRAP_REPEATS = 3
 
@@ -99,6 +101,7 @@ async function checkSkipLink(page) {
  */
 export async function checkKeyboardOperability(world) {
   const { page } = world
+  await waitForPageReady(page)
   const problems = []
   const stops = []
 
@@ -159,7 +162,7 @@ export async function checkKeyboardOperability(world) {
     JSON.stringify({ url: page.url(), tabStops: stops, problems }, null, 2),
     {
       mediaType: 'application/json',
-      fileName: `Keyboard check: ${new URL(page.url()).pathname}`
+      fileName: reportName('Keyboard check', page.url())
     }
   )
 
