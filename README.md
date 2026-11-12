@@ -47,7 +47,7 @@ npm install
 
 The suite runs at `parallel: 4` and requires a dedicated test user per worker to prevent login session conflicts and data contention. Users are selected automatically based on `CUCUMBER_WORKER_ID` (set by Cucumber for each parallel worker, values 0-3).
 
-Three user types are required, four of each:
+Three user types are required, four of each, plus two named fix users used only by the accessibility tests (see [Fix journey users](#fix-journey-users)):
 
 - **Standard** - full permissions, can view and amend all business and personal detail fields. Single business.
 - **Amend** - amend permission level, can amend a subset of business fields. Must have multiple businesses associated.
@@ -87,6 +87,13 @@ The following environment variables must be set locally (e.g. in `~/.zshrc` or a
 | 4      | `USER_VIEW_4_CRN`, `USER_VIEW_4_SBI` |
 | All    | `USER_VIEW_PASSWORD`                 |
 
+**Fix users** (accessibility tests only, one each, not tied to a worker)
+
+| User             | Variables                                                 |
+| ---------------- | --------------------------------------------------------- |
+| `PERSONAL_FIX_1` | `USER_PERSONAL_FIX_1_CRN` (uses `USER_STANDARD_PASSWORD`) |
+| `BUSINESS_FIX_1` | `USER_BUSINESS_FIX_1_CRN` (uses `USER_STANDARD_PASSWORD`) |
+
 **Environment**
 
 | Variable      | Description                                       |
@@ -120,6 +127,70 @@ Run a single feature file:
 ```bash
 npm run clean && npx cucumber-js features/businessDetailsPermissions.feature
 ```
+
+### Accessibility tests
+
+[axe-core](https://github.com/dequelabs/axe-core) scans run inside the existing journeys through `@axe-core/playwright`. They check WCAG 2.2 A and AA plus axe's `best-practice` rules.
+
+Run only the accessibility scenarios:
+
+```bash
+npm run test:a11y
+```
+
+The scenarios in `features/accessibility.feature` cover the personal and business details journeys, including a validation error state. Scenarios for the normal change pages sign in with `I sign in as a standard user and open the "PersonalDetails" page`, which uses the same worker-based user as the rest of the suite (`USER_STANDARD_1..4_CRN`), so no two workers share a login.
+
+The scenarios are tagged `@accessibility`, so `npm test` (which the CDP entrypoint runs) leaves them out until the known frontend defects are fixed or agreed as known issues.
+
+#### Fix journey users
+
+The fix journeys only work for users whose data fails validation, so these scenarios (tagged `@fix-user`) sign in as named users outside the worker rotation and the repair script. Both use `USER_STANDARD_PASSWORD`.
+
+| User             | Variable                  | Data that fails validation | Pages                                 |
+| ---------------- | ------------------------- | -------------------------- | ------------------------------------- |
+| `PERSONAL_FIX_1` | `USER_PERSONAL_FIX_1_CRN` | Personal details           | `/personal-fix`, `/personal-fix-list` |
+| `BUSINESS_FIX_1` | `USER_BUSINESS_FIX_1_CRN` | Business details           | `/business-fix`, `/business-fix-list` |
+
+Don't point `PERSONAL_FIX_1` at one of `STANDARD_1..4`. Those need to stay valid for the main suite.
+
+Several workers would end up signing in as the same fix user, so `npm run test:a11y` runs the normal scenarios in parallel first, then the `@fix-user` scenarios on one worker. If a fix user's data gets repaired, the scenarios fail with a message saying so instead of scanning the wrong page.
+
+To look for users in a given data state, run `npm run find:test-users -- <crn-file> --limit 50`. It only reads: one sign-in per CRN, and it stops after 3 failed sign-ins in a row. It needs `USER_STANDARD_PASSWORD`, it's for test CRNs only, and it refuses to run against `prod`.
+
+The fix scenarios don't save anything. The one exception is the address error scenario, which posts a postcode lookup and an empty address selection. Neither changes the record, because the address is only saved at the final check page.
+
+Any new `USER_*_FIX_*_CRN` variable also has to be added to the CDP platform config before these scenarios can run there.
+
+#### Running the helper unit tests
+
+```bash
+npm run test:unit
+```
+
+These check the known-issues validation and run the axe and keyboard helpers against small local pages in headless Chromium, so they don't need the Test environment or any user. They aren't part of the PR checks.
+
+#### Adding a scan
+
+To scan a page in any scenario, add this step after navigating to it:
+
+```gherkin
+Then the page should have no accessibility violations
+```
+
+Each scan attaches a JSON report to the Allure report. It lists the violations (rule, impact, selectors and help link), known issues and incomplete checks. A scenario fails if any violation is not a known issue.
+
+#### Narrow screen and keyboard checks
+
+`features/accessibilityResponsiveKeyboard.feature` (tagged `@accessibility @responsive-keyboard`) adds two more checks:
+
+- `Then the page should have no accessibility violations on narrow screens` checks the page doesn't scroll horizontally at 320x568 and 568x320 (WCAG 1.4.10 Reflow), and runs axe once at 320x568. The landscape size is only checked for overflow.
+- `Then the page should be fully operable with the keyboard` tabs through the page and checks that the skip link is the first stop after the cookie banner and works, focus is never trapped, every visible control is reachable and every focused control looks different from when it isn't focused. If the walk hits the 200 stop limit or focus jumps back to an earlier element, the check says so rather than guessing.
+
+#### Known issues
+
+Accepted violations are listed in `tests/helpers/accessibility-known-issues.js`. Each entry needs a `justification` and a Jira `ticket`, and can be limited to certain pages with `pathPattern`. The file is checked when it loads, so a bad entry fails straight away. Known issues still appear in the Allure report but do not fail the scenario.
+
+Automated checks find only some accessibility problems. They do not replace manual testing with assistive technology: screen readers, speech recognition, 400% zoom and judging whether link text and error messages make sense still need a person.
 
 ### Repairing test user data
 

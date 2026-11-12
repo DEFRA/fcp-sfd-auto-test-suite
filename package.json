@@ -16,13 +16,16 @@
   },
   "scripts": {
     "clean": "rm -rf allure-results && rm -rf allure-report",
-    "test": "npm run clean && cucumber-js",
+    "test": "npm run clean && cucumber-js --tags \"not @accessibility\"",
     "test:smoke": "npm run clean && cucumber-js --tags '@smoke'",
+    "test:a11y": "npm run clean && node bin/run-a11y.js",
     "test:tag": "npm run clean && cucumber-js --tags \"%TAG%\"",
     "test:cdp": "npm run clean && cucumber-js --config playwright.cdp.config.js",
     "report": "allure generate allure-results --single-file --clean",
     "report:publish": "npm run report && ./bin/publish-tests.sh",
     "fix:test-users": "node bin/fix-test-users.js",
+    "test:unit": "node --test \"tests/unit/**/*.test.js\"",
+    "find:test-users": "node bin/find-test-users.js",
     "format": "prettier --write '**/*.{js,md,json}'",
     "format:check": "prettier --check '**/*.{js,md,json}'",
     "lint": "eslint .",
@@ -36,6 +39,7 @@
     "undici": "8.3.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@cucumber/cucumber": "12.9.0",
     "@faker-js/faker": "10.4.0",
     "@playwright/test": "1.60.0",

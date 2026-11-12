@@ -100,6 +100,24 @@ export async function loginAsStandardUser(page) {
   await page.locator("//button[@id='next']").click()
 }
 
+async function signIn(page, crn, password) {
+  await goToLandingPage(page)
+  await page.locator("//input[@id='crn']").fill(crn)
+  await page.locator("//input[@id='password']").fill(password)
+  await page.locator("//button[@id='next']").click()
+}
+
+// Signs in as the user set in USER_<KEY>_CRN, for example BUSINESS_FIX_1.
+// All named users share USER_STANDARD_PASSWORD.
+export async function loginAsNamedUser(page, key) {
+  const crn = process.env[`USER_${key}_CRN`]
+  const password = process.env.USER_STANDARD_PASSWORD
+  if (!crn || !password) {
+    throw new Error(`USER_${key}_CRN or USER_STANDARD_PASSWORD is not set`)
+  }
+  await signIn(page, crn, password)
+}
+
 export async function loginAsAmendPermissionUser(page) {
   // worker-specific user + SBI-based selection
   const { crn, password, sbi } = getAmendUserCredentials()
