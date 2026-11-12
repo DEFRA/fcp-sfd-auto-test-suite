@@ -46,8 +46,8 @@ Feature: Accessibility - reflow and keyboard operation (WCAG 2.2 AA)
     And the page should have no accessibility violations on narrow screens
 
     Examples:
-      | Source |
-      | name   |
+      | Source  |
+      | name    |
       | address |
 
   @fix-user

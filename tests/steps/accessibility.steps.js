@@ -69,7 +69,12 @@ Then('the page should link to the personal fix journey', async function () {
 When('I open the personal fix journey for {string}', async function (source) {
   await expectPersonalFixLinks(this.page)
   await this.page.goto(`${TEST_SUITE_BASE_URL}/personal-fix?source=${source}`)
-  await expect(this.page).toHaveURL(/\/personal-fix\?source=/)
+  // The page sends users with valid personal data back to /personal-details
+  if (!/\/personal-fix\?source=/.test(this.page.url())) {
+    throw new Error(
+      'This user no longer has invalid personal data, so /personal-fix redirected. Run "npm run find:test-users" to pick another user.'
+    )
+  }
 })
 
 When('I open the business fix journey for {string}', async function (source) {

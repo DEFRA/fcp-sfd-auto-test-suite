@@ -46,10 +46,9 @@ Feature: Accessibility (WCAG 2.2 AA)
       | BusinessType         |
       | BusinessLegalStatus  |
 
-
   # The fix journey users have invalid data, so their details page links go to
   # the fix journey. They are not in the worker rotation, so these scenarios run
-  # on one worker (see test:a11y). They only read pages and never submit.
+  # on one worker (see test:a11y). They only read pages and don't save anything.
   @fix-user
   Scenario: Personal details summary page with fix links has no accessibility violations
     Given I sign in as test user "PERSONAL_FIX_1" and open the "PersonalDetails" page
@@ -63,12 +62,12 @@ Feature: Accessibility (WCAG 2.2 AA)
     Then the page should have no accessibility violations
 
     Examples:
-      | Source |
-      | name   |
-      | dob    |
+      | Source  |
+      | name    |
+      | dob     |
       | address |
-      | phone  |
-      | email  |
+      | phone   |
+      | email   |
 
   @fix-user
   Scenario: Personal fix list page has no accessibility violations
