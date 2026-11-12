@@ -47,7 +47,7 @@ npm install
 
 The suite runs at `parallel: 4` and requires a dedicated test user per worker to prevent login session conflicts and data contention. Users are selected automatically based on `CUCUMBER_WORKER_ID` (set by Cucumber for each parallel worker, values 0-3).
 
-Three user types are required, four of each:
+Three user types are required, four of each, plus two named fix users used only by the accessibility tests (see [Fix journey users](#fix-journey-users)):
 
 - **Standard** - full permissions, can view and amend all business and personal detail fields. Single business.
 - **Amend** - amend permission level, can amend a subset of business fields. Must have multiple businesses associated.
@@ -86,6 +86,13 @@ The following environment variables must be set locally (e.g. in `~/.zshrc` or a
 | 3      | `USER_VIEW_3_CRN`, `USER_VIEW_3_SBI` |
 | 4      | `USER_VIEW_4_CRN`, `USER_VIEW_4_SBI` |
 | All    | `USER_VIEW_PASSWORD`                 |
+
+**Fix users** (accessibility tests only, one each, not tied to a worker)
+
+| User             | Variables                                                 |
+| ---------------- | --------------------------------------------------------- |
+| `PERSONAL_FIX_1` | `USER_PERSONAL_FIX_1_CRN` (uses `USER_STANDARD_PASSWORD`) |
+| `BUSINESS_FIX_1` | `USER_BUSINESS_FIX_1_CRN` (uses `USER_STANDARD_PASSWORD`) |
 
 **Environment**
 
