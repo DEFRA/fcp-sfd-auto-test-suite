@@ -25,9 +25,21 @@ if (env.CDP_PROXY === 'true') {
   env.HTTPS_PROXY = env.HTTPS_PROXY || CDP_PROXY_URL
 }
 
+// The SDK ignores the formatters in the cucumber.json profile, so without this
+// no allure-results are written and the CDP report is empty.
+const ALLURE_FORMATTER = 'allure-cucumberjs/reporter'
+
 const result = spawnSync(
   'node',
-  [SDK, 'cucumber-js', '--profile', 'browserstack', ...process.argv.slice(2)],
+  [
+    SDK,
+    'cucumber-js',
+    '--profile',
+    'browserstack',
+    '--format',
+    ALLURE_FORMATTER,
+    ...process.argv.slice(2)
+  ],
   { stdio: 'inherit', cwd: ROOT, env }
 )
 
