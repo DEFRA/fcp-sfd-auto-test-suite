@@ -257,12 +257,12 @@ The environment the suite runs against is controlled by the `ENVIRONMENT` variab
 
 ## BrowserStack
 
-BrowserStack runs the `@browserstack` scenarios on real browsers and devices. The `browserstack-node-sdk` wraps `cucumber-js` and runs each scenario once per platform in [`browserstack.yml`](./browserstack.yml). The browser matrix follows the [GOV.UK browsers to test in](https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices) list.
+BrowserStack runs the `@browserstack` tests on real browsers. They are Playwright Test specs in [`tests/playwright`](./tests/playwright), run through the `browserstack-node-sdk` once per platform in [`browserstack.yml`](./browserstack.yml). The browser matrix follows the [GOV.UK browsers to test in](https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices) list. The default run and the accessibility run stay on Cucumber.
 
-| Platform             | Browsers                         |
-| -------------------- | -------------------------------- |
-| Windows 11           | Chrome, Edge, Firefox            |
-| macOS Sequoia        | Safari (WebKit), Chrome, Firefox |
+| Platform      | Browsers                         |
+| ------------- | -------------------------------- |
+| Windows 11    | Chrome, Edge, Firefox            |
+| macOS Sequoia | Safari (WebKit), Chrome, Firefox |
 
 Real mobile devices (iPhone 17, iPhone 15 and Galaxy S25) are commented out in `browserstack.yml` for now. In CDP run 0.76.0 they failed (clicks hung on the Galaxy S25, and the iPhones allow only one context and one tab), so they are a follow-up to FLS2-499.
 
@@ -292,11 +292,21 @@ Locally, export them or put them in `.env` (git-ignored). `npm run test:browsers
 npm run test:browserstack
 ```
 
-Narrow a run with extra arguments, for example `npm run test:browserstack -- --tags "@test7"`. Results are on the [BrowserStack Automate dashboard](https://automate.browserstack.com) under the `FCP SFD Auto Test Suite` project.
+Narrow a run with extra arguments, for example `npm run test:browserstack -- --grep "Business type"`. Results are on the [BrowserStack Automate dashboard](https://automate.browserstack.com) under the `FCP SFD Auto Test Suite` project. The old Cucumber runner is still there as `npm run test:browserstack:cucumber`.
+
+Local runs can't reach BrowserStack from the Defra network, because Zscaler blocks `hub.browserstack.com/next_hubs`. The SDK then falls back to local Chromium and the run looks like it passed. Always confirm a run by checking that its sessions are in Automate. The reliable way to run it is on CDP.
 
 To run it from the CDP Portal, press `Yes` under `Profile`, enter `browserstack` and press `Start`. Any other profile, or none, runs the normal `npm test`. On CDP the run sets `CDP_PROXY=true`, which routes BrowserStack traffic through the platform proxy (`localhost:3128`). BrowserStack is reachable from non-production environments only.
 
 The Docker image includes the `BrowserStackLocal` tunnel binary so the SDK doesn't download it at runtime.
+
+### Feature toggles and failure logs
+
+The frontend can switch off a field on purpose, for example during a DAL incident. It then hides the change link and shows "You cannot update your ... right now". An update test skips only when that banner names its own field. If the link is missing for any other reason, the test fails.
+
+A skip like that is logged as `event.action: "toggle-skipped"` and counted in the run summary, with a reminder to switch the toggle back on in `cdp-app-config` unless an incident is open. In Test, `UPDATE_BUSINESS_DETAILS_NAME` and `UPDATE_BUSINESS_DETAILS_ADDRESS` are currently off (FLS2-486).
+
+Each failed attempt is logged as one JSON line (`event.action: "test-failed"`) with the stack trace, platform, BrowserStack session and a `labels.triage` category (`network`, `browserstack-session`, `device-limit`, `assertion`, `locator`, `unknown`) so it can be filtered in OpenSearch.
 
 ## Pre-commit hook
 
