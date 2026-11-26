@@ -15,6 +15,24 @@ export function summaryValue(page, label) {
   return page.locator(`dt:text-is("${label}") + dd`)
 }
 
+// A field can be switched off on purpose (for example during a DAL incident). The frontend then
+// hides its link and shows a banner naming the first switched-off field. If the link is there, the
+// update runs. If it is missing, the test is skipped only when the banner names this exact field.
+// Any other case (link missing and banner names another field, or no banner) fails, so a real bug
+// is never hidden. fieldName must match the frontend display name, for example "business name".
+export async function openChangePage(page, name, fieldName) {
+  const link = page.getByRole('link', { name })
+  const banner = page.getByText(`You cannot update your ${fieldName} right now`)
+  await expect(
+    link.or(banner).first(),
+    `Neither a "${fieldName}" change link nor its switched-off banner is on the page`
+  ).toBeVisible()
+  if ((await link.count()) === 0) {
+    base.skip(true, `Updating ${fieldName} is switched off by feature toggle`)
+  }
+  await link.click()
+}
+
 export async function expectErrorSummary(page, message) {
   await expect(page.locator('.govuk-error-summary__list li')).toHaveText(
     message

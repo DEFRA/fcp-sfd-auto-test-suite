@@ -1,4 +1,10 @@
-import { test, expect, summaryValue, expectErrorSummary } from './fixtures.js'
+import {
+  test,
+  expect,
+  summaryValue,
+  expectErrorSummary,
+  openChangePage
+} from './fixtures.js'
 import { expectSuccessBanner } from '../helpers/banners.js'
 import { randomEmail, randomPhoneNumber, phoneOfLength } from './data.js'
 
@@ -13,7 +19,11 @@ test.describe('Update personal details @browserstack', () => {
     personalDetailsPage: page
   }) => {
     const phone = randomPhoneNumber()
-    await page.getByRole('link', { name: 'Personal phone numbers' }).click()
+    await openChangePage(
+      page,
+      'Personal phone numbers',
+      'personal phone numbers'
+    )
     await page
       .getByLabel('Personal telephone number', { exact: true })
       .fill(phone)
@@ -30,7 +40,11 @@ test.describe('Update personal details @browserstack', () => {
     personalDetailsPage: page
   }) => {
     const email = randomEmail()
-    await page.getByRole('link', { name: 'Personal email address' }).click()
+    await openChangePage(
+      page,
+      'Personal email address',
+      'personal email address'
+    )
     await page
       .getByRole('textbox', {
         name: 'What is your personal email address?',
@@ -83,7 +97,11 @@ test.describe('Personal phone number validation @browserstack', () => {
     test(`${fields.join(' + ')} with ${length} characters shows "${error}"`, async ({
       personalDetailsPage: page
     }) => {
-      await page.getByRole('link', { name: 'Personal phone numbers' }).click()
+      await openChangePage(
+        page,
+        'Personal phone numbers',
+        'personal phone numbers'
+      )
       const value = phoneOfLength(length)
       for (const label of fields) {
         await page.getByLabel(label, { exact: true }).fill(value)
@@ -98,7 +116,11 @@ test.describe('Personal email validation @browserstack', () => {
   test('an empty email address is rejected', async ({
     personalDetailsPage: page
   }) => {
-    await page.getByRole('link', { name: 'Personal email address' }).click()
+    await openChangePage(
+      page,
+      'Personal email address',
+      'personal email address'
+    )
     await page
       .getByRole('textbox', {
         name: 'What is your personal email address?',
