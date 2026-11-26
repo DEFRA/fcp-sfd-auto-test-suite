@@ -4,11 +4,6 @@ import { stripVTControlCharacters } from 'node:util'
 // Order matters: the first matching rule wins.
 const RULES = [
   {
-    category: 'known-issue',
-    owner: 'frontend toggle (FLS2-486)',
-    test: (_message, title) => /business name gets updated/i.test(title)
-  },
-  {
     category: 'network',
     owner: 'DNS / proxy / environment down, check the app is up on this env',
     test: (message) =>

@@ -1,4 +1,4 @@
-import { test, expect, summaryValue } from './fixtures.js'
+import { test, expect, summaryValue, openChangePage } from './fixtures.js'
 import {
   expectSuccessBanner,
   expectNoSuccessBanner
@@ -46,7 +46,11 @@ test.describe('Update business details @browserstack', () => {
     businessDetailsPage: page
   }) => {
     const email = randomEmail()
-    await page.getByRole('link', { name: 'Business email address' }).click()
+    await openChangePage(
+      page,
+      'Business email address',
+      'business email address'
+    )
     await page
       .getByRole('textbox', { name: 'What is your business email address?' })
       .fill(email)
@@ -59,10 +63,10 @@ test.describe('Update business details @browserstack', () => {
     )
   })
 
-  // Fails while UPDATE_BUSINESS_DETAILS_NAME is off in the Test environment (FLS2-486).
+  // Skipped, with the banner checked, while updating the business name is switched off (FLS2-486).
   test('business name gets updated', async ({ businessDetailsPage: page }) => {
     const name = faker.company.name()
-    await page.getByRole('link', { name: 'Business name' }).click()
+    await openChangePage(page, 'Business name', 'business name')
     await page
       .getByRole('textbox', { name: 'What is your business name?' })
       .fill(name)
@@ -74,9 +78,11 @@ test.describe('Update business details @browserstack', () => {
 
   test.describe('removing the VAT registration number', () => {
     test.beforeEach(async ({ businessDetailsPage: page }) => {
-      await page
-        .getByRole('link', { name: /^(Add|Change) VAT registration number$/ })
-        .click()
+      await openChangePage(
+        page,
+        /^(Add|Change) VAT registration number$/,
+        'VAT registration number'
+      )
       await page
         .getByRole('textbox', { name: 'What is your VAT registration number?' })
         .fill('123456789')
