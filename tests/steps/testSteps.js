@@ -9,7 +9,10 @@ import {
   goToLandingPage,
   TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
-import { expectSuccessBanner, expectNoSuccessBanner } from '../helpers/banners.js'
+import {
+  expectSuccessBanner,
+  expectNoSuccessBanner
+} from '../helpers/banners.js'
 
 async function waitForBusinessDetailsPage(page) {
   await page.waitForURL('**/business-details')
