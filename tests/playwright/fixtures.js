@@ -28,6 +28,7 @@ export async function openChangePage(page, name, fieldName) {
     `Neither a "${fieldName}" change link nor its switched-off banner is on the page`
   ).toBeVisible()
   if ((await link.count()) === 0) {
+    base.info().annotations.push({ type: 'toggle-off', description: fieldName })
     base.skip(true, `Updating ${fieldName} is switched off by feature toggle`)
   }
   await link.click()
