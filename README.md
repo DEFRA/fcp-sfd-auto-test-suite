@@ -263,8 +263,8 @@ BrowserStack runs the `@browserstack` scenarios on real browsers and devices. Th
 | -------------------- | -------------------------------- |
 | Windows 11           | Chrome, Edge, Firefox            |
 | macOS Sequoia        | Safari (WebKit), Chrome, Firefox |
-| iOS (iPhone 17, 15)  | Safari (WebKit)                  |
-| Android (Galaxy S25) | Chrome                           |
+
+Real mobile devices (iPhone 17, iPhone 15 and Galaxy S25) are commented out in `browserstack.yml` for now. In CDP run 0.76.0 they failed (clicks hung on the Galaxy S25, and the iPhones allow only one context and one tab), so they are a follow-up to FLS2-499.
 
 Playwright can't drive every GOV.UK browser on BrowserStack:
 

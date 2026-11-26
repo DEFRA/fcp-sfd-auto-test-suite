@@ -40,15 +40,19 @@ platforms:
     osVersion: Sequoia
     browserName: playwright-firefox
     browserVersion: latest
-  - deviceName: iPhone 17
-    browserName: safari
-    osVersion: 26
-  - deviceName: iPhone 15
-    browserName: safari
-    osVersion: 17
-  - deviceName: Samsung Galaxy S25
-    browserName: chrome
-    osVersion: 15
+
+# Real mobile devices are switched off for now. In CDP run 0.76.0 (build #36) they failed: clicks
+# hang on the Samsung Galaxy S25 and the iPhones allow only one context and one tab. The cause is
+# not confirmed. Put these back once it is fixed (follow-up to FLS2-499).
+#  - deviceName: iPhone 17
+#    browserName: safari
+#    osVersion: 26
+#  - deviceName: iPhone 15
+#    browserName: safari
+#    osVersion: 17
+#  - deviceName: Samsung Galaxy S25
+#    browserName: chrome
+#    osVersion: 15
 
 parallelsPerPlatform: 1
 
