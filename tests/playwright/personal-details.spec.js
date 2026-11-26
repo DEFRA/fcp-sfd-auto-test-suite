@@ -14,7 +14,9 @@ test.describe('Update personal details @browserstack', () => {
   }) => {
     const phone = randomPhoneNumber()
     await page.getByRole('link', { name: 'Personal phone numbers' }).click()
-    await page.locator('#personalTelephone').fill(phone)
+    await page
+      .getByLabel('Personal telephone number', { exact: true })
+      .fill(phone)
     await continueThenSubmit(page, /account-phone-numbers-check/)
 
     await expect(page.getByText('Telephone')).toContainText(phone)
@@ -45,30 +47,33 @@ test.describe('Update personal details @browserstack', () => {
   })
 })
 
+const TELEPHONE = 'Personal telephone number'
+const MOBILE = 'Personal mobile phone number'
+
 test.describe('Personal phone number validation @browserstack', () => {
   const cases = [
     {
-      fields: ['#personalTelephone'],
+      fields: [TELEPHONE],
       length: 101,
       error: 'Personal telephone number must be 50 characters or less'
     },
     {
-      fields: ['#personalTelephone'],
+      fields: [TELEPHONE],
       length: 1,
       error: 'Personal telephone number must be 10 characters or more'
     },
     {
-      fields: ['#personalTelephone', '#personalMobile'],
+      fields: [TELEPHONE, MOBILE],
       length: 0,
       error: 'Enter at least one phone number'
     },
     {
-      fields: ['#personalMobile'],
+      fields: [MOBILE],
       length: 101,
       error: 'Personal mobile phone number must be 50 characters or less'
     },
     {
-      fields: ['#personalMobile'],
+      fields: [MOBILE],
       length: 1,
       error: 'Personal mobile phone number must be 10 characters or more'
     }
@@ -80,7 +85,9 @@ test.describe('Personal phone number validation @browserstack', () => {
     }) => {
       await page.getByRole('link', { name: 'Personal phone numbers' }).click()
       const value = phoneOfLength(length)
-      for (const field of fields) await page.locator(field).fill(value)
+      for (const label of fields) {
+        await page.getByLabel(label, { exact: true }).fill(value)
+      }
       await page.getByRole('button', { name: 'Continue', exact: true }).click()
       await expectErrorSummary(page, error)
     })
