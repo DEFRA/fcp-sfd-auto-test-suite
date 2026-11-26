@@ -32,12 +32,29 @@ setDefaultTimeout(60 * 1000) // 60 seconds per step
 
 setWorldConstructor(CustomWorld)
 
+const isBrowserStack = process.env.BROWSERSTACK === 'true'
+const useCdpProxy = process.env.CDP_PROXY === 'true'
+const CDP_PROXY_URL = 'http://localhost:3128'
+
+// On CDP, the BrowserStack SDK and Node HTTP calls reach BrowserStack through the platform proxy.
+// The imports are lazy so normal runs don't load them.
+async function routeNodeTrafficThroughCdpProxy() {
+  const { ProxyAgent, setGlobalDispatcher } = await import('undici')
+  const { bootstrap } = await import('global-agent')
+
+  setGlobalDispatcher(new ProxyAgent({ uri: CDP_PROXY_URL }))
+  bootstrap()
+  globalThis.GLOBAL_AGENT.HTTP_PROXY = CDP_PROXY_URL
+}
+
 async function launchBrowser() {
   const launchOptions = {
     headless: true
   }
 
-  if (process.env.CDP_PROXY === 'true') {
+  // BrowserStack browsers are remote and reach the app through the BrowserStackLocal tunnel,
+  // so the local CDP proxy settings only apply to the local Chromium.
+  if (useCdpProxy && !isBrowserStack) {
     launchOptions.proxy = {
       server: 'http://localhost:3128'
     }
@@ -53,6 +70,10 @@ async function launchBrowser() {
 
 // Reuse one browser per worker to avoid launching Chromium for every scenario.
 BeforeAll(async function () {
+  if (isBrowserStack && useCdpProxy) {
+    await routeNodeTrafficThroughCdpProxy()
+  }
+
   browser = await launchBrowser()
 })
 

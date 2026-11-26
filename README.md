@@ -257,7 +257,46 @@ The environment the suite runs against is controlled by the `ENVIRONMENT` variab
 
 ## BrowserStack
 
-BrowserStack integration is in progress currently for cross-browser and cross-device runs. More information will be added once work is complete.
+BrowserStack runs the `@browserstack` scenarios on real browsers and devices. The `browserstack-node-sdk` wraps `cucumber-js` and runs each scenario once per platform in [`browserstack.yml`](./browserstack.yml). The browser matrix follows the [GOV.UK browsers to test in](https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices) list.
+
+| Platform             | Browsers                         |
+| -------------------- | -------------------------------- |
+| Windows 11           | Chrome, Edge, Firefox            |
+| macOS Sequoia        | Safari (WebKit), Chrome, Firefox |
+| iOS (iPhone 17, 15)  | Safari (WebKit)                  |
+| Android (Galaxy S25) | Chrome                           |
+
+Playwright can't drive every GOV.UK browser on BrowserStack:
+
+- Safari is BrowserStack's Playwright WebKit build, not the Safari app.
+- Chrome and Edge on iOS use the same WebKit engine as Safari, so the iOS runs cover them.
+- Firefox on Android isn't supported by Playwright on BrowserStack.
+- Samsung Internet isn't supported. Chrome on the Samsung device is the closest cover.
+
+BrowserStack only supports Android for some Playwright versions (currently 1.59 and 1.62). Dependabot is told to ignore `playwright` and `@playwright/test` 1.63 and above in `.github/dependabot.yml`. Check [BrowserStack's supported versions](https://www.browserstack.com/docs/automate/playwright/browsers-and-os) before lifting that.
+
+### Credentials
+
+Use the Defra BrowserStack service account, not a personal login. Set the credentials as environment variables:
+
+| Variable                  | Description             |
+| ------------------------- | ----------------------- |
+| `BROWSERSTACK_USERNAME`   | BrowserStack username   |
+| `BROWSERSTACK_ACCESS_KEY` | BrowserStack access key |
+
+Locally, export them or put them in `.env` (git-ignored). `npm run test:browserstack` loads `.env` if it exists. On CDP, add them as secrets for the test suite in the CDP Portal. Never commit them.
+
+### Running on BrowserStack
+
+```bash
+npm run test:browserstack
+```
+
+Narrow a run with extra arguments, for example `npm run test:browserstack -- --tags "@test7"`. Results are on the [BrowserStack Automate dashboard](https://automate.browserstack.com) under the `FCP SFD Auto Test Suite` project.
+
+To run it from the CDP Portal, set the `TEST_SCRIPT` variable to `test:browserstack`. The default is `test`. On CDP the run sets `CDP_PROXY=true`, which routes BrowserStack traffic through the platform proxy (`localhost:3128`). BrowserStack is reachable from non-production environments only.
+
+The Docker image includes the `BrowserStackLocal` tunnel binary so the SDK doesn't download it at runtime.
 
 ## Pre-commit hook
 

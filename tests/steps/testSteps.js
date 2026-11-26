@@ -560,6 +560,7 @@ Given(
     await this.page.locator("//button[normalize-space()='Continue']").click()
     await this.page.waitForURL('**/business-phone-numbers-check**')
     await this.page.locator("//button[normalize-space()='Submit']").click()
+    await this.page.waitForURL('**/business-details')
   }
 )
 
