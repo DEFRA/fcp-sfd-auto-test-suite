@@ -47,7 +47,9 @@ test.describe('Update business details @browserstack', () => {
   }) => {
     const email = randomEmail()
     await page.getByRole('link', { name: 'Business email address' }).click()
-    await page.locator('#business-email').fill(email)
+    await page
+      .getByRole('textbox', { name: 'What is your business email address?' })
+      .fill(email)
     await continueThenSubmit(page, /business-email-check/)
 
     await expect(summaryValue(page, 'Business email address')).toHaveText(email)
@@ -60,8 +62,10 @@ test.describe('Update business details @browserstack', () => {
   // Fails while UPDATE_BUSINESS_DETAILS_NAME is off in the Test environment (FLS2-486).
   test('business name gets updated', async ({ businessDetailsPage: page }) => {
     const name = faker.company.name()
-    await page.locator('a[href="/business-name-change"]').click()
-    await page.locator('#business-name').fill(name)
+    await page.getByRole('link', { name: 'Business name' }).click()
+    await page
+      .getByRole('textbox', { name: 'What is your business name?' })
+      .fill(name)
     await continueThenSubmit(page, /business-name-check/)
 
     await expect(summaryValue(page, 'Business name')).toHaveText(name)
@@ -71,15 +75,19 @@ test.describe('Update business details @browserstack', () => {
   test.describe('removing the VAT registration number', () => {
     test.beforeEach(async ({ businessDetailsPage: page }) => {
       await page
-        .locator('a[href="/business-vat-registration-number-change"]')
+        .getByRole('link', { name: /^(Add|Change) VAT registration number$/ })
         .click()
-      await page.locator('#business-vat').fill('123456789')
+      await page
+        .getByRole('textbox', { name: 'What is your VAT registration number?' })
+        .fill('123456789')
       await continueThenSubmit(page, /business-vat-registration-number-check/)
-      await page.locator('a[href="/business-vat-registration-remove"]').click()
+      await page
+        .getByRole('link', { name: 'Remove VAT registration number' })
+        .click()
     })
 
     test('choosing Yes removes it', async ({ page }) => {
-      await page.locator('#confirmRemove').check()
+      await page.getByRole('radio', { name: 'Yes', exact: true }).check()
       await page.getByRole('button', { name: 'Submit', exact: true }).click()
       await expectSuccessBanner(
         page,
@@ -88,7 +96,7 @@ test.describe('Update business details @browserstack', () => {
     })
 
     test('choosing No keeps it', async ({ page }) => {
-      await page.locator('#confirmRemove-2').check()
+      await page.getByRole('radio', { name: 'No', exact: true }).check()
       await page.getByRole('button', { name: 'Submit', exact: true }).click()
       await expectNoSuccessBanner(page)
     })

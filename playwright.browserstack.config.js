@@ -12,10 +12,15 @@ export default defineConfig({
   retries: 1,
   // One worker per CDP standard user, so concurrent tests never share an account.
   workers: 4,
-  reporter: [['list'], ['allure-playwright']],
+  reporter: [
+    ['list'],
+    ['./tests/playwright/triage-reporter.js'],
+    ['allure-playwright']
+  ],
   use: {
     baseURL: `https://fcp-sfd-frontend.${ENVIRONMENT}.cdp-int.defra.cloud`,
-    trace: 'on-first-retry'
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure'
   },
   // Empty on purpose: the SDK builds one project per platform in browserstack.yml.
   projects: []
