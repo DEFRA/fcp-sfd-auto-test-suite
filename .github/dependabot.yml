@@ -23,6 +23,13 @@ updates:
       interval: daily
     commit-message:
       prefix: chore
+    # BrowserStack only supports Android for Playwright 1.59 and 1.62 (not 1.63+).
+    # Review https://www.browserstack.com/docs/automate/playwright/browsers-and-os before lifting this.
+    ignore:
+      - dependency-name: playwright
+        versions: ['>=1.63.0']
+      - dependency-name: '@playwright/test'
+        versions: ['>=1.63.0']
     groups:
       npm-security:
         applies-to: security-updates

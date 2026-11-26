@@ -16,7 +16,10 @@ curl -s -o /dev/null -D - --proxy http://localhost:3128 --insecure "$AUTH_URL" |
 echo ""
 echo "--- End diagnostics ---"
 
-npm test
+TEST_SCRIPT=${TEST_SCRIPT:-test}
+echo "TEST_SCRIPT: $TEST_SCRIPT"
+
+npm run "$TEST_SCRIPT"
 test_exit_code=$?
 
 npm run report:publish

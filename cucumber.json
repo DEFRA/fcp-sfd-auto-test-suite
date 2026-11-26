@@ -5,5 +5,13 @@
     "publishQuiet": true,
     "parallel": 4,
     "retry": 1
+  },
+  "browserstack": {
+    "require": ["tests/steps/**/*.js", "features/support/hooks.js"],
+    "format": ["progress", "allure-cucumberjs/reporter"],
+    "publishQuiet": true,
+    "parallel": 1,
+    "retry": 1,
+    "tags": "@browserstack and not @accessibility"
   }
 }

@@ -1,0 +1,66 @@
+userName: ${BROWSERSTACK_USERNAME}
+accessKey: ${BROWSERSTACK_ACCESS_KEY}
+framework: playwright
+
+projectName: FCP SFD Auto Test Suite
+buildName: fcp-sfd-auto-test-suite
+buildIdentifier: '#${BUILD_NUMBER}'
+
+# Browsers GOV.UK says services should test in (updated February 2026):
+# https://www.gov.uk/service-manual/technology/designing-for-different-browsers-and-devices
+#
+# Playwright only drives Chromium, Firefox and WebKit, so some entries stand in for a browser:
+# - playwright-webkit is BrowserStack's WebKit build and stands in for Safari.
+# - Chrome and Edge on iOS use Safari's WebKit engine, so the iOS Safari runs cover them.
+# - Android Firefox and Samsung Internet cannot be driven by Playwright on BrowserStack.
+#   Samsung Internet is Chromium based, so Chrome on the Samsung device is the closest cover.
+platforms:
+  - os: Windows
+    osVersion: 11
+    browserName: chrome
+    browserVersion: latest
+  - os: Windows
+    osVersion: 11
+    browserName: edge
+    browserVersion: latest
+  - os: Windows
+    osVersion: 11
+    browserName: playwright-firefox
+    browserVersion: latest
+  - os: OS X
+    osVersion: Sequoia
+    browserName: playwright-webkit
+    browserVersion: latest
+  - os: OS X
+    osVersion: Sequoia
+    browserName: chrome
+    browserVersion: latest
+  - os: OS X
+    osVersion: Sequoia
+    browserName: playwright-firefox
+    browserVersion: latest
+  - deviceName: iPhone 17
+    browserName: playwright-webkit
+    osVersion: 26
+  - deviceName: iPhone 15
+    browserName: playwright-webkit
+    osVersion: 17
+  - deviceName: Samsung Galaxy S25
+    browserName: chrome
+    osVersion: 15
+
+parallelsPerPlatform: 1
+
+# Lets the remote browsers reach the environment under test through the BrowserStackLocal tunnel.
+browserstackLocal: true
+browserStackLocalOptions:
+  forceLocal: false
+  onlyAutomate: true
+
+acceptSslCerts: true
+
+debug: false
+# Off: network logs keep every request's headers, sign-in cookies included, on BrowserStack.
+networkLogs: false
+consoleLogs: errors
+testReporting: true
