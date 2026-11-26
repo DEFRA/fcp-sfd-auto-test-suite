@@ -9,6 +9,7 @@ import {
   goToLandingPage,
   TEST_SUITE_BASE_URL
 } from '../helpers/helpers.js'
+import { expectSuccessBanner, expectNoSuccessBanner } from '../helpers/banners.js'
 
 async function waitForBusinessDetailsPage(page) {
   await page.waitForURL('**/business-details')
@@ -256,55 +257,45 @@ Then(
   'Verify Success Updated message is displayed for {string} on the page ViewAndUpdateYourBusinessType',
   async function (updatedMsgType) {
     switch (updatedMsgType.toLowerCase()) {
-      case 'businessphonenumbers': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your business phone numbers')
-        break
-      }
-      case 'businessemailaddress': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your business email address')
-        break
-      }
-      case 'businessaddress': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your business address')
-        break
-      }
-      case 'businessname': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your business name')
-        break
-      }
-      case 'vatnumber': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your VAT registration number')
-        break
-      }
-      case 'yes': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have removed your VAT registration number')
-        break
-      }
-      case 'no': {
-        const banner = this.page.locator(
-          "//div[@class='govuk-notification-banner__content']"
+      case 'businessphonenumbers':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your business phone numbers'
         )
-        await expect(banner).not.toBeVisible()
         break
-      }
+      case 'businessemailaddress':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your business email address'
+        )
+        break
+      case 'businessaddress':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your business address'
+        )
+        break
+      case 'businessname':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your business name'
+        )
+        break
+      case 'vatnumber':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your VAT registration number'
+        )
+        break
+      case 'yes':
+        await expectSuccessBanner(
+          this.page,
+          'You have removed your VAT registration number'
+        )
+        break
+      case 'no':
+        await expectNoSuccessBanner(this.page)
+        break
       default:
         throw new Error(`Unknown updatedMsgType: ${updatedMsgType}`)
     }
@@ -948,41 +939,33 @@ Then(
   'Verify Success Updated message is displayed for {string} on the page ViewAndUpdateYourPersonalDetails page',
   async function (linkType) {
     switch (linkType.toLowerCase()) {
-      case 'personalphonenumbers': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your personal phone numbers')
+      case 'personalphonenumbers':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your personal phone numbers'
+        )
         break
-      }
-      case 'fullname': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your full name')
+      case 'fullname':
+        await expectSuccessBanner(this.page, 'You have updated your full name')
         break
-      }
-      case 'personaladdress': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your personal address')
+      case 'personaladdress':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your personal address'
+        )
         break
-      }
-      case 'dob': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your date of birth')
+      case 'dob':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your date of birth'
+        )
         break
-      }
-      case 'personalemailaddress': {
-        const msg = await this.page
-          .locator("//div[@class='govuk-notification-banner__content']")
-          .innerText()
-        expect(msg).toBe('You have updated your personal email address')
+      case 'personalemailaddress':
+        await expectSuccessBanner(
+          this.page,
+          'You have updated your personal email address'
+        )
         break
-      }
       default:
         throw new Error(`Unknown linkType: ${linkType}`)
     }
