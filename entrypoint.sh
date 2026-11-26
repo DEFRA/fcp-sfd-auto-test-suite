@@ -16,7 +16,11 @@ curl -s -o /dev/null -D - --proxy http://localhost:3128 --insecure "$AUTH_URL" |
 echo ""
 echo "--- End diagnostics ---"
 
-TEST_SCRIPT=${TEST_SCRIPT:-test}
+echo "PROFILE: $PROFILE"
+TEST_SCRIPT=test
+if [ "$PROFILE" = "browserstack" ]; then
+  TEST_SCRIPT=test:browserstack
+fi
 echo "TEST_SCRIPT: $TEST_SCRIPT"
 
 npm run "$TEST_SCRIPT"
