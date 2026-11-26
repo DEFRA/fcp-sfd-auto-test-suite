@@ -85,7 +85,7 @@ test.describe('Update business details @browserstack', () => {
       )
       await page
         .getByRole('textbox', { name: 'What is your VAT registration number?' })
-        .fill('123456789')
+        .fill('123456789') // sfd-id-check: allow (a VAT number, not an SBI)
       await continueThenSubmit(page, /business-vat-registration-number-check/)
       await page
         .getByRole('link', { name: 'Remove VAT registration number' })
