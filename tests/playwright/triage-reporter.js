@@ -31,11 +31,38 @@ function readDiagnostics(result) {
 export default class TriageReporter {
   constructor() {
     this.finals = []
+    this.skippedByToggle = []
   }
 
   onTestEnd(test, result) {
     const platform = test.parent.project()?.name ?? 'unknown platform'
     const message = result.error?.message ?? ''
+
+    const toggle = [...(result.annotations ?? []), ...test.annotations].find(
+      (a) => a.type === 'toggle-off'
+    )
+    if (result.status === 'skipped' && toggle) {
+      this.skippedByToggle.push({ platform, field: toggle.description })
+      log(
+        'warn',
+        `toggle-skipped: ${test.title} (${platform}). The "${toggle.description}" update is switched off, which is why the frontend shows its "You cannot update your ${toggle.description} right now" banner. Switch it back on in cdp-app-config unless a DAL incident is open.`,
+        {
+          event: {
+            category: 'test',
+            action: 'toggle-skipped',
+            outcome: 'unknown'
+          },
+          labels: {
+            test: test.title,
+            platform,
+            toggle_field: toggle.description,
+            action_needed:
+              'Re-enable the feature toggle unless a DAL incident is open'
+          }
+        }
+      )
+      return
+    }
 
     if (result.status !== 'passed' && result.status !== 'skipped') {
       const { category, owner } = classify(message, test.title)
@@ -90,12 +117,21 @@ export default class TriageReporter {
           .map(([k, n]) => `${k} ${n}`)
           .join(', ')}`
     )
+    const fields = [...new Set(this.skippedByToggle.map((s) => s.field))]
+    const toggleLine = fields.length
+      ? `\nSkipped because a feature toggle is off: ${this.skippedByToggle.length} test runs (${fields.join(', ')}). Switch these back on unless a DAL incident is open.`
+      : ''
     log(
-      result.status === 'passed' ? 'info' : 'warn',
-      `Run ${result.status}\n${lines.join('\n')}`,
+      result.status === 'passed' && !fields.length ? 'info' : 'warn',
+      `Run ${result.status}\n${lines.join('\n')}${toggleLine}`,
       {
         event: { category: 'test', action: 'run-summary' },
-        labels: { run_status: result.status, summary: byPlatform }
+        labels: {
+          run_status: result.status,
+          summary: byPlatform,
+          toggle_skipped_count: this.skippedByToggle.length,
+          toggle_skipped_fields: fields
+        }
       }
     )
   }
