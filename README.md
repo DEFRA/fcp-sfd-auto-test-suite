@@ -294,7 +294,7 @@ npm run test:browserstack
 
 Narrow a run with extra arguments, for example `npm run test:browserstack -- --tags "@test7"`. Results are on the [BrowserStack Automate dashboard](https://automate.browserstack.com) under the `FCP SFD Auto Test Suite` project.
 
-To run it from the CDP Portal, set the `TEST_SCRIPT` variable to `test:browserstack`. The default is `test`. On CDP the run sets `CDP_PROXY=true`, which routes BrowserStack traffic through the platform proxy (`localhost:3128`). BrowserStack is reachable from non-production environments only.
+To run it from the CDP Portal, press `Yes` under `Profile`, enter `browserstack` and press `Start`. Any other profile, or none, runs the normal `npm test`. On CDP the run sets `CDP_PROXY=true`, which routes BrowserStack traffic through the platform proxy (`localhost:3128`). BrowserStack is reachable from non-production environments only.
 
 The Docker image includes the `BrowserStackLocal` tunnel binary so the SDK doesn't download it at runtime.
 
