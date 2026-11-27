@@ -18,6 +18,11 @@ function log(level, message, fields = {}) {
   )
 }
 
+// A failed URL assertion prints the full URL. Drop query strings and fragments so auth codes stay out of the logs.
+export function redact(text = '') {
+  return text.replace(/(https?:\/\/[^\s?#'"`)]+)[?#][^\s'"`)]*/g, '$1')
+}
+
 function readDiagnostics(result) {
   const attachment = result.attachments.find((a) => a.name === 'diagnostics')
   try {
@@ -71,8 +76,8 @@ export default class TriageReporter {
         event: { category: 'test', action: 'test-failed', outcome: 'failure' },
         error: {
           type: stripAnsi(message).match(/^(\w*Error)\b/)?.[1] ?? 'Error',
-          message: shortError(message),
-          stack_trace: stripAnsi(result.error?.stack ?? message)
+          message: redact(shortError(message)),
+          stack_trace: redact(stripAnsi(result.error?.stack ?? message))
         },
         labels: {
           triage: category,
