@@ -67,7 +67,13 @@ acceptSslCerts: true
 debug: false
 video: true
 interactiveDebugging: true
-# Off: network logs keep every request's headers, sign-in cookies included, on BrowserStack.
-networkLogs: false
+# On so a timeout or failure can be traced to a request. Other DEFRA suites run it on too.
+# captureContent: false keeps request and response bodies out; headers are still captured.
+networkLogs: true
+networkLogsOptions:
+  captureContent: false
 consoleLogs: errors
+
+# End a hung session after 5 minutes instead of leaving the whole CDP run stuck.
+idleTimeout: 300
 testReporting: true
