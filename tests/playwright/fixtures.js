@@ -10,6 +10,29 @@ function standardUser(parallelIndex) {
   }
 }
 
+const DEVICE_AGENT = /iPhone|iPad|Android/i
+const IOS_AGENT = /iPhone|iPad/i
+
+// Set once a worker finds it is on a real device. Each worker is its own process, so it stays
+// true for every test that worker runs.
+let singleContextDevice = false
+
+// On real iPhones BrowserStack answers "No elements found" to any selector with Playwright's
+// exact (case-sensitive) name match, while the default match works. Specs ask for exact matches
+// so desktop browsers stay strict, so on iOS only, the exact flag is dropped.
+async function relaxExactMatchOnIos(page) {
+  if (page.exactMatchRelaxed) return
+  const agent = await page.evaluate(() => navigator.userAgent).catch(() => '')
+  if (!IOS_AGENT.test(agent)) return
+
+  page.exactMatchRelaxed = true
+  for (const method of ['getByRole', 'getByLabel']) {
+    const original = page[method].bind(page)
+    page[method] = (target, options) =>
+      original(target, options?.exact ? { ...options, exact: false } : options)
+  }
+}
+
 // Value shown next to a label in a GOV.UK summary list.
 export function summaryValue(page, label) {
   return page.locator(`dt:text-is("${label}") + dd`)
@@ -41,24 +64,39 @@ export async function expectErrorSummary(page, message) {
 }
 
 export const test = base.extend({
-  // Real BrowserStack devices allow one browser context and one tab. Desktop browsers get a fresh
-  // context per test as normal. A device that refuses one has its single context reused and its
-  // cookies cleared, so tests stay isolated.
+  // Desktop browsers get a fresh context per test and close it afterwards. A real BrowserStack
+  // device allows one context and one tab. Closing it leaves Safari with no tab, so the next test
+  // in that worker cannot create another. A device keeps its single context and clears cookies
+  // between tests, so tests stay isolated.
   context: async ({ browser, contextOptions, baseURL }, use) => {
-    let context
-    try {
-      context = await browser.newContext({ ...contextOptions, baseURL })
-    } catch (error) {
-      if (!/Only one browser context/i.test(error.message)) throw error
+    let shared
+    if (!singleContextDevice) {
+      let created
+      try {
+        created = await browser.newContext({ ...contextOptions, baseURL })
+      } catch (error) {
+        if (!/Only one browser context/i.test(error.message)) throw error
+        singleContextDevice = true
+      }
+
+      if (created) {
+        const agent = await created
+          .newPage()
+          .then((page) => page.evaluate(() => navigator.userAgent))
+          .catch(() => '')
+        if (!DEVICE_AGENT.test(agent)) {
+          await use(created)
+          await created.close()
+          return
+        }
+        singleContextDevice = true
+        shared = created
+      }
     }
 
-    if (context) {
-      await use(context)
-      await context.close()
-      return
-    }
-
-    const shared = browser.contexts()[0]
+    shared ??= browser.contexts()[0]
+    if (!shared)
+      throw new Error('The device has no open browser context to reuse')
     await shared.clearCookies()
     await use(shared)
     await shared.clearCookies()
@@ -66,12 +104,10 @@ export const test = base.extend({
 
   page: async ({ context }, use) => {
     const existing = context.pages()[0]
-    if (!existing) {
-      await use(await context.newPage())
-      return
-    }
-    await use(existing)
-    await existing.goto('about:blank').catch(() => {})
+    const page = existing ?? (await context.newPage())
+    if (singleContextDevice) await relaxExactMatchOnIos(page)
+    await use(page)
+    if (existing) await existing.goto('about:blank').catch(() => {})
   },
 
   // Runs for every test. On failure it records where the browser was and which BrowserStack

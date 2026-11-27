@@ -39,6 +39,7 @@ networkLogs: true
 networkLogsOptions:
   captureContent: false
 consoleLogs: errors
+playwrightLogs: true
 
 idleTimeout: 300
 testReporting: true
