@@ -91,7 +91,9 @@ export const test = base.extend({
           )
         ])
       try {
-        details.url = page.url()
+        // The OIDC callback URL carries a code and state, so keep only origin and path.
+        const { origin, pathname } = new URL(page.url())
+        details.url = origin + pathname
         details.title = await within(page.title())
         const raw = await within(
           page.evaluate(

@@ -29,7 +29,9 @@ test.describe('Update personal details @browserstack', () => {
       .fill(phone)
     await continueThenSubmit(page, /account-phone-numbers-check/)
 
-    await expect(page.getByText('Telephone')).toContainText(phone)
+    await expect(page.getByText('Telephone')).toHaveText(
+      new RegExp(`^\\s*Telephone:\\s*${phone.replace(/[+()]/g, '\\$&')}\\s*$`)
+    )
     await expectSuccessBanner(
       page,
       'You have updated your personal phone numbers'
