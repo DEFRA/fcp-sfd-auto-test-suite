@@ -264,7 +264,7 @@ BrowserStack runs the `@browserstack` tests on real browsers. They are Playwrigh
 | Windows 11    | Chrome, Edge, Firefox            |
 | macOS Sequoia | Safari (WebKit), Chrome, Firefox |
 
-Real mobile devices (iPhone 17, iPhone 15 and Galaxy S25) are commented out in `browserstack.yml` for now. In CDP run 0.76.0 they failed (clicks hung on the Galaxy S25, and the iPhones allow only one context and one tab), so they are a follow-up to FLS2-499.
+Real mobile devices (iPhone 17, iPhone 15 and Galaxy S25) are not in the default run. In CDP runs they mostly failed on BrowserStack's side (iPhones allow one context and one tab and throw "No elements found" straight after a page load, and clicks hang on the Galaxy S25). `npm run test:browserstack:mobile` runs them on demand using [`browserstack.mobile.yml`](./browserstack.mobile.yml), but expect failures. See FLS2-544.
 
 Playwright can't drive every GOV.UK browser on BrowserStack:
 
