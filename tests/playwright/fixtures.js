@@ -40,6 +40,32 @@ export async function expectErrorSummary(page, message) {
   )
 }
 
+function waitWhenNotFound(page) {
+  if (page.waitsWhenNotFound) return
+  page.waitsWhenNotFound = true
+
+  for (const finder of ['getByRole', 'getByLabel']) {
+    const original = page[finder].bind(page)
+    page[finder] = (...args) => {
+      const locator = original(...args)
+      for (const action of ['click', 'fill', 'check']) {
+        const act = locator[action].bind(locator)
+        locator[action] = async (...actionArgs) => {
+          try {
+            return await act(...actionArgs)
+          } catch (error) {
+            if (!/No elements found for selector/.test(error.message))
+              throw error
+            await expect(locator).toBeVisible()
+            return act(...actionArgs)
+          }
+        }
+      }
+      return locator
+    }
+  }
+}
+
 export const test = base.extend({
   // Real BrowserStack devices allow one browser context and one tab. Desktop browsers get a fresh
   // context per test as normal. A device that refuses one has its single context reused and its
@@ -48,8 +74,8 @@ export const test = base.extend({
   context: async ({ browser, contextOptions, baseURL }, use) => {
     let shared
     let lastError
-    for (let attempt = 0; attempt < 5 && !shared; attempt++) {
-      if (attempt > 0) await new Promise((resolve) => setTimeout(resolve, 1000))
+    for (let attempt = 0; attempt < 10 && !shared; attempt++) {
+      if (attempt > 0) await new Promise((resolve) => setTimeout(resolve, 2000))
       let context
       try {
         context = await browser.newContext({ ...contextOptions, baseURL })
@@ -82,14 +108,15 @@ export const test = base.extend({
     await shared.clearCookies()
   },
 
+  // Real BrowserStack iPhones do not poll for an element: a click, fill or check right after a
+  // navigation fails at once with "No elements found" if the page has not rendered yet. Desktop
+  // never gets that message, so only then wait for the element to be visible and try once more.
   page: async ({ context }, use) => {
     const existing = context.pages()[0]
-    if (!existing) {
-      await use(await context.newPage())
-      return
-    }
-    await use(existing)
-    await existing.goto('about:blank').catch(() => {})
+    const page = existing ?? (await context.newPage())
+    waitWhenNotFound(page)
+    await use(page)
+    if (existing) await existing.goto('about:blank').catch(() => {})
   },
 
   // Runs for every test. On failure it records where the browser was and which BrowserStack
