@@ -1,0 +1,44 @@
+userName: ${BROWSERSTACK_USERNAME}
+accessKey: ${BROWSERSTACK_ACCESS_KEY}
+framework: playwright
+
+projectName: FCP SFD Auto Test Suite
+buildName: fcp-sfd-auto-test-suite-mobile
+buildIdentifier: '#${BUILD_NUMBER}'
+
+# Real mobile devices only. Run with: node bin/run-browserstack-playwright.js --mobile
+# The settings below match browserstack.yml, so keep the two files in step.
+# - On iPhones, browserName safari drives the real Mobile Safari.
+# - Chrome and Edge on iOS use Safari's WebKit engine, so the iOS Safari runs cover them.
+# - Android Firefox and Samsung Internet cannot be driven by Playwright on BrowserStack.
+#   Samsung Internet is Chromium based, so Chrome on the Samsung device is the closest cover.
+platforms:
+  - deviceName: iPhone 17
+    browserName: safari
+    osVersion: 26
+  - deviceName: iPhone 15
+    browserName: safari
+    osVersion: 17
+  - deviceName: Samsung Galaxy S25
+    browserName: chrome
+    osVersion: 15
+
+parallelsPerPlatform: 1
+
+browserstackLocal: true
+browserStackLocalOptions:
+  forceLocal: false
+  onlyAutomate: true
+
+acceptSslCerts: true
+
+debug: false
+video: true
+interactiveDebugging: true
+networkLogs: true
+networkLogsOptions:
+  captureContent: false
+consoleLogs: errors
+
+idleTimeout: 300
+testReporting: true

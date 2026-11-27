@@ -5,6 +5,7 @@
 // On CDP (CDP_PROXY=true) BrowserStack is only reachable through the platform proxy.
 //
 // Extra arguments are passed to playwright test, e.g. --grep "Business type".
+// --mobile runs only the real devices in browserstack.mobile.yml instead of the desktop browsers.
 import { spawnSync } from 'node:child_process'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
@@ -32,6 +33,13 @@ if (env.CDP_PROXY === 'true') {
   env.HTTPS_PROXY = env.HTTPS_PROXY || CDP_PROXY_URL
 }
 
+const args = process.argv.slice(2)
+const mobile = args.includes('--mobile')
+
+if (mobile) {
+  env.BROWSERSTACK_CONFIG_FILE = 'browserstack.mobile.yml'
+}
+
 const result = spawnSync(
   'node',
   [
@@ -39,7 +47,7 @@ const result = spawnSync(
     'playwright',
     'test',
     '--config=playwright.browserstack.config.js',
-    ...process.argv.slice(2)
+    ...args.filter((arg) => arg !== '--mobile')
   ],
   { stdio: 'inherit', cwd: ROOT, env }
 )
